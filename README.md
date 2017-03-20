@@ -1,2 +1,0 @@
-# DBM
-Data Base Manager

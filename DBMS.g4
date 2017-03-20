@@ -1,161 +1,436 @@
-// Gramatica Proyecto DBMS
+//Pablo Barreno
+//Santiago Solorzano
+//Diego Sosa
 
 grammar DBMS;
 
-CREATE: 'create'|'CREATE'|'Create';
-DATABASE: 'database'|'DATABASE'|'Database';
-DATABASES: 'databases'|'DATABASES'|'Databases';
-ALTER: 'alter'|'ALTER'|'Alter';
-RENAME: 'rename'|'RENAME'|'Rename';
-DROP: 'drop'|'DROP'|'Drop';
-TO: 'to'|'TO'|'To';
-SHOW: 'show'|'SHOW'|'Show';
-USE: 'use'|'USE'|'Use';
-CONSTRAINT: 'constraint'|'CONSTRAINT'|'Constraint';
-PRIMARY: 'primary'|'PRIMARY'|'Primary';
-FOREIGN: 'foreign'|'FOREIGN'|'Foreign';
-KEY: 'key'|'KEY'|'Key';
-REFERENCES: 'references'|'REFERENCES'|'References';
-CHECK: 'check'|'CHECK'|'Check';
-INT: 'int'|'INT'|'Int';
-FLOAT: 'float'|'FLOAT'|'Float';
-DATE: 'date'|'DATE'|'Date';
-CHAR: 'char'|'CHAR'|'Char';
-AND: 'and'|'AND'|'And';
-OR: 'or'|'OR'|'Or';
-NOT: 'not'|'NOT'|'Not';
-TABLE: 'table'|'TABLE'|'Table';
-TABLES: 'tables'|'TABLES'|'Tables';
-ADD: 'add'|'ADD'|'Add';
-COLUMN: 'column'|'COLUMN'|'Column';
-COLUMNS: 'columns'|'COLUMNS'|'Columns';
-SHOWX: 'show'|'SHOW'|'Show';
-FROM: 'from'|'FROM'|'From';
-INSERT: 'insert'|'INSERT'|'Insert';
-SELECT: 'select'|'SELECT'|'Select';
-VALUES: 'values'|'VALUES'|'Values';
-INTO: 'into'|'INTO'|'Into';
-UPDATE: 'update'|'UPDATE'|'Update';
-SET : 'set'|'SET'|'Set';
-WHERE: 'where'|'WHERE'|'Where';
-DELETE: 'delete'|'DELETE'|'Delete';
-ORDER: 'order'|'ORDER'|'Order';
-BY: 'by'|'BY'|'By';
-ASC: 'asc'|'ASC'|'Asc';
-DESC: 'desc'|'DESC'|'Desc';
-NULL: 'null'|'NULL'|'Null';
+//LEXER
 
-fragment LETTERX: ('A'..'Z'|'a'..'z');
-fragment DIGITX: ('0'..'9');
-fragment VARX: (' '..'~')| '\\' | '\t' | '\n' ;
+LPAREN
+	:	'('
+	;
 
-IDX: LETTERX (LETTERX | DIGITX |'_')*;
-NUMX: DIGITX (DIGITX)*;
-CHARX: '\''(LETTERX | DIGITX |' '| '!' | '"' | '#' | '$' | '%' | '&' | '\'' | '(' | ')' | '*' 
-| '+' | ',' | '-' | '.' | '/' | ':' | ';' | '<' | '=' | '>' | '?' | '@' | '[' | '\\' | ']' 
-| '^' | '_' | '`'| '{' | '|' | '}' | '~' '\t'| '\n' | '\"' | '\'')'\'';
+RPAREN
+	:	')'
+	;
 
-SPACEX: (' '|'\n'|'\t'|'\f'|'\r\n'|'\r'){skip();}; 
-COMMENTX: '//'(~('\r'|'\n'))*{skip();}; 
+LBRACKET
+	:	'['
+	;
 
-literal : IDX| NUMX| CHARX | fecha;
+RBRACKET
+	:	']'
+	;
 
-fecha:  DIGITX DIGITX DIGITX DIGITX '-'  DIGITX DIGITX '-'  DIGITX DIGITX ;
+EQ
+	:	'='
+	;
 
-program: database|(database)*;
+KL	
+	:	'*'
+	;
 
-database:
-	(createDatabase
-	|alterDatabase
-	|dropDatabase
-	|showDatabase
-	|useDatabase 
-	|opTable);
+INT 
+	:	'int' 
+	;
 
-createDatabase: CREATE DATABASE IDX;
+CHAR	
+	:	'char'
+	;
 
-alterDatabase: ALTER DATABASE IDX RENAME TO IDX;
+BOOLEAN 
+	:	'boolean'
+	;
 
-dropDatabase: DROP DATABASE IDX;
+DATETIME
+	:	'datetime'
+	;
 
-showDatabase: SHOW DATABASES;
+fragment LETTER 
+	:	('a'..'z'|'A'..'Z')
+	;
 
-useDatabase: USE DATABASE IDX;
+fragment DIGIT
+	:	'0'..'9'
+	;
 
-opTable: 
-	(createTable
-	|alterTable
-	|dropTable
-	|showTables
-	|showColumns
-	|insertInto
-	|updateSet
-	|deleteFrom
-	|selectFrom);
+fragment ASCII
+	:	(' ' ..'~')
+	|	'\\' 
+	|	'\'' 
+	|	'\"' 
+	|	'\t' 
+	| 	'\n' 
+	;
+
+fragment TWO_DIGITS   
+	:	DIGIT DIGIT
+	;
+
+fragment THREE_DIGITS
+	:	DIGIT TWO_DIGITS 
+	;
+
+fragment FOUR_DIGITS
+	:	DIGIT THREE_DIGITS 
+	;
+
+fragment YEAR
+	:	FOUR_DIGITS 
+	;
+
+fragment MONTH
+	:	DIGIT
+	|	TWO_DIGITS
+	;
+
+fragment DAY
+	:	DIGIT 
+	| 	TWO_DIGITS 
+	; 
+
+ID 
+	:	LETTER ( LETTER | DIGIT )* 
+	;
+
+NUM 
+	:	DIGIT ( DIGIT )* 
+	;
+
+FLOAT
+	:	DIGIT ( DIGIT )* ('.' (DIGIT)* )? 
+	;
+
+CHARX	
+	:	'\'' ASCII* '\''
+	;
+
+DATE
+	:	YEAR '-' MONTH '-' DAY 
+	;
+
+WS 
+	:	[\t\r\n\f ]+ -> skip
+	;
+
+COMMENT
+	:	( '//' ~[\r\n]* '\r'? '\n' | '/*' .*? '*/') -> skip
+	;
+
+CREATE
+	:	'CREATE'
+	|	'Create'
+	|	'create'
+	;
+
+DATABASE
+	:	'DATABASE'
+	|	'Database'
+	|	'database'
+	;
+
+DATABASES
+	:	'DATABASES'
+	|	'Databases'
+	|	'databases'
+	;
+
+TABLE
+	:	'TABLE'
+	|	'Table'
+	|	'table'
+	;
+
+TABLES
+	:	'TABLES'
+	|	'Tables'
+	|	'tables'
+	;
+
+COLUMN
+	:	'COLUMN'
+	|	'Column'
+	|	'column'
+	;
+
+COLUMNS
+	:	'COLUMNS'
+	|	'Columns'
+	|	'column'
+	;
+
+SHOW	
+	:	'SHOW'
+	|	'Show'
+	|	'show'
+	;
+
+DROP
+	:	'DROP'
+	|	'Drop'
+	|	'drop'
+	;
+
+ALTER
+	:	'ALTER'
+	|	'Alter'
+	|	'alter'
+	;
+USE
+	:	'USE'
+	|	'Use'
+	|	'use'
+	;
+
+RENAME
+	:	'RENAME'
+	|	'Rename'
+	|	'rename'
+	;
+
+END_SQL
+	:	';'
+	;
+
+COMMA
+	:	','
+	;
+
+CONSTRAINT
+	:	'CONSTRAINT'
+	|	'Constraint'
+	|	'constraint'
+	;
+
+KEY
+	:	'KEY'
+	|	'Key'
+	|	'key'
+	;
+
+PRIMARY
+	:	'PRIMARY'
+	|	'Primary'
+	|	'primary'
+	;
+
+FOREIGN
+	:	'FOREIGN'
+	|	'Foreign'
+	|	'foreign'
+	;
+
+CHECK
+	:	'CHECK'
+	|	'Check'
+	|	'check'
+	;
+
+SELECT
+	:	'SELECT'
+	|	'Select'
+	|	'select'
+	;
+
+FROM
+	:	'FROM'
+	|	'From'
+	|	'from'
+	;
+
+WHERE
+	:	'WHERE'
+	|	'Where'
+	|	'where'
+	;
+
+ASC
+	:	'ASC'
+	|	'Asc'
+	|	'asc'
+	;
+
+DESC
+	:	'DESC'
+	|	'Desc'
+	|	'desc'
+	;
+
+//PARSER
+
+sql 
+	:	(sql_executable)+
+	;
+
+sql_executable
+	:	sql_ddl
+	|	sql_dml
+	;
+
+sql_ddl
+	:	database_statement
+	|	table_statement
+	;
+
+database_statement
+	:	create_database
+	|	alter_database
+	|	drop_database
+	|	show_database
+	|	use_database
+	;
+
+table_statement
+	:	create_table
+	|	alter_table
+	|	drop_table
+	|	show_tables
+	|	show_columns
+	;
+
+create_database
+	:	CREATE DATABASE ID END_SQL
+	;
+
+alter_database
+	:	ALTER DATABASE ID RENAME TO ID END_SQL
+	;
+
+drop_database
+	:	DROP DATABASE ID END_SQL
+	;
+
+show_database
+	:	SHOW DATABASES ID END_SQL
+	;
+
+use_database
+	:	USE DATABASE ID END_SQL
+	;
+
+create_table
+	:	CREATE TABLE ID LPAREN (column)+ RPAREN END_SQL;
+	;
+
+column
+	:	ID type ( COMMA )
+	|	constraint
+	;
+
+constraint
+	:	CONSTRAINT 'PK_' ID PRIMARY KEY LPAREN ID (COMMA ID)* RPAREN
+	|	CONSTRAINT 'FK_' ID FOREIGN KEY LPAREN ID (COMMA ID)* RPAREN REFERENCES ID RPAREN ID (COMMA ID)* LPAREN
+	|	CONSTRAINT 'CH_' ID CHECK RPAREN exp LPAREN
+	;	
+
+type
+	:	INT
+	|	FLOAT
+	|	DATE
+	|	CHAR LPAREN NUM RPAREN
+	;
+
+alter_table
+	:	ALTER TABLE ID RENAME TO ID END_SQL
+	|	ALTER TABLE ID action END_SQL
+	;
+
+drop_table
+	:	DROP DATABASE ID END_SQL
+	;
+
+show_tables
+	:	SHOW TABLES END_SQL
+	;
+
+show_columns
+	:	SHOW COLUMNS FROM ID END_SQL
+	;
+
+action
+	:	ADD COLUMN ID type (constraint)+				
+	|	ADD constraint
+        |	DROP COLUMN ID
+        |	DROP CONSTRAINT ID
+	;
+
+       
+dml_statement 
+	: 	insert_value
+	|	update_value
+	|	delete_value
+	|	select_value
+	;
+
+insert_value
+	:	INSERT INTO ID ( LPAREN ((ID)(COMMA ID)*)? RPAREN )? VALUES ( LPAREN ((literal)(COMMA literal)*)? RPAREN )? END_SQL
+	;
+
+update_value
+	:	UPDATE ID SET ID EQ literal (COMMA ID EQ literal)* (WHERE expression)? END_SQL 
+	;
+
+delete_value
+	:	DELETE FROM ID (WHERE expression)? END_SQL
+	;
+
+select_value
+	:	SELECT (KL | ID (COMMA ID)* ) FROM ID (WHERE expression)?  (ORDER BY (ASC | DESC))? END_SQL
+	;
+
+literal
+	:	NUM
+	|	FLOAT
+	|	DATE
+	|	CHARX
+	;
+
+rel_op
+	:	'<'									
+	|	'>'
+	| 	'<='
+	|	'>='									
+	|	'='									
+	|	'<>'	
+	;
+
+
+cond_op
+	:	'AND'
+	|	'OR'
+	;
+
+
+
+expression							
+	:	expression cond_op expr1
+	|	expr1
+	;
 	
-tipo: INT|FLOAT|DATE|CHAR '('NUMX ')' ;
-
-createTable: CREATE TABLE IDX '(' IDX tipo (',' IDX tipo)* (CONSTRAINT constraint (',' CONSTRAINT constraint)*)? ')';
-
-constraint: primaryKey | foreignKey(foreignKey)* | check(check)*;
-
-primaryKey: IDX PRIMARY KEY '(' IDX (',' IDX)* ')';
-
-foreignKey: IDX FOREIGN KEY '(' IDX (',' IDX)* ')' REFERENCES IDX '(' IDX (',' IDX)* ')' ;
-
-check: IDX CHECK (exp);
-
-// Expression 
-
-exp: expression | ;
-
-expression : andExpr| expression OR andExpr  ;
-
-andExpr: eqExpr | andExpr AND eqExpr ;
-
-eqExpr: relationExpr | eqExpr eq_op relationExpr ; 
-
-relationExpr: unaryExpr | relationExpr rel_op unaryExpr ;
-
-unaryExpr:  '('(NOT)? IDX  ')' ; // verificar
-
+expr1								
+	:	expr1 cond_op expr2
+	|	expr2
+	;
 	
-alterTable: ALTER TABLE IDX RENAME TO IDX | ALTER TABLE IDX action (',' action)* ;
+expr2								
+	:	expr3 rel_op unifactor
+	|	unifactor
+	|	expr3 rel_op2 literal
+	|	literal rel_op3 expr3
+	;
 
-action: 
-		 ADD COLUMN IDX tipo (CONSTRAINT constraint (',' constraint)*)?
-	   | ADD CONSTRAINT constraint
-	   | DROP COLUMN IDX
-	   | DROP CONSTRAINT IDX ;
-
-dropTable: DROP TABLE IDX;
-
-showTables: SHOW TABLES; 
-
-showColumns: SHOW COLUMNS FROM IDX ;
-
-
-// Gramatica para parte 2
-
-insertInto: INSERT INTO IDX '(' IDX (',' IDX)* ')' VALUES '(' literal (',' literal)* ')';
-
-updateSet: UPDATE IDX SET IDX '=' tipo (',' tipo)* (WHERE exp)? ; // verificar
-
-deleteFrom: DELETE FROM IDX (WHERE exp)? ;
+unifactor
+	:	'NOT' factor
+	|	factor
+	;
 	
-selectFrom: SELECT sep FROM IDX (WHERE exp (ORDER BY  exp ASC|DESC (',' exp ASC|DESC)*)? )? ;// verificar
-		      
-sep: '*' | IDX(',' IDX)*;
+factor 		
+	:	LPAREN expression RPAREN
+	|	ID
+	|	ID.ID
+	;
+	
 
 
-// Operadores rel y eq 
-
-rel_op: '<' | '>' | '<=' | '>='| '=';
-
-eq_op : '==' | '!=' ;
-
-add_op: '+'| '-';
-
-mult_op: '*' | '/' | '%' ;
-
-
+              
+ 
