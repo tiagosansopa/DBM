@@ -7,491 +7,504 @@ grammar DBMS;
 //LEXER
 
 LPAREN
-	:	'('
-	;
+    :   '('
+    ;
 
 RPAREN
-	:	')'
-	;
+    :   ')'
+    ;
 
 LBRACKET
-	:	'['
-	;
+    :   '['
+    ;
 
 RBRACKET
-	:	']'
-	;
+    :   ']'
+    ;
 
 EQ
-	:	'='
-	;
+    :   '='
+    ;
 
-KL	
-	:	'*'
-	;
+KL  
+    :   '*'
+    ;
 
 INT 
-	:	'int' 
-	;
+    :   'int' 
+    ;
 
-CHAR	
-	:	'char'
-	;
+CHAR    
+    :   'char'
+    ;
 
 BOOLEAN 
-	:	'boolean'
-	;
+    :   'boolean'
+    ;
 
 DATETIME
-	:	'datetime'
-	;
+    :   'datetime'
+    ;
 
 fragment LETTER 
-	:	('a'..'z'|'A'..'Z')
-	;
+    :   ('a'..'z'|'A'..'Z')
+    ;
 
 fragment DIGIT
-	:	'0'..'9'
-	;
+    :   '0'..'9'
+    ;
 
 fragment ASCII
-	:	(' ' ..'~')
-	|	'\\' 
-	|	'\'' 
-	|	'\"' 
-	|	'\t' 
-	| 	'\n' 
-	;
+    :   (' ' ..'~')
+    |   '\\' 
+    |   '\'' 
+    |   '\"' 
+    |   '\t' 
+    |   '\n' 
+    ;
 
 fragment TWO_DIGITS   
-	:	DIGIT DIGIT
-	;
+    :   DIGIT DIGIT
+    ;
 
 fragment THREE_DIGITS
-	:	DIGIT TWO_DIGITS 
-	;
+    :   DIGIT TWO_DIGITS 
+    ;
 
 fragment FOUR_DIGITS
-	:	DIGIT THREE_DIGITS 
-	;
+    :   DIGIT THREE_DIGITS 
+    ;
 
 fragment YEAR
-	:	FOUR_DIGITS 
-	;
+    :   FOUR_DIGITS 
+    ;
 
 fragment MONTH
-	:	DIGIT
-	|	TWO_DIGITS
-	;
+    :   DIGIT
+    |   TWO_DIGITS
+    ;
 
 fragment DAY
-	:	DIGIT 
-	| 	TWO_DIGITS 
-	; 
+    :   DIGIT 
+    |   TWO_DIGITS 
+    ; 
 
 ID 
-	:	LETTER ( LETTER | DIGIT )* 
-	;
+    :   LETTER ( LETTER | DIGIT )* 
+    ;
 
 NUM 
-	:	DIGIT ( DIGIT )* 
-	;
+    :   DIGIT ( DIGIT )* 
+    ;
 
 FLOAT
-	:	DIGIT ( DIGIT )* ('.' (DIGIT)* )? 
-	;
+    :   DIGIT ( DIGIT )* ('.' (DIGIT)* )? 
+    ;
 
-CHARX	
-	:	'\'' ASCII* '\''
-	;
+CHARX   
+    :   '\'' ASCII* '\''
+    ;
 
 DATE
-	:	YEAR '-' MONTH '-' DAY 
-	;
+    :   YEAR '-' MONTH '-' DAY 
+    ;
 
 WS 
-	:	[\t\r\n\f ]+ -> skip
-	;
+    :   [\t\r\n\f ]+ -> skip
+    ;
 
 COMMENT
-	:	( '//' ~[\r\n]* '\r'? '\n' | '/*' .*? '*/') -> skip
-	;
+    :   ( '//' ~[\r\n]* '\r'? '\n' | '/*' .*? '*/') -> skip
+    ;
 
 CREATE
-	:	'CREATE'
-	|	'Create'
-	|	'create'
-	;
+    :   'CREATE'
+    |   'Create'
+    |   'create'
+    ;
 
 DATABASE
-	:	'DATABASE'
-	|	'Database'
-	|	'database'
-	;
+    :   'DATABASE'
+    |   'Database'
+    |   'database'
+    ;
 
 DATABASES
-	:	'DATABASES'
-	|	'Databases'
-	|	'databases'
-	;
+    :   'DATABASES'
+    |   'Databases'
+    |   'databases'
+    ;
 
 TABLE
-	:	'TABLE'
-	|	'Table'
-	|	'table'
-	;
+    :   'TABLE'
+    |   'Table'
+    |   'table'
+    ;
 
 TABLES
-	:	'TABLES'
-	|	'Tables'
-	|	'tables'
-	;
+    :   'TABLES'
+    |   'Tables'
+    |   'tables'
+    ;
 
 COLUMN
-	:	'COLUMN'
-	|	'Column'
-	|	'column'
-	;
+    :   'COLUMN'
+    |   'Column'
+    |   'column'
+    ;
 
 COLUMNS
-	:	'COLUMNS'
-	|	'Columns'
-	|	'column'
-	;
+    :   'COLUMNS'
+    |   'Columns'
+    |   'column'
+    ;
 
-SHOW	
-	:	'SHOW'
-	|	'Show'
-	|	'show'
-	;
+SHOW    
+    :   'SHOW'
+    |   'Show'
+    |   'show'
+    ;
 
 DROP
-	:	'DROP'
-	|	'Drop'
-	|	'drop'
-	;
+    :   'DROP'
+    |   'Drop'
+    |   'drop'
+    ;
 
 ALTER
-	:	'ALTER'
-	|	'Alter'
-	|	'alter'
-	;
+    :   'ALTER'
+    |   'Alter'
+    |   'alter'
+    ;
 USE
-	:	'USE'
-	|	'Use'
-	|	'use'
-	;
+    :   'USE'
+    |   'Use'
+    |   'use'
+    ;
 
 RENAME
-	:	'RENAME'
-	|	'Rename'
-	|	'rename'
-	;
+    :   'RENAME'
+    |   'Rename'
+    |   'rename'
+    ;
 
 END_SQL
-	:	';'
-	;
+    :   ';'
+    ;
 
 COMMA
-	:	','
-	;
+    :   ','
+    ;
 
 CONSTRAINT
-	:	'CONSTRAINT'
-	|	'Constraint'
-	|	'constraint'
-	;
+    :   'CONSTRAINT'
+    |   'Constraint'
+    |   'constraint'
+    ;
 
 KEY
-	:	'KEY'
-	|	'Key'
-	|	'key'
-	;
+    :   'KEY'
+    |   'Key'
+    |   'key'
+    ;
 
 PRIMARY
-	:	'PRIMARY'
-	|	'Primary'
-	|	'primary'
-	;
+    :   'PRIMARY'
+    |   'Primary'
+    |   'primary'
+    ;
 
 FOREIGN
-	:	'FOREIGN'
-	|	'Foreign'
-	|	'foreign'
-	;
+    :   'FOREIGN'
+    |   'Foreign'
+    |   'foreign'
+    ;
 
 CHECK
-	:	'CHECK'
-	|	'Check'
-	|	'check'
-	;
+    :   'CHECK'
+    |   'Check'
+    |   'check'
+    ;
 
 SELECT
-	:	'SELECT'
-	|	'Select'
-	|	'select'
-	;
+    :   'SELECT'
+    |   'Select'
+    |   'select'
+    ;
 
 FROM
-	:	'FROM'
-	|	'From'
-	|	'from'
-	;
+    :   'FROM'
+    |   'From'
+    |   'from'
+    ;
 
 WHERE
-	:	'WHERE'
-	|	'Where'
-	|	'where'
-	;
+    :   'WHERE'
+    |   'Where'
+    |   'where'
+    ;
 
 ASC
-	:	'ASC'
-	|	'Asc'
-	|	'asc'
-	;
+    :   'ASC'
+    |   'Asc'
+    |   'asc'
+    ;
 
 DESC
-	:	'DESC'
-	|	'Desc'
-	|	'desc'
-	;
+    :   'DESC'
+    |   'Desc'
+    |   'desc'
+    ;
 
 TO
-	:	'TO'
-	|	'To'
-	|	'to'
-	;
+    :   'TO'
+    |   'To'
+    |   'to'
+    ;
 
 REFERENCES
-	:	'REFERENCES'
-	|	'References'
-	|	'references'
-	;
+    :   'REFERENCES'
+    |   'References'
+    |   'references'
+    ;
 
 ADD
-	:	'ADD'
-	|	'Add'
-	|	'add'
-	;
+    :   'ADD'
+    |   'Add'
+    |   'add'
+    ;
 
 INSERT
-	:	'INSERT'
-	|	'Insert'
-	|	'insert'
-	;
+    :   'INSERT'
+    |   'Insert'
+    |   'insert'
+    ;
 
 INTO
-	:	'INTO'
-	|	'Into'
-	|	'into'
-	;
+    :   'INTO'
+    |   'Into'
+    |   'into'
+    ;
 
 VALUES
-	:	'VALUES'
-	|	'Values'
-	|	'values'
-	;
+    :   'VALUES'
+    |   'Values'
+    |   'values'
+    ;
 
 UPDATE
-	:	'UPDATE'
-	|	'Update'
-	|	'update'
-	;
+    :   'UPDATE'
+    |   'Update'
+    |   'update'
+    ;
 
 SET
-	:	'SET'
-	|	'Set'
-	|	'set'
-	;
+    :   'SET'
+    |   'Set'
+    |   'set'
+    ;
 
 DELETE
-	:	'DELETE'
-	|	'Delete'
-	|	'delete'
-	;
+    :   'DELETE'
+    |   'Delete'
+    |   'delete'
+    ;
 
 ORDER
-	:	'ORDER'
-	|	'Order'
-	|	'order'
-	;
+    :   'ORDER'
+    |   'Order'
+    |   'order'
+    ;
 
 BY
-	:	'BY'
-	|	'By'
-	|	'by'
-	;
+    :   'BY'
+    |   'By'
+    |   'by'
+    ;
 
 //PARSER
 
 sql 
-	:	(sql_executable)+
-	;
+    :   (sql_executable)+
+    ;
 
 sql_executable
-	:	sql_ddl
-	|	sql_dml
-	;
+    :   sql_ddl
+    |   sql_dml
+    ;
 
 sql_ddl
-	:	database_statement
-	|	table_statement
-	;
+    :   database_statement
+    |   table_statement
+    ;
 
 database_statement
-	:	create_database
-	|	alter_database
-	|	drop_database
-	|	show_database
-	|	use_database
-	;
+    :   create_database
+    |   alter_database
+    |   drop_database
+    |   show_database
+    |   use_database
+    ;
 
 table_statement
-	:	create_table
-	|	alter_table
-	|	drop_table
-	|	show_tables
-	|	show_columns
-	;
+    :   create_table
+    |   alter_table
+    |   drop_table
+    |   show_tables
+    |   show_columns
+    ;
 
 create_database
-	:	CREATE DATABASE ID END_SQL
-	;
+    :   CREATE DATABASE ID END_SQL
+    ;
 
 alter_database
-	:	ALTER DATABASE ID RENAME TO ID END_SQL
-	;
+    :   ALTER DATABASE ID RENAME TO ID END_SQL
+    ;
 
 drop_database
-	:	DROP DATABASE ID END_SQL
-	;
+    :   DROP DATABASE ID END_SQL
+    ;
 
 show_database
-	:	SHOW DATABASES ID END_SQL
-	;
+    :   SHOW DATABASES ID END_SQL
+    ;
 
 use_database
-	:	USE DATABASE ID END_SQL
-	;
+    :   USE DATABASE ID END_SQL
+    ;
 
 create_table
-	:	CREATE TABLE ID LPAREN (column)+ RPAREN END_SQL
-	;
+    :   CREATE TABLE ID LPAREN (column)+ RPAREN END_SQL
+    ;
 
 column
-	:	ID type ( COMMA )
-	|	constraint
-	;
+    :   ID type ( COMMA )
+    |   constraint
+    ;
 
 constraint
-	:	CONSTRAINT 'PK_' ID PRIMARY KEY LPAREN ID (COMMA ID)* RPAREN
-	|	CONSTRAINT 'FK_' ID FOREIGN KEY LPAREN ID (COMMA ID)* RPAREN REFERENCES ID RPAREN ID (COMMA ID)* LPAREN
-	|	CONSTRAINT 'CH_' ID CHECK RPAREN expression LPAREN
-	;	
+    :   CONSTRAINT 'PK_' ID PRIMARY KEY LPAREN ID (COMMA ID)* RPAREN
+    |   CONSTRAINT 'FK_' ID FOREIGN KEY LPAREN ID (COMMA ID)* RPAREN REFERENCES ID RPAREN ID (COMMA ID)* LPAREN
+    |   CONSTRAINT 'CH_' ID CHECK RPAREN expression LPAREN
+    ;   
 
 type
-	:	INT
-	|	FLOAT
-	|	DATE
-	|	CHAR LPAREN NUM RPAREN
-	;
+    :   INT
+    |   FLOAT
+    |   DATE
+    |   CHAR LPAREN NUM RPAREN
+    ;
 
 alter_table
-	:	ALTER TABLE ID RENAME TO ID END_SQL
-	|	ALTER TABLE ID action END_SQL
-	;
+    :   ALTER TABLE ID RENAME TO ID END_SQL
+    |   ALTER TABLE ID action END_SQL
+    ;
 
 drop_table
-	:	DROP DATABASE ID END_SQL
-	;
+    :   DROP DATABASE ID END_SQL
+    ;
 
 show_tables
-	:	SHOW TABLES END_SQL
-	;
+    :   SHOW TABLES END_SQL
+    ;
 
 show_columns
-	:	SHOW COLUMNS FROM ID END_SQL
-	;
+    :   SHOW COLUMNS FROM ID END_SQL
+    ;
 
 action
-	:	ADD COLUMN ID type (constraint)+				
-	|	ADD constraint
-        |	DROP COLUMN ID
-        |	DROP CONSTRAINT ID
-	;
+    :   ADD COLUMN ID type (constraint)+                
+    |   ADD constraint
+    |   DROP COLUMN ID
+    |   DROP CONSTRAINT ID
+    ;
 
        
 sql_dml
-	: 	insert_value
-	|	update_value
-	|	delete_value
-	|	select_value
-	;
+    :   insert_value
+    |   update_value
+    |   delete_value
+    |   select_value
+    ;
 
 insert_value
-	:	INSERT INTO ID ( LPAREN ((ID)(COMMA ID)*)? RPAREN )? VALUES ( LPAREN ((literal)(COMMA literal)*)? RPAREN )? END_SQL
-	;
+    :   INSERT INTO ID ( LPAREN ((ID)(COMMA ID)*)? RPAREN )? VALUES ( LPAREN ((literal)(COMMA literal)*)? RPAREN )? END_SQL
+    ;
 
 update_value
-	:	UPDATE ID SET ID EQ literal (COMMA ID EQ literal)* (WHERE expression)? END_SQL 
-	;
+    :   UPDATE ID SET ID EQ literal (COMMA ID EQ literal)* (WHERE expression)? END_SQL 
+    ;
 
 delete_value
-	:	DELETE FROM ID (WHERE expression)? END_SQL
-	;
+    :   DELETE FROM ID (WHERE expression)? END_SQL
+    ;
 
 select_value
-	:	SELECT (KL | ID (COMMA ID)* ) FROM ID (WHERE expression)?  (ORDER BY (ASC | DESC))? END_SQL
-	;
+    :   SELECT (KL | ID (COMMA ID)* ) FROM ID (WHERE expression)?  (ORDER BY (ASC | DESC))? END_SQL
+    ;
 
 literal
-	:	NUM
-	|	FLOAT
-	|	DATE
-	|	CHARX
-	;
+    :   NUM
+    |   FLOAT
+    |   DATE
+    |   CHARX
+    ;
 
 rel_op
-	:	'<'									
-	|	'>'
-	| 	'<='
-	|	'>='									
-	|	'='									
-	|	'<>'	
-	;
+    :   '<'                                 
+    |   '>'
+    |   '<='
+    |   '>='                                    
+    |   '='                                 
+    |   '<>'    
+    ;
 
 
 cond_op
-	:	'AND'
-	|	'OR'
-	;
+    :   'AND'
+    |   'OR'
+    ;
 
 
+exp
+    :	expression 
+    |	//epsilon 
+    ;
 
-expression							
-	:	expression cond_op expr1
-	|	expr1
-	;
-	
-expr1								
-	:	expr1 rel_op expr2
-	|	expr2
-	;
-	
-expr2								
-	:	unifactor
-	|	expr2 rel_op literal
-	|	literal rel_op expr2
-	;
+
+expression 
+    :   andExpr
+    |   expression OR andExpr  
+    ;
+
+andExpr
+    : eqExpr 
+    | andExpr AND eqExpr 
+    ;
+
+eqExpr
+    :   relationExpr 
+    |   eqExpr eq_op relationExpr 
+    ; 
+
+relationExpr
+    : unaryExpr 
+    | relationExpr rel_op unaryExpr 
+    ;
+
+unaryExpr
+    :   (NOT)? ID
+    ; // verificar
 
 unifactor
-	:	'NOT' factor
-	|	factor
-	;
-	
-factor 		
-	:	LPAREN expression RPAREN
-	|	ID
-	|	ID.ID
-	;
-	
+    :   'NOT' factor
+    |   factor
+    ;
+    
+factor      
+    :   LPAREN expression RPAREN
+    |   ID
+    |   ID.ID
+    ;
+    
