@@ -256,6 +256,72 @@ DESC
 	|	'desc'
 	;
 
+TO
+	:	'TO'
+	|	'To'
+	|	'to'
+	;
+
+REFERENCES
+	:	'REFERENCES'
+	|	'References'
+	|	'references'
+	;
+
+ADD
+	:	'ADD'
+	|	'Add'
+	|	'add'
+	;
+
+INSERT
+	:	'INSERT'
+	|	'Insert'
+	|	'insert'
+	;
+
+INTO
+	:	'INTO'
+	|	'Into'
+	|	'into'
+	;
+
+VALUES
+	:	'VALUES'
+	|	'Values'
+	|	'values'
+	;
+
+UPDATE
+	:	'UPDATE'
+	|	'Update'
+	|	'update'
+	;
+
+SET
+	:	'SET'
+	|	'Set'
+	|	'set'
+	;
+
+DELETE
+	:	'DELETE'
+	|	'Delete'
+	|	'delete'
+	;
+
+ORDER
+	:	'ORDER'
+	|	'Order'
+	|	'order'
+	;
+
+BY
+	:	'BY'
+	|	'By'
+	|	'by'
+	;
+
 //PARSER
 
 sql 
@@ -309,7 +375,7 @@ use_database
 	;
 
 create_table
-	:	CREATE TABLE ID LPAREN (column)+ RPAREN END_SQL;
+	:	CREATE TABLE ID LPAREN (column)+ RPAREN END_SQL
 	;
 
 column
@@ -355,7 +421,7 @@ action
 	;
 
        
-dml_statement 
+sql_dml
 	: 	insert_value
 	|	update_value
 	|	delete_value
