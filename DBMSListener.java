@@ -1,4 +1,4 @@
-// Generated from DBMS.g4 by ANTLR 4.6
+// Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -277,6 +277,46 @@ public interface DBMSListener extends ParseTreeListener {
 	 */
 	void exitCond_op(DBMSParser.Cond_opContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DBMSParser#eq_op}.
+	 * @param ctx the parse tree
+	 */
+	void enterEq_op(DBMSParser.Eq_opContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#eq_op}.
+	 * @param ctx the parse tree
+	 */
+	void exitEq_op(DBMSParser.Eq_opContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#add_op}.
+	 * @param ctx the parse tree
+	 */
+	void enterAdd_op(DBMSParser.Add_opContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#add_op}.
+	 * @param ctx the parse tree
+	 */
+	void exitAdd_op(DBMSParser.Add_opContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#mult_op}.
+	 * @param ctx the parse tree
+	 */
+	void enterMult_op(DBMSParser.Mult_opContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#mult_op}.
+	 * @param ctx the parse tree
+	 */
+	void exitMult_op(DBMSParser.Mult_opContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterExp(DBMSParser.ExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitExp(DBMSParser.ExpContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DBMSParser#expression}.
 	 * @param ctx the parse tree
 	 */
@@ -287,25 +327,45 @@ public interface DBMSListener extends ParseTreeListener {
 	 */
 	void exitExpression(DBMSParser.ExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DBMSParser#expr1}.
+	 * Enter a parse tree produced by {@link DBMSParser#andExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpr1(DBMSParser.Expr1Context ctx);
+	void enterAndExpr(DBMSParser.AndExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DBMSParser#expr1}.
+	 * Exit a parse tree produced by {@link DBMSParser#andExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpr1(DBMSParser.Expr1Context ctx);
+	void exitAndExpr(DBMSParser.AndExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DBMSParser#expr2}.
+	 * Enter a parse tree produced by {@link DBMSParser#eqExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpr2(DBMSParser.Expr2Context ctx);
+	void enterEqExpr(DBMSParser.EqExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DBMSParser#expr2}.
+	 * Exit a parse tree produced by {@link DBMSParser#eqExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpr2(DBMSParser.Expr2Context ctx);
+	void exitEqExpr(DBMSParser.EqExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#relationExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelationExpr(DBMSParser.RelationExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#relationExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelationExpr(DBMSParser.RelationExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#unaryExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnaryExpr(DBMSParser.UnaryExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#unaryExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnaryExpr(DBMSParser.UnaryExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DBMSParser#unifactor}.
 	 * @param ctx the parse tree

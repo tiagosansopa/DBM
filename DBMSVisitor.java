@@ -1,4 +1,4 @@
-// Generated from DBMS.g4 by ANTLR 4.6
+// Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -172,23 +172,59 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCond_op(DBMSParser.Cond_opContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DBMSParser#eq_op}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEq_op(DBMSParser.Eq_opContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#add_op}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAdd_op(DBMSParser.Add_opContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#mult_op}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMult_op(DBMSParser.Mult_opContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExp(DBMSParser.ExpContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DBMSParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitExpression(DBMSParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DBMSParser#expr1}.
+	 * Visit a parse tree produced by {@link DBMSParser#andExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpr1(DBMSParser.Expr1Context ctx);
+	T visitAndExpr(DBMSParser.AndExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DBMSParser#expr2}.
+	 * Visit a parse tree produced by {@link DBMSParser#eqExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpr2(DBMSParser.Expr2Context ctx);
+	T visitEqExpr(DBMSParser.EqExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#relationExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelationExpr(DBMSParser.RelationExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#unaryExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryExpr(DBMSParser.UnaryExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DBMSParser#unifactor}.
 	 * @param ctx the parse tree

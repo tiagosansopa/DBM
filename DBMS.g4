@@ -38,6 +38,12 @@ CHAR
     :   'char'
     ;
 
+    AND: 'and'|'AND'|'And';
+
+OR: 'or'|'OR'|'Or';
+
+NOT: 'not'|'NOT'|'Not';
+
 BOOLEAN 
     :   'boolean'
     ;
@@ -90,7 +96,7 @@ fragment DAY
     ; 
 
 ID 
-    :   LETTER ( LETTER | DIGIT )* 
+    :   LETTER ( LETTER | DIGIT | '_' )* 
     ;
 
 NUM 
@@ -416,8 +422,8 @@ show_columns
 action
     :   ADD COLUMN ID type (constraint)+                
     |   ADD constraint
-    |   DROP COLUMN ID
-    |   DROP CONSTRAINT ID
+        |   DROP COLUMN ID
+        |   DROP CONSTRAINT ID
     ;
 
        
@@ -466,10 +472,16 @@ cond_op
     |   'OR'
     ;
 
+eq_op : '==' | '!=' ;
+
+add_op: '+'| '-';
+
+mult_op: '*' | '/' | '%' ;
+
 
 exp
-    :	expression 
-    |	//epsilon 
+    : expression 
+    | 
     ;
 
 
@@ -494,7 +506,7 @@ relationExpr
     ;
 
 unaryExpr
-    :   (NOT)? ID
+    :   '('(NOT)? ID  ')' 
     ; // verificar
 
 unifactor
