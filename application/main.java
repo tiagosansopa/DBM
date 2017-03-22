@@ -2,6 +2,7 @@ package application;
 
 import java.io.IOException;
 
+import application.view.QueryGUIController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -52,9 +53,15 @@ public class main extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(main.class.getResource("view/queryGUI.fxml"));
             AnchorPane queryGUI = (AnchorPane) loader.load();
-
+            
+            
             // Set query overview into the center of root layout.
             rootLayout.setCenter(queryGUI);
+            
+            // Linking the root layout 
+            QueryGUIController controller = loader.getController();
+            controller.setMainApp(this);
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
