@@ -24,7 +24,7 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TextField alignment="TOP_LEFT" layoutY="32.0" prefHeight="244.0" prefWidth="484.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="45.0" />
+                              <TextField fx:id="queryLabel" alignment="TOP_LEFT" layoutY="32.0" prefHeight="244.0" prefWidth="484.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="45.0" />
                               <Text layoutX="14.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SQL Query:" />
                               <Button layoutX="495.0" layoutY="257.0" mnemonicParsing="false" text="Run" />
                            </children>

@@ -13,6 +13,9 @@ import application.main;
 
 public class QueryGUIController {
 	
+	@FXML 
+	private TextField queryLabel;
+	
 	private main mainApp;
 	
 	public QueryGUIController(){
