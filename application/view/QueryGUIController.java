@@ -14,12 +14,21 @@ import application.main;
 public class QueryGUIController {
 	
 	@FXML 
-	private TextField queryLabel;
+	private TextArea queryLabel;
 	
 	private main mainApp;
 	
 	public QueryGUIController(){
 		
+	}
+	
+	/**
+	 * Called whenever we click on the run button. 
+	 * Specification has been set on Scene Builder. 
+	 **/
+	public void handleText(){
+		String input = queryLabel.getText();
+		System.out.println(input);
 	}
 	
 	public  void setMainApp(main app){

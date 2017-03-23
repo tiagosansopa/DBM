@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
@@ -24,9 +23,9 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TextField fx:id="queryLabel" alignment="TOP_LEFT" layoutY="32.0" prefHeight="244.0" prefWidth="484.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="45.0" />
+                              <TextArea fx:id="queryLabel" layoutX="11.0" layoutY="45.0" prefHeight="203.0" prefWidth="525.0" />
                               <Text layoutX="14.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SQL Query:" />
-                              <Button layoutX="495.0" layoutY="257.0" mnemonicParsing="false" text="Run" />
+                              <Button fx:id="runButton" layoutX="495.0" layoutY="257.0" mnemonicParsing="false" onAction="#handleText" text="Run" />
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
