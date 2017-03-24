@@ -1,4 +1,3 @@
-package application.model;
 // Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -10,6 +9,204 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * operations with no return type.
  */
 public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#create}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCreate(DBMSParser.CreateContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#database}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDatabase(DBMSParser.DatabaseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#databases}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDatabases(DBMSParser.DatabasesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#table}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTable(DBMSParser.TableContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#tables}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTables(DBMSParser.TablesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#column}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColumn(DBMSParser.ColumnContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#columns}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColumns(DBMSParser.ColumnsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#show}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitShow(DBMSParser.ShowContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#drop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDrop(DBMSParser.DropContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#alter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAlter(DBMSParser.AlterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#use}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUse(DBMSParser.UseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#rename}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRename(DBMSParser.RenameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#constraint}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstraint(DBMSParser.ConstraintContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#key}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKey(DBMSParser.KeyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#primary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimary(DBMSParser.PrimaryContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#foreign}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForeign(DBMSParser.ForeignContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#check}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCheck(DBMSParser.CheckContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#select}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelect(DBMSParser.SelectContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#from}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFrom(DBMSParser.FromContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#where}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhere(DBMSParser.WhereContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#asc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAsc(DBMSParser.AscContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#desc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDesc(DBMSParser.DescContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#to}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTo(DBMSParser.ToContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#references}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReferences(DBMSParser.ReferencesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#add}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAdd(DBMSParser.AddContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#insert}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInsert(DBMSParser.InsertContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#into}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInto(DBMSParser.IntoContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#values}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValues(DBMSParser.ValuesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#update}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUpdate(DBMSParser.UpdateContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#set}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSet(DBMSParser.SetContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#delete}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDelete(DBMSParser.DeleteContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#order}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOrder(DBMSParser.OrderContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#by}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBy(DBMSParser.ByContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DBMSParser#sql}.
 	 * @param ctx the parse tree
@@ -77,17 +274,17 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCreate_table(DBMSParser.Create_tableContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DBMSParser#column}.
+	 * Visit a parse tree produced by {@link DBMSParser#columnAt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitColumn(DBMSParser.ColumnContext ctx);
+	T visitColumnAt(DBMSParser.ColumnAtContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DBMSParser#constraint}.
+	 * Visit a parse tree produced by {@link DBMSParser#constraintAt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConstraint(DBMSParser.ConstraintContext ctx);
+	T visitConstraintAt(DBMSParser.ConstraintAtContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DBMSParser#type}.
 	 * @param ctx the parse tree
