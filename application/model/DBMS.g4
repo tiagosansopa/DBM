@@ -38,7 +38,7 @@ CHAR
     :   'char'
     ;
 
-    AND: 'and'|'AND'|'And';
+AND: 'and'|'AND'|'And';
 
 OR: 'or'|'OR'|'Or';
 
@@ -421,8 +421,8 @@ show_columns
 action
     :   add column ID type (constraint)+                
     |   add constraint
-        |   drop column ID
-        |   drop constraint ID
+    |   drop column ID
+    |   drop constraint ID
     ;
 
        
@@ -453,7 +453,7 @@ literal
     :   NUM
     |   FLOAT
     |   DATE
-    |   CHARX
+    |   CHARX // Aqui esta la cagada de agarra las commas.
     |   ID
     ;
 

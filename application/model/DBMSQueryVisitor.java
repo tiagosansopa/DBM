@@ -24,6 +24,26 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	}
 	
 	@Override
+	public String visitSql_ddl(DBMSParser.Sql_ddlContext ctx){
+		System.out.println("visitSql_ddl");
+		if(ctx.database_statement() != null){
+			System.out.println("database_statement");
+		} else {
+			System.out.println("table_statement");
+		}
+			
+		return visitChildren(ctx);
+	}
+	
+	@Override
+	public String visitCreate_database(DBMSParser.Create_databaseContext ctx){
+		System.out.println("visitCreate_database");
+		String id = ctx.getChild(2).getText();
+		System.out.println(id); //Santiago, acá esta la primera vez que llamamos tus funciones
+		return "HEY"; //Aqui regresamos los errores
+	}
+	
+	@Override
 	public String visitSelect_value(DBMSParser.Select_valueContext ctx){
 		System.out.println("visitSelect_value");
 		System.out.println(ctx.getText());
