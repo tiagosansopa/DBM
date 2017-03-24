@@ -3,6 +3,7 @@ package application.model;
 public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	public DBMSQueryVisitor (){
 		System.out.println("DBMSVisitor");
+		//Hello Santiago Koch
 	}
 	
 	@Override 
