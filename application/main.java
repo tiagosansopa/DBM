@@ -1,4 +1,4 @@
-package application;
+/*package application;
 
 import java.io.IOException;
 
@@ -25,9 +25,9 @@ public class main extends Application {
         showQueryGUI();
     }
 
-    /**
+    
      * Initializes the root layout.
-     */
+     
     public void initRootLayout() {
         try {
             // Load root layout from fxml file.
@@ -44,9 +44,9 @@ public class main extends Application {
         }
     }
 
-    /**
+    
      * Shows queryGUI inside the root layout.
-     */
+     
     public void showQueryGUI() {
         try {
             // Load query overview.
@@ -67,10 +67,10 @@ public class main extends Application {
         }
     }
 
-    /**
+    
      * Returns the main stage.
      * @return
-     */
+     
     public Stage getPrimaryStage() {
         return primaryStage;
     }
@@ -78,4 +78,4 @@ public class main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-}
+}*/

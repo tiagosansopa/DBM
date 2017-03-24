@@ -1,15 +1,16 @@
-/*import java.util.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.*;
-import java.io.File; 
+package application;
+
+import java.util.*;
 
 public class UIMmain {
 
     public static void main(String[] args) 
 	{
-		String query = "", actualDatabase = "", temp = "";
 		Scanner scan = new Scanner(System.in);
+		String query = "",temp = "",temp2 = "";
+		
+		DBmanagerDDL ddl = new DBmanagerDDL();
+		
 		while(!query.equals("salir"))
 		{
 			System.out.println("Ingresar Query");
@@ -21,24 +22,9 @@ public class UIMmain {
 					System.out.println("CREATE DATABASE");
 					System.out.println("Ingrese nombre");
 					temp = scan.next();
-					File theDir = new File(temp);
-					if (!theDir.exists()) 
-					{
-						System.out.println("creating directory: " + theDir.getName());
-						boolean result = false;
-
-						try
-						{
-							theDir.mkdir();
-							result = true;
-						} 
-						catch(SecurityException se)
-						{
-						}        
-						if(result) 
-						{    
-							System.out.println(temp + " Creado");  
-						}
+					
+					if(ddl.createDatabase(temp)){
+						System.out.println(temp + " Creado");
 					}
 				}
 				break;
@@ -48,12 +34,12 @@ public class UIMmain {
 					System.out.println("ALTER DATABASE");
 					System.out.println("Ingrese nombre original");
 					temp = scan.next();
-					File toBeChanged = new File(temp);
 					System.out.println("Ingrese nombre nuevo");
-					temp = scan.next();
-					File changed = new File(temp);
-					toBeChanged.renameTo(changed);
-					System.out.println(temp + " Renombrado"); 
+					temp2 = scan.next();
+					
+					if(ddl.alterDatabase(temp, temp2)){
+						System.out.println(temp + " Renombrado a " + temp2); 
+					}
 				}
 				break;
 				
@@ -62,9 +48,10 @@ public class UIMmain {
 					System.out.println("DROP DATABASE");
 					System.out.println("Ingrese nombre");
 					temp = scan.next();
-					File tempFile = new File(temp);
-					deleteDirectory(tempFile);
-					System.out.println(temp + " Eliminado");
+					
+					if(ddl.killDatabase(temp)){
+						System.out.println(temp + " Eliminado");
+					} 
 				}
 				break;
 				
@@ -73,8 +60,10 @@ public class UIMmain {
 					System.out.println("USE DATABASE");
 					System.out.println("Ingrese nombre");
 					temp = scan.next();
-					actualDatabase = temp;
-					System.out.println(actualDatabase + " en Uso");
+					
+					if(ddl.useDatabase(temp)){
+						System.out.println(temp + " en Uso");
+					}
 					
 				}
 				break;
@@ -82,40 +71,42 @@ public class UIMmain {
 				case "SHOW":
 				{
 					System.out.println("SHOW DATABASE");
-					Path currentRelativePath = Paths.get("");
-					String s = currentRelativePath.toAbsolutePath().toString();
-					System.out.println("Current relative path is: " + s);
-					File[] files = new File(s).listFiles();
-					
-					for (File file : files) 
-					{
-						if (file.isDirectory()) 
-						{
-							System.out.println(file.getName());
-						}
-					}
+					ddl.showDatabases();
+				}
+				break;
+				
+				case "CREATE TABLE":
+				{
+					System.out.println("CREATE TABLE");
+				}
+				break;
+				
+				case "ALTER TABLE":
+				{
+					System.out.println("ALTER TABLE");
+				}
+				break;
+				
+				case "DROP TABLE":
+				{
+					System.out.println("DROP TABLE");
+				}
+				break;
+				
+				case "SHOW TABLES":
+				{
+					System.out.println("SHOW TABLES");
+				}
+				break;
+				
+				case "SHOW TABLES FROM":
+				{
+					System.out.println("SHOW TABLES FROM");
 				}
 				break;
 			}
 		}
+		scan.close();
     }
-	
-	public static boolean deleteDirectory(File directory) {
-    if(directory.exists()){
-        File[] files = directory.listFiles();
-        if(null!=files){
-            for(int i=0; i<files.length; i++) {
-                if(files[i].isDirectory()) {
-                    deleteDirectory(files[i]);
-                }
-                else {
-                    files[i].delete();
-                }
-            }
-        }
-    }
-    return(directory.delete());
 }
 
-}
-*/
