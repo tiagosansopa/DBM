@@ -35,14 +35,58 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		return visitChildren(ctx);
 	}
 	
+	//DATABASE STATEMENT
+	
+	//CREATE DATABASE
 	@Override
 	public String visitCreate_database(DBMSParser.Create_databaseContext ctx){
 		System.out.println("visitCreate_database");
 		String id = ctx.getChild(2).getText();
-		System.out.println(id); //Santiago, acá esta la primera vez que llamamos tus funciones
-		return "HEY"; //Aqui regresamos los errores
+		System.out.println(id); //Santiago function
+		return "HEY"; //errors
 	}
 	
+	//ALTER DATABASE
+	@Override
+	public String visitAlter_database(DBMSParser.Alter_databaseContext ctx){
+		System.out.println("visitAlter_database");
+		String id_number_1 = ctx.getChild(2).getText(); //arg 1
+		String id_number_2 = ctx.getChild(5).getText(); //arg 2
+		System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
+		return "HEY"; //Errors :)
+	}
+	
+	//DROP DATABASE
+	@Override
+	public String visitDrop_database(DBMSParser.Drop_databaseContext ctx){
+		System.out.println("visitDrop_database");
+		String id = ctx.getChild(2).getText();
+		System.out.println(id);//FUNCTION SANTIAGO
+		return "HEY";
+	}
+	
+	
+	//SHOW DATABASE
+	@Override
+	public String visitShow_database(DBMSParser.Show_databaseContext ctx){
+		System.out.println("visitShow_database");
+		String id = ctx.getChild(2).getText();
+		System.out.println(id);//FUNCTION SANTIAGO
+		return "HEY";
+	}
+	
+	//USE DATABASE
+	@Override
+	public String visitUse_database(DBMSParser.Use_databaseContext ctx){
+		System.out.println("visitUse_database");
+		String id = ctx.getChild(2).getText();
+		System.out.println(id);
+		return "HEY";
+	}
+	
+	
+	
+	//SELECT
 	@Override
 	public String visitSelect_value(DBMSParser.Select_valueContext ctx){
 		System.out.println("visitSelect_value");

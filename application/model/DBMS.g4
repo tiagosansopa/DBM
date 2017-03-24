@@ -385,7 +385,7 @@ create_table
 
 columnAt
     :   ID type ( COMMA )
-    |   constraint
+    |   constraintAt
     ;
 
 constraintAt
