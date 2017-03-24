@@ -1,5 +1,14 @@
 package application.view;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+
+import application.model.DBMSLexer;
+import application.model.DBMSParser;
+import application.model.DBMSQueryVisitor;
+
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -27,8 +36,15 @@ public class QueryGUIController {
 	 * Specification has been set on Scene Builder. 
 	 **/
 	public void handleText(){
-		String input = queryLabel.getText();
-		System.out.println(input);
+		String inputText = queryLabel.getText();
+		System.out.println(inputText);
+		ANTLRInputStream input = new ANTLRInputStream(inputText);
+		DBMSLexer lexer = new DBMSLexer(input);
+		TokenStream tokens = new CommonTokenStream(lexer);
+		DBMSParser parser = new DBMSParser(tokens);
+		ParseTree tree = parser.sql();
+		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor();
+		qVisitor.visit(tree);
 	}
 	
 	public  void setMainApp(main app){
