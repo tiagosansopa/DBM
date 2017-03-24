@@ -1,4 +1,4 @@
-package application.view;
+/*package application.view;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.*;
@@ -31,10 +31,9 @@ public class QueryGUIController {
 		
 	}
 	
-	/**
-	 * Called whenever we click on the run button. 
-	 * Specification has been set on Scene Builder. 
-	 **/
+	//Called whenever we click on the run button. 
+	//Specification has been set on Scene Builder. 
+	
 	public void handleText(){
 		String inputText = queryLabel.getText();
 		System.out.println(inputText);
@@ -51,4 +50,4 @@ public class QueryGUIController {
 		this.mainApp = app;
 	}
 	
-}
+}*/
