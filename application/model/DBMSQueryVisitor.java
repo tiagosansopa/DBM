@@ -84,7 +84,21 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		return "HEY";
 	}
 	
-	
+	//ALTER TABLE
+	@Override
+	public String visitAlter_table(DBMSParser.Alter_tableContext ctx){
+		System.out.println("visitAlter_table");
+		String id_number_1 = ctx.getChild(2).getText(); //arg 1
+		String id_number_2 = ctx.getChild(5).getText(); //arg 2
+		System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
+		return "HEY";
+	}
+
+	//SHOW TABLES
+	public String visitShow_tables(DBMSParser.Show_tablesContext ctx){
+		System.out.println("visitShow_tables");
+		return "HEY";
+	}	
 	
 	//SELECT
 	@Override
