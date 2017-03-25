@@ -1,4 +1,3 @@
-package application.model;
 // Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -10,6 +9,24 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * operations with no return type.
  */
 public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#and}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAnd(DBMSParser.AndContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#or}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOr(DBMSParser.OrContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#not}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNot(DBMSParser.NotContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DBMSParser#create}.
 	 * @param ctx the parse tree

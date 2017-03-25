@@ -38,11 +38,23 @@ CHAR
     :   'char'
     ;
 
-AND: 'and'|'AND'|'And';
+and
+    :   'and'
+    |   'AND'
+    |   'And'
+    ;
 
-OR: 'or'|'OR'|'Or';
+or
+   :    'or'
+   |    'OR'
+   |    'Or'
+   ;
 
-NOT: 'not'|'NOT'|'Not';
+not
+   :    'not'
+   |    'NOT'
+   |    'Not'
+   ;
 
 BOOLEAN 
     :   'boolean'
@@ -61,12 +73,12 @@ fragment DIGIT
     ;
 
 fragment ASCII
-    :   (' ' ..'~')
+    :   (' ' ..'&')
+    |   ('(' .. '~')
     |   '\\' 
-    |   '\'' 
     |   '\"' 
     |   '\t' 
-    |   '\n' 
+    |   '\n'
     ;
 
 fragment TWO_DIGITS   
@@ -107,6 +119,7 @@ FLOAT
     :   DIGIT ( DIGIT )* ('.' (DIGIT)* )? 
     ;
 
+
 CHARX   
     :   '\'' ASCII* '\''
     ;
@@ -124,7 +137,9 @@ COMMENT
     ;
 
 create
-    :   'CREATE'|'Create'|'create'
+    :   'CREATE'
+    |   'Create'
+    |   'create'
     ;
 
 database
@@ -152,7 +167,7 @@ tables
     ;
 
 column
-    :   'COLUN'
+    :   'COLUMN'
     |   'Column'
     |   'column'
     ;
@@ -453,7 +468,7 @@ literal
     :   NUM
     |   FLOAT
     |   DATE
-    |   CHARX // Aqui esta la cagada de agarra las commas.
+    |   CHARX // Por el momento esta resuelto, pero no tiene el char de comilla
     |   ID
     ;
 
@@ -468,8 +483,8 @@ rel_op
 
 
 cond_op
-    :   'AND'
-    |   'OR'
+    :   and
+    |   or
     ;
 
 eq_op : '==' | '!=' ;
@@ -480,19 +495,19 @@ mult_op: '*' | '/' | '%' ;
 
 
 exp
-    : expression 
-    | 
+    :   expression 
+    |   //epsilon 
     ;
 
 
 expression 
     :   andExpr
-    |   expression OR andExpr  
+    |   expression or andExpr  
     ;
 
 andExpr
     : eqExpr 
-    | andExpr AND eqExpr 
+    | andExpr and eqExpr 
     ;
 
 eqExpr
@@ -506,11 +521,11 @@ relationExpr
     ;
 
 unaryExpr
-    :   '('(NOT)? ID  ')' 
+    :   '(' (not)? ID  ')' 
     ; // verificar
 
 unifactor
-    :   'NOT' factor
+    :   not factor
     |   factor
     ;
     

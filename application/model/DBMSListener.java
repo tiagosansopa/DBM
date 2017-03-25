@@ -1,4 +1,3 @@
-package application.model;
 // Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -7,6 +6,36 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * {@link DBMSParser}.
  */
 public interface DBMSListener extends ParseTreeListener {
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#and}.
+	 * @param ctx the parse tree
+	 */
+	void enterAnd(DBMSParser.AndContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#and}.
+	 * @param ctx the parse tree
+	 */
+	void exitAnd(DBMSParser.AndContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#or}.
+	 * @param ctx the parse tree
+	 */
+	void enterOr(DBMSParser.OrContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#or}.
+	 * @param ctx the parse tree
+	 */
+	void exitOr(DBMSParser.OrContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#not}.
+	 * @param ctx the parse tree
+	 */
+	void enterNot(DBMSParser.NotContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#not}.
+	 * @param ctx the parse tree
+	 */
+	void exitNot(DBMSParser.NotContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DBMSParser#create}.
 	 * @param ctx the parse tree

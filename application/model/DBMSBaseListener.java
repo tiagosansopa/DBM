@@ -1,5 +1,3 @@
-package application.model;
-
 // Generated from DBMS.g4 by ANTLR 4.5.3
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -12,6 +10,42 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * of the available methods.
  */
 public class DBMSBaseListener implements DBMSListener {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAnd(DBMSParser.AndContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAnd(DBMSParser.AndContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOr(DBMSParser.OrContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOr(DBMSParser.OrContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNot(DBMSParser.NotContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNot(DBMSParser.NotContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
