@@ -392,6 +392,10 @@ comma_literal_k
 comma_id_eq_literal_k
     :   (COMMA ID EQ literal)*
     ;
+    
+comma_action_k
+	:	(COMMA action)*
+	;
 
 create_database
     :   create database ID END_SQL
@@ -420,8 +424,8 @@ create_table
 
 constraintAt
     :   primaryKey 
-    | foreignKey ( foreignKey )*
-    | checks ( checks )*
+    |   foreignKey ( foreignKey )*
+    |   checks ( checks )*
     ;   
 
 primaryKey: ID primary key LPAREN ID comma_id_k RPAREN ;
@@ -439,7 +443,7 @@ type
 
 alter_table
     :   alter table ID rename to ID END_SQL
-    |   alter table ID action ( COMMA action )* END_SQL
+    |   alter table ID action comma_action_k END_SQL
     ;
 
 drop_table

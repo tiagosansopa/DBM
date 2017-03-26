@@ -77,8 +77,6 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	@Override
 	public String visitShow_database(DBMSParser.Show_databaseContext ctx){
 		System.out.println("visitShow_database");
-		String id = ctx.getChild(2).getText();
-		System.out.println(id);//FUNCTION SANTIAGO
 		return "HEY";
 	}
 	
@@ -93,30 +91,25 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	
 	//TABLE STATEMENT
 	
+	//TODO
+	//CREATE TABLE
 	public String visitCreate_Table(DBMSParser.Create_tableContext ctx){
 		
 		
 		return "";
 	}
+	
+	//TODO
 	//ALTER TABLE
 	@Override
-	
-	/**
-	 * TODO: THIS NEEDS TO BE MODIFIED I think.  
-	 */
 	public String visitAlter_table(DBMSParser.Alter_tableContext ctx){
 		System.out.println("visitAlter_table");
 		if(ctx.getChildCount()==7){
-			String id_number_1 = ctx.getChild(2).getText(); //arg 1
-			String id_number_2 = ctx.getChild(5).getText(); //arg 2
-			System.out.println(
-					"Bueno, id numero 1 es "
-					+id_number_1+" "
-					+ "y id numero 2(a cambiar es es "
-					+id_number_2);
+			String id_number_1 = ctx.getChild(2).getText();
+			String id_number_2 = ctx.getChild(4).getText();
+			System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
 		} else {
-			String id = ctx.getChild(2).getText();
-			System.out.println("id : "+id);
+			
 		}
 		return "HEY";
 	}
@@ -127,6 +120,14 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	}
 
 	//SHOW TABLES
+	public String visitDrop_table(DBMSParser.Drop_tableContext ctx){
+		System.out.println("visitDrop_table");
+		String id = ctx.getChild(2).getText();
+		System.out.println(id);
+		return "HEY";
+	}
+	
+	//SHOW TABLES
 	public String visitShow_tables(DBMSParser.Show_tablesContext ctx){
 		System.out.println("visitShow_tables");
 		return "HEY";
@@ -135,6 +136,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	//SHOW COLUMNS
 	public String visitiShow_columns(DBMSParser.Show_columnsContext ctx){
 		System.out.println("visitShow_columns");
+		String id = ctx.getChild(3).getText();
+		System.out.println(id);
 		return visitChildren(ctx);
 	}
 	
@@ -181,11 +184,10 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	public String visitUpdate_value(DBMSParser.Update_valueContext ctx){
 		System.out.println("visitUpdate_value");
 		String id = ctx.getChild(1).getText();
-		if(ctx.getChildCount()==9){
+		if(ctx.where() != null){
 			//WHERE STATEMENT
-		} else {
-			//NO WHERE STATEMENT
-			if(ctx.getChildCount()==8){
+			System.out.println("WHERE");
+			if(ctx.getChildCount()>9){
 				//MULTIPLE ID EQ LITERAL
 				ArrayList<String> id_list = new ArrayList<String>();
 				ArrayList<String> literal_list = new ArrayList<String>();
@@ -203,7 +205,51 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 			} else {
 				String id_eq = ctx.getChild(3).getText();
 				String literal = ctx.getChild(5).getText();
+				String exp = ctx.getChild(7).getText();
+			}
+		} else {
+			//NO WHERE STATEMENT
+			System.out.println("NO WHERE");
+			if(ctx.getChildCount()>7){
+				//MULTIPLE ID EQ LITERAL
+				ArrayList<String> id_list = new ArrayList<String>();
+				ArrayList<String> literal_list = new ArrayList<String>();
+				id_list.add(ctx.getChild(3).getText());
+				literal_list.add(ctx.getChild(5).getText());
+				System.out.println(id_list.get(0));
+				System.out.println(literal_list.get(0));
+				Integer total_number_values = ctx.getChild(6).getChildCount()/4;
+				for(Integer i = 0; i < total_number_values; i++){
+					id_list.add(ctx.getChild(6).getChild(i*4+1).getText());
+					literal_list.add(ctx.getChild(6).getChild(i*4+3).getText());
+					System.out.println(id_list.get(i+1));
+					System.out.println(literal_list.get(i+1));
+				}
+			} else {
+				String id_eq = ctx.getChild(3).getText();
+				String literal = ctx.getChild(5).getText();
+				System.out.println(id_eq);
+				System.out.println(literal);
 			} 
+		}
+		return visitChildren(ctx);
+	}
+	
+	
+	//DELETE
+	@Override
+	public String visitDelete_value(DBMSParser.Delete_valueContext ctx){
+		System.out.println("visitDelete_value");
+		String id = ctx.getChild(2).getText();
+		System.out.println(id);
+		if(ctx.where() != null){
+			//WHERE
+			System.out.println("WHERE");
+			String exp = ctx.getChild(4).getText();
+			System.out.println(exp); //SE DEBE MEJORAR
+		} else {
+			//NO WHERE STATEMENT
+			System.out.println("NO WHERE");
 		}
 		return visitChildren(ctx);
 	}
