@@ -3,6 +3,9 @@ package application.model;
 import java.util.ArrayList;
 
 public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
+	public StringBuffer errors = new StringBuffer("\n Semantic Errors: \n");
+	int n = 0;
+	
 	public DBMSQueryVisitor (){
 		System.out.println("DBMSVisitor");
 		//Hello Santiago Koch
@@ -90,19 +93,37 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	
 	//TABLE STATEMENT
 	
+	public String visitCreate_Table(DBMSParser.Create_tableContext ctx){
+		
+		
+		return "";
+	}
 	//ALTER TABLE
 	@Override
+	
+	/**
+	 * TODO: THIS NEEDS TO BE MODIFIED I think.  
+	 */
 	public String visitAlter_table(DBMSParser.Alter_tableContext ctx){
 		System.out.println("visitAlter_table");
 		if(ctx.getChildCount()==7){
 			String id_number_1 = ctx.getChild(2).getText(); //arg 1
 			String id_number_2 = ctx.getChild(5).getText(); //arg 2
-			System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
+			System.out.println(
+					"Bueno, id numero 1 es "
+					+id_number_1+" "
+					+ "y id numero 2(a cambiar es es "
+					+id_number_2);
 		} else {
 			String id = ctx.getChild(2).getText();
 			System.out.println("id : "+id);
 		}
 		return "HEY";
+	}
+	
+	public String visitAction(DBMSParser.ActionContext ctx){
+		
+		return "";
 	}
 
 	//SHOW TABLES
@@ -193,5 +214,10 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		System.out.println("visitSelect_value");
 		System.out.println(ctx.getText());
 		return visitChildren(ctx);
+	}
+	
+	public void handleSemanticError(String message){
+		errors.append("["+n+"]: "+message+"\n \n");
+		n++;
 	}
 }

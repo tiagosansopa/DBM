@@ -1,5 +1,4 @@
-package application.model;
-// Generated from DBMS.g4 by ANTLR 4.5.3
+package application.model;// Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -367,14 +366,28 @@ public class DBMSBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements D
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitColumnAt(DBMSParser.ColumnAtContext ctx) { return visitChildren(ctx); }
+	@Override public T visitConstraintAt(DBMSParser.ConstraintAtContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitConstraintAt(DBMSParser.ConstraintAtContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPrimaryKey(DBMSParser.PrimaryKeyContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitForeignKey(DBMSParser.ForeignKeyContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitChecks(DBMSParser.ChecksContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

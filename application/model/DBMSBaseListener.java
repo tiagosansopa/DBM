@@ -1,5 +1,4 @@
-package application.model;
-// Generated from DBMS.g4 by ANTLR 4.5.3
+package application.model;// Generated from DBMS.g4 by ANTLR 4.5.3
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -616,18 +615,6 @@ public class DBMSBaseListener implements DBMSListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterColumnAt(DBMSParser.ColumnAtContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitColumnAt(DBMSParser.ColumnAtContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterConstraintAt(DBMSParser.ConstraintAtContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -635,6 +622,42 @@ public class DBMSBaseListener implements DBMSListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitConstraintAt(DBMSParser.ConstraintAtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPrimaryKey(DBMSParser.PrimaryKeyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPrimaryKey(DBMSParser.PrimaryKeyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterForeignKey(DBMSParser.ForeignKeyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitForeignKey(DBMSParser.ForeignKeyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterChecks(DBMSParser.ChecksContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitChecks(DBMSParser.ChecksContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1,5 +1,4 @@
-package application.model;
-// Generated from DBMS.g4 by ANTLR 4.5.3
+package application.model;// Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -508,16 +507,6 @@ public interface DBMSListener extends ParseTreeListener {
 	 */
 	void exitCreate_table(DBMSParser.Create_tableContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DBMSParser#columnAt}.
-	 * @param ctx the parse tree
-	 */
-	void enterColumnAt(DBMSParser.ColumnAtContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DBMSParser#columnAt}.
-	 * @param ctx the parse tree
-	 */
-	void exitColumnAt(DBMSParser.ColumnAtContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link DBMSParser#constraintAt}.
 	 * @param ctx the parse tree
 	 */
@@ -527,6 +516,36 @@ public interface DBMSListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitConstraintAt(DBMSParser.ConstraintAtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#primaryKey}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrimaryKey(DBMSParser.PrimaryKeyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#primaryKey}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrimaryKey(DBMSParser.PrimaryKeyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#foreignKey}.
+	 * @param ctx the parse tree
+	 */
+	void enterForeignKey(DBMSParser.ForeignKeyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#foreignKey}.
+	 * @param ctx the parse tree
+	 */
+	void exitForeignKey(DBMSParser.ForeignKeyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#checks}.
+	 * @param ctx the parse tree
+	 */
+	void enterChecks(DBMSParser.ChecksContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#checks}.
+	 * @param ctx the parse tree
+	 */
+	void exitChecks(DBMSParser.ChecksContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DBMSParser#type}.
 	 * @param ctx the parse tree

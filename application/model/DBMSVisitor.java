@@ -1,5 +1,4 @@
-package application.model;
-// Generated from DBMS.g4 by ANTLR 4.5.3
+package application.model;// Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -311,17 +310,29 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCreate_table(DBMSParser.Create_tableContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DBMSParser#columnAt}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitColumnAt(DBMSParser.ColumnAtContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link DBMSParser#constraintAt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitConstraintAt(DBMSParser.ConstraintAtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#primaryKey}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimaryKey(DBMSParser.PrimaryKeyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#foreignKey}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForeignKey(DBMSParser.ForeignKeyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#checks}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitChecks(DBMSParser.ChecksContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DBMSParser#type}.
 	 * @param ctx the parse tree

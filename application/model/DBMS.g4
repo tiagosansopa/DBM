@@ -34,6 +34,13 @@ INT
     :   'int' 
     ;
 
+FLOATS
+    :   'float'
+    ;
+
+DATES
+    :   'date'
+    ;
 CHAR    
     :   'char'
     ;
@@ -375,16 +382,16 @@ table_statement
     ;
     
 comma_id_k
-	:	(COMMA ID)*
-	;
+    :   (COMMA ID)*
+    ;
 
 comma_literal_k
-	:	(COMMA literal)*
-	;
+    :   (COMMA literal)*
+    ;
 
 comma_id_eq_literal_k
-	:	(COMMA ID EQ literal)*
-	;
+    :   (COMMA ID EQ literal)*
+    ;
 
 create_database
     :   create database ID END_SQL
@@ -400,6 +407,7 @@ drop_database
 
 show_database
     :   show databases ID END_SQL
+    |   show databases END_SQL
     ;
 
 use_database
@@ -407,30 +415,31 @@ use_database
     ;
 
 create_table
-    :   create table ID LPAREN (column)+ RPAREN END_SQL
-    ;
-
-column
-    :   ID type ( COMMA )
-    |   constraintAt
+    :   create table ID LPAREN ID type ( COMMA ID type )* ( COMMA )?( constraint constraintAt ( COMMA constraint constraintAt )* )?  RPAREN END_SQL
     ;
 
 constraintAt
-    :   constraint 'PK_' ID primary key LPAREN ID comma_id_k RPAREN
-    |   constraint 'FK_' ID foreign key LPAREN ID comma_id_k RPAREN references ID RPAREN ID comma_id_k LPAREN
-    |   constraint 'CH_' ID check RPAREN expression LPAREN
+    :   primaryKey 
+    | foreignKey ( foreignKey )*
+    | checks ( checks )*
     ;   
+
+primaryKey: ID primary key LPAREN ID comma_id_k RPAREN ;
+
+foreignKey: ID foreign key LPAREN ID comma_id_k RPAREN references ID LPAREN ID comma_id_k RPAREN ;
+
+checks: ID check LPAREN exp RPAREN ;
 
 type
     :   INT
-    |   FLOAT
-    |   DATE
+    |   FLOATS
+    |   DATES
     |   CHAR LPAREN NUM RPAREN
     ;
 
 alter_table
     :   alter table ID rename to ID END_SQL
-    |   alter table ID action END_SQL
+    |   alter table ID action ( COMMA action )* END_SQL
     ;
 
 drop_table
@@ -446,8 +455,8 @@ show_columns
     ;
 
 action
-    :   add column ID type (constraint)+                
-    |   add constraint
+    :   add column ID type (constraint constraintAt ( COMMA constraint constraintAt )* )?                
+    |   add constraint constraintAt
     |   drop column ID
     |   drop constraint ID
     ;
@@ -465,15 +474,15 @@ insert_value
     ;
 
 update_value
-    :   update ID set ID EQ literal comma_id_eq_literal_k  (where expression)? END_SQL 
+    :   update ID set ID EQ literal comma_id_eq_literal_k  (where exp)? END_SQL 
     ;
 
 delete_value
-    :   delete from ID (where expression)? END_SQL
+    :   delete from ID (where exp)? END_SQL
     ;
 
 select_value
-    :   select (KL | ID comma_id_k ) from ID (where expression)?  (order by (asc | desc))? END_SQL
+    :   select (KL | ID comma_id_k ) from ID (where exp)?  (order by exp (asc | desc)( COMMA exp ( asc | desc ) )*)? END_SQL
     ;
 
 literal
@@ -481,7 +490,6 @@ literal
     |   FLOAT
     |   DATE
     |   CHARX // Por el momento esta resuelto, pero no tiene el char de comilla
-    |   ID
     ;
 
 rel_op
@@ -534,6 +542,8 @@ relationExpr
 
 unaryExpr
     :   '(' (not)? ID  ')' 
+    | (not)? ID 
+    | literal
     ; // verificar
 
 unifactor
