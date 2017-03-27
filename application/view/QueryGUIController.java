@@ -43,11 +43,6 @@ public class QueryGUIController {
 		
 	}
 	
-	private void initialize(){
-		String fileLocation= (System.getProperty("user.dir"));
-		displayTreeView(fileLocation);
-		
-	};
 	
 	public void displayTreeView(String inputDirectoryLocation) {
 	    // Creates the root item.
@@ -84,7 +79,6 @@ public class QueryGUIController {
 	public static String getFileExtension(File file) {
 	    String name = file.getName();
 	    try {
-	    	System.out.println( name.substring(name.lastIndexOf(".") + 1));
 	        return name.substring(name.lastIndexOf(".") + 1);
 	    } catch (Exception e) {
 	        return "";
@@ -109,7 +103,8 @@ public class QueryGUIController {
 	
 	public  void setMainApp(main app){
 		this.mainApp = app;
-		String fileLocation= ("C:\\Users\\Pablo\\Desktop\\UVG\\Base de Datos Tests");
+		String fileLocation= (System.getProperty("user.dir"));
+		//String fileLocation= ("C:\\Users\\Pablo\\Desktop\\UVG\\Base de Datos Tests");
 		displayTreeView(fileLocation);
 		//TreeItem<String> root = new TreeItem<>("Root");
 		//treeView.setRoot(root);
