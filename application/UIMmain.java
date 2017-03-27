@@ -150,10 +150,24 @@ public class UIMmain {
 				}
 				break;
 				
-				case "INSERT_INTO":
+				case "INSERT":
 				{
 					System.out.println("INSERT INTO");
-		
+					System.out.println("Insert en cual tabla? ");
+					temp = scan.next();
+					System.out.println("Cuantas columnas va a ingresar? ");
+					cantidad = scan.nextInt();
+					while(cantidad>0)
+					{ 
+						System.out.println("Ingrese nombre de columna: ");
+						nombres.add(scan.next());
+						System.out.println("Ingrese valor: ");
+						tipos.add(scan.next());
+						cantidad--;
+					} 
+					
+					dml.setActualDatabase(ddl.getActualDatabase());
+					dml.insertInto(temp, nombres, tipos);
 				}
 				break;
 				

@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,11 +13,19 @@ import java.io.IOException;
 
 public class DBmanagerDDL {
 
+	
+
 	String actualDatabase = "";
 	
 	public DBmanagerDDL() {
 		
 	}
+	
+	
+	public String getActualDatabase() {
+		return actualDatabase;
+	}
+	
 	
 	/**
 	 * Create Database given name
@@ -168,16 +177,16 @@ public class DBmanagerDDL {
 			
 			File newTable = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
 			
-		    try(FileWriter fw=new FileWriter(newTable))
+		    try(BufferedWriter  output = new BufferedWriter(new FileWriter(newTable)))
 		    {
 		    	String temp = "";
 		    	int temp2 = 0;
 		        for(String s : colNames){
 		        	temp +=s+":"+colTypes.get(temp2)+",";
+		        	temp2++;
 		        }
-		        fw.write(temp.substring(0, temp.length()-1)+";");
-		        fw.flush();
-		        fw.close();
+		        output.write(temp.substring(0, temp.length()-1)+";");
+		        output.close();
 		        return true;
 		    }
 		    catch(IOException ex)
