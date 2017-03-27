@@ -1,6 +1,8 @@
 package application;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.ArrayList;
 
 public class UIMmain {
 
@@ -8,8 +10,12 @@ public class UIMmain {
 	{
 		Scanner scan = new Scanner(System.in);
 		String query = "",temp = "",temp2 = "";
+		int cantidad = 0;
+		ArrayList<String> nombres = new ArrayList<String>();
+		ArrayList<String> tipos = new ArrayList<String>();
 		
 		DBmanagerDDL ddl = new DBmanagerDDL();
+		DBmanagerDML dml = new DBmanagerDML();
 		
 		while(!query.equals("salir"))
 		{
@@ -75,35 +81,103 @@ public class UIMmain {
 				}
 				break;
 				
-				case "CREATE TABLE":
+				case "CREATE_TABLE":
 				{
 					System.out.println("CREATE TABLE");
+					System.out.println("Nombre? ");
+					temp = scan.next();
+					System.out.println("Cuantas columnas va a ingresar? ");
+					cantidad = scan.nextInt();
+					while(cantidad>0)
+					{ 
+						System.out.println("Ingrese nombre de columna: ");
+						nombres.add(scan.next());
+						System.out.println("Ingrese tipo de dato de columna: ");
+						tipos.add(scan.next());
+						cantidad--;
+					} 
+					
+					if(ddl.createTable(temp, nombres, tipos)){
+						System.out.println(temp + " creada");
+					}
+					
 				}
 				break;
 				
-				case "ALTER TABLE":
+				case "ALTER_TABLE_RENAME":
 				{
-					System.out.println("ALTER TABLE");
+					System.out.println("ALTER TABLE RENAME");
+					System.out.println("antiguo nombre? ");
+					temp = scan.next();
+					System.out.println("nuevo nombre? ");
+					temp2 = scan.next();
+					
+					if(ddl.alterTableRename(temp, temp2)){
+						System.out.println(temp + " TABLA Renombrada a " + temp2); 
+					}
 				}
 				break;
 				
-				case "DROP TABLE":
+				case "DROP_TABLE":
 				{
 					System.out.println("DROP TABLE");
+					System.out.println("Ingrese nombre");
+					temp = scan.next();
+					
+					if(ddl.killTable(temp)){
+						System.out.println(temp + " Eliminado");
+					} 
 				}
 				break;
 				
-				case "SHOW TABLES":
+				case "SHOW_TABLES":
 				{
 					System.out.println("SHOW TABLES");
+					ddl.showTables();
 				}
 				break;
 				
-				case "SHOW TABLES FROM":
+				case "SHOW_COLUMNS_FROM":
 				{
-					System.out.println("SHOW TABLES FROM");
+					System.out.println("SHOW COLUMNS FROM");
+					System.out.println("cual tabla?");
+					temp = scan.next();
+					try {
+						ddl.showColumns(temp);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 				break;
+				
+				case "INSERT_INTO":
+				{
+					System.out.println("INSERT INTO");
+		
+				}
+				break;
+				
+				case "UPDATE":
+				{
+					System.out.println("UPDATE");
+		
+				}
+				break;
+				
+				case "DELETE":
+				{
+					System.out.println("DELETE");
+		
+				}
+				break;
+				
+				case "SELECT":
+				{
+					System.out.println("SELECT");
+		
+				}
+				break;
+				
 			}
 		}
 		scan.close();
