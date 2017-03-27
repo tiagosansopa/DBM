@@ -44,7 +44,7 @@ public class QueryGUIController {
 	}
 	
 	private void initialize(){
-		String fileLocation= ("C:\\Users\\Pablo\\Desktop\\UVG\\Base de Datos Tests");
+		String fileLocation= (System.getProperty("user.dir"));
 		displayTreeView(fileLocation);
 		
 	};
