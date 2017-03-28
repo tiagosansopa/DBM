@@ -88,6 +88,8 @@ public class UIMmain {
 					temp = scan.next();
 					System.out.println("Cuantas columnas va a ingresar? ");
 					cantidad = scan.nextInt();
+					nombres = new ArrayList<String>();
+					tipos = new ArrayList<String>();
 					while(cantidad>0)
 					{ 
 						System.out.println("Ingrese nombre de columna: ");
@@ -157,6 +159,8 @@ public class UIMmain {
 					temp = scan.next();
 					System.out.println("Cuantas columnas va a ingresar? ");
 					cantidad = scan.nextInt();
+					nombres = new ArrayList<String>();
+					tipos = new ArrayList<String>();
 					while(cantidad>0)
 					{ 
 						System.out.println("Ingrese nombre de columna: ");

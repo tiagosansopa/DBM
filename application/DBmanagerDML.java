@@ -36,7 +36,8 @@ public class DBmanagerDML {
 		    	String temp = "";
 		    	int temp2 = 0;
 		        for(String s : colNames){
-		        	temp +=colTypes.get(temp2)+",";
+		        	temp +=s+",";
+		        	System.out.println(temp2 + s);
 		        	temp2++;
 		        }
 		        output.newLine();
