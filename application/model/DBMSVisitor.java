@@ -1,4 +1,5 @@
-package application.model;// Generated from DBMS.g4 by ANTLR 4.5.3
+package application.model;
+// Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -274,6 +275,12 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitComma_id_eq_literal_k(DBMSParser.Comma_id_eq_literal_kContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DBMSParser#comma_action_k}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComma_action_k(DBMSParser.Comma_action_kContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DBMSParser#create_database}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -303,6 +310,18 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUse_database(DBMSParser.Use_databaseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#comma_id_type_k}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComma_id_type_k(DBMSParser.Comma_id_type_kContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#comma_constraint_constraintAt_k}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComma_constraint_constraintAt_k(DBMSParser.Comma_constraint_constraintAt_kContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DBMSParser#create_table}.
 	 * @param ctx the parse tree

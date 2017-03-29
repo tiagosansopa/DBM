@@ -1,4 +1,5 @@
-package application.model;// Generated from DBMS.g4 by ANTLR 4.5.3
+package application.model;
+// Generated from DBMS.g4 by ANTLR 4.5.3
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -447,6 +448,16 @@ public interface DBMSListener extends ParseTreeListener {
 	 */
 	void exitComma_id_eq_literal_k(DBMSParser.Comma_id_eq_literal_kContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DBMSParser#comma_action_k}.
+	 * @param ctx the parse tree
+	 */
+	void enterComma_action_k(DBMSParser.Comma_action_kContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#comma_action_k}.
+	 * @param ctx the parse tree
+	 */
+	void exitComma_action_k(DBMSParser.Comma_action_kContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DBMSParser#create_database}.
 	 * @param ctx the parse tree
 	 */
@@ -496,6 +507,26 @@ public interface DBMSListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUse_database(DBMSParser.Use_databaseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#comma_id_type_k}.
+	 * @param ctx the parse tree
+	 */
+	void enterComma_id_type_k(DBMSParser.Comma_id_type_kContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#comma_id_type_k}.
+	 * @param ctx the parse tree
+	 */
+	void exitComma_id_type_k(DBMSParser.Comma_id_type_kContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#comma_constraint_constraintAt_k}.
+	 * @param ctx the parse tree
+	 */
+	void enterComma_constraint_constraintAt_k(DBMSParser.Comma_constraint_constraintAt_kContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#comma_constraint_constraintAt_k}.
+	 * @param ctx the parse tree
+	 */
+	void exitComma_constraint_constraintAt_k(DBMSParser.Comma_constraint_constraintAt_kContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DBMSParser#create_table}.
 	 * @param ctx the parse tree

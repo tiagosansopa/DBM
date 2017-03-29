@@ -1,4 +1,5 @@
-package application.model;// Generated from DBMS.g4 by ANTLR 4.5.3
+package application.model;
+// Generated from DBMS.g4 by ANTLR 4.5.3
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -543,6 +544,18 @@ public class DBMSBaseListener implements DBMSListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterComma_action_k(DBMSParser.Comma_action_kContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComma_action_k(DBMSParser.Comma_action_kContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCreate_database(DBMSParser.Create_databaseContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -598,6 +611,30 @@ public class DBMSBaseListener implements DBMSListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitUse_database(DBMSParser.Use_databaseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterComma_id_type_k(DBMSParser.Comma_id_type_kContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComma_id_type_k(DBMSParser.Comma_id_type_kContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterComma_constraint_constraintAt_k(DBMSParser.Comma_constraint_constraintAt_kContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComma_constraint_constraintAt_k(DBMSParser.Comma_constraint_constraintAt_kContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

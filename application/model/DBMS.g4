@@ -418,14 +418,22 @@ use_database
     :   use database ID END_SQL
     ;
 
+comma_id_type_k
+	:	( COMMA ID type )*
+	;
+	
+comma_constraint_constraintAt_k
+	:	( COMMA constraint constraintAt )*
+	;
+	
 create_table
-    :   create table ID LPAREN ID type ( COMMA ID type )* ( COMMA )?( constraint constraintAt ( COMMA constraint constraintAt )* )?  RPAREN END_SQL
+    :   create table ID LPAREN ID type comma_id_type_k comma_constraint_constraintAt_k  RPAREN END_SQL
     ;
 
 constraintAt
     :   primaryKey 
-    |   foreignKey ( foreignKey )*
-    |   checks ( checks )*
+    |   foreignKey
+    |   checks
     ;   
 
 primaryKey: ID primary key LPAREN ID comma_id_k RPAREN ;
