@@ -648,6 +648,16 @@ public interface DBMSListener extends ParseTreeListener {
 	 */
 	void exitSql_dml(DBMSParser.Sql_dmlContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DBMSParser#some_order}.
+	 * @param ctx the parse tree
+	 */
+	void enterSome_order(DBMSParser.Some_orderContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#some_order}.
+	 * @param ctx the parse tree
+	 */
+	void exitSome_order(DBMSParser.Some_orderContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DBMSParser#insert_value}.
 	 * @param ctx the parse tree
 	 */
@@ -687,6 +697,16 @@ public interface DBMSListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSelect_value(DBMSParser.Select_valueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#where_exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhere_exp(DBMSParser.Where_expContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#where_exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhere_exp(DBMSParser.Where_expContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DBMSParser#literal}.
 	 * @param ctx the parse tree

@@ -397,23 +397,27 @@ comma_action_k
 	:	(COMMA action)*
 	;
 
-create_database
+//DONE
+create_database 
     :   create database ID END_SQL
     ;
 
+//DONE
 alter_database
     :   alter database ID rename to ID END_SQL
     ;
 
+//DONE
 drop_database
     :   drop database ID END_SQL
     ;
 
+//DONE
 show_database
-    :   show databases ID END_SQL
-    |   show databases END_SQL
+    :   show databases END_SQL
     ;
 
+//DONE
 use_database
     :   use database ID END_SQL
     ;
@@ -425,7 +429,8 @@ comma_id_type_k
 comma_constraint_constraintAt_k
 	:	( COMMA constraint constraintAt )*
 	;
-	
+
+//DONE	
 create_table
     :   create table ID LPAREN ID type comma_id_type_k comma_constraint_constraintAt_k  RPAREN END_SQL
     ;
@@ -454,14 +459,17 @@ alter_table
     |   alter table ID action comma_action_k END_SQL
     ;
 
+//DONE
 drop_table
-    :   drop database ID END_SQL
+    :   drop table ID END_SQL
     ;
 
+//DONE
 show_tables
     :   show tables END_SQL
     ;
 
+//DONE
 show_columns
     :   show columns from ID END_SQL
     ;
@@ -481,21 +489,36 @@ sql_dml
     |   select_value
     ;
 
+some_order
+	:	( LPAREN ID comma_id_k  RPAREN )?
+	;
+
+//DONE
 insert_value
-    :   insert into ID ( LPAREN ID comma_id_k  RPAREN )? values LPAREN literal comma_literal_k RPAREN END_SQL
+    :   insert into ID some_order values LPAREN literal comma_literal_k RPAREN END_SQL
     ;
 
+//DONE exp
 update_value
-    :   update ID set ID EQ literal comma_id_eq_literal_k  (where exp)? END_SQL 
+    :   update ID set ID EQ literal comma_id_eq_literal_k  where_exp END_SQL 
     ;
-
+//DONE exp
 delete_value
-    :   delete from ID (where exp)? END_SQL
+    :   delete from ID where_exp END_SQL
     ;
 
 select_value
-    :   select (KL | ID comma_id_k ) from ID (where exp)?  (order by exp (asc | desc)( COMMA exp ( asc | desc ) )*)? END_SQL
+    :   select select_k_id from ID comma_id_k where_exp (order by exp (asc | desc)( COMMA exp ( asc | desc ) )*)? END_SQL
     ;
+
+where_exp
+	:	(where exp)?
+	;
+	
+select_k_id
+	:	KL
+	|	ID comma_id_k
+	;
 
 literal
     :   NUM

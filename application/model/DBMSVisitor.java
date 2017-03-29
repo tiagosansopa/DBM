@@ -395,6 +395,12 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSql_dml(DBMSParser.Sql_dmlContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DBMSParser#some_order}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSome_order(DBMSParser.Some_orderContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DBMSParser#insert_value}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -418,6 +424,12 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSelect_value(DBMSParser.Select_valueContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#where_exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhere_exp(DBMSParser.Where_expContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DBMSParser#literal}.
 	 * @param ctx the parse tree

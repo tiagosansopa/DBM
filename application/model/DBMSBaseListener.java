@@ -784,6 +784,18 @@ public class DBMSBaseListener implements DBMSListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSome_order(DBMSParser.Some_orderContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSome_order(DBMSParser.Some_orderContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterInsert_value(DBMSParser.Insert_valueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -827,6 +839,18 @@ public class DBMSBaseListener implements DBMSListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSelect_value(DBMSParser.Select_valueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWhere_exp(DBMSParser.Where_expContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWhere_exp(DBMSParser.Where_expContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
