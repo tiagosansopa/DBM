@@ -327,8 +327,20 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	//SELECT
 	@Override
 	public String visitSelect_value(DBMSParser.Select_valueContext ctx){
+		//select select_k_id from ID comma_id_k where_exp order_by END_SQL
 		System.out.println("visitSelect_value");
-		System.out.println(ctx.getText());
+		ArrayList<String> columns_list = new ArrayList<String>();
+		if(ctx.select_k_id().KL() != null){
+			columns_list.add("*");
+			System.out.println("*");
+		} else {
+			//ID comma_id_k
+			columns_list.add(ctx.select_k_id().getChild(0).getText());
+			Integer total_number_columns = ctx.select_k_id().comma_id_k().getChildCount()/2;
+			for(Integer i = 0; i < total_number_columns; i++){
+				columns_list.add(ctx.select_k_id().comma_id_k().getChild((i*2)+1).getText());
+			}
+		} 
 		return visitChildren(ctx);
 	}
 	

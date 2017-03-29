@@ -431,6 +431,24 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWhere_exp(DBMSParser.Where_expContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DBMSParser#order_by}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOrder_by(DBMSParser.Order_byContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#comma_exp_ad_k}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComma_exp_ad_k(DBMSParser.Comma_exp_ad_kContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#select_k_id}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelect_k_id(DBMSParser.Select_k_idContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DBMSParser#literal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

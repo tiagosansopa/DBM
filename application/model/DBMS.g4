@@ -508,11 +508,19 @@ delete_value
     ;
 
 select_value
-    :   select select_k_id from ID comma_id_k where_exp (order by exp (asc | desc)( COMMA exp ( asc | desc ) )*)? END_SQL
+    :   select select_k_id from ID comma_id_k where_exp order_by END_SQL
     ;
 
 where_exp
 	:	(where exp)?
+	;
+
+order_by
+	:	(order by exp (asc | desc) comma_exp_ad_k)?
+	;
+
+comma_exp_ad_k
+	:	( COMMA exp ( asc | desc ) )*
 	;
 	
 select_k_id
