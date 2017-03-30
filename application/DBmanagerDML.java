@@ -22,21 +22,20 @@ public class DBmanagerDML {
 	
 	/**
 	 * Insert INTO
-	 * @throws IOException 
 	**/
 	public void insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
-		String archivoMetadata = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt";
-		String[] columnsAndTypes;
-		String actual = "";
 		BufferedReader br;
 		InputStream fis = null;
+		String archivoMetadata = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt";
 		fis = new FileInputStream(archivoMetadata);
 		InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
 		br = new BufferedReader(isr);
 		
-		columnsAndTypes = br.readLine().split(",");
-		
+		String[] columnsAndTypes= br.readLine().split(",");
+		columnsAndTypes[columnsAndTypes.length()-1]=columnsAndTypes[columnsAndTypes.length()-1].substring(0, );  
+		String actual = "";
+				
 		for(int i=0; i<=colTypes.size();i++)
 		{
 			actual = colNames.get(i);
@@ -46,9 +45,6 @@ public class DBmanagerDML {
 			}
 			
 		}
-		
-		
-		
 		
 		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
 		File table = new File(dir);
