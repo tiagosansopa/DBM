@@ -13,6 +13,11 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import application.model.DBMSLexer;
 import application.model.DBMSParser;
 import application.model.DBMSQueryVisitor;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,14 +26,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import application.main;
 
 public class QueryGUIController {
@@ -44,28 +52,56 @@ public class QueryGUIController {
 	
 	private main mainApp;
 	
+	ObservableList<ObservableList<String>> csvData = FXCollections.observableArrayList();
+	
 	
 	public QueryGUIController(){
 		
 	}
 	
 	public void displayTable(){
+		dataTable.setTableMenuButtonVisible(true);
+		dataTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 		ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
 		ArrayList<String> top = new ArrayList<String>();
+		
+		ArrayList<String> row = new ArrayList<String>();
+		row.add("Pedro");
+		row.add("Barre");
+		row.add("UVG");
+		
+		 ObservableList<String> datap =
+		        FXCollections.observableArrayList(
+		          
+		        );
+		
+		datap.add("Barreno");
+		datap.add("14159");
+		
+		csvData.add(datap);
 		top.add("First Name");
 		top.add("Last Name");
 		top.add("id");
 		top.add("dir");
-		top.add("dir");
-		top.add("dir");
+		top.add("dir2");
+		top.add("dir3");
 		System.out.println(top);
 		
 		for (int i = 0; i<top.size();i++){
-			TableColumn columna = new TableColumn(top.get(i));
+			TableColumn<String,String> columna = new TableColumn<>(top.get(i));
+			columna.setCellValueFactory(new Callback<CellDataFeatures<String, String>, ObservableValue<String>>() 
+			{
+                @Override
+                public ObservableValue<String> call(CellDataFeatures<String, String> p) {
+                    return new SimpleStringProperty((p.getValue()));
+                }
+             });
+			//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
 			columns.add(columna);
 		}
 		System.out.println(columns.get(1).getText());
 		ObservableList<TableColumn> list = FXCollections.observableArrayList(columns);
+		
 		dataTable.getColumns().clear();
 		dataTable.getColumns().add(columns.get(0));
 		dataTable.getColumns().add(columns.get(1));
@@ -73,6 +109,11 @@ public class QueryGUIController {
 		dataTable.getColumns().add(columns.get(3));
 		dataTable.getColumns().add(columns.get(4));
 		dataTable.getColumns().add(columns.get(5));
+		
+		dataTable.getItems().setAll(datap);
+		
+		
+		
 	}
 	
 	public void displayTreeView(String inputDirectoryLocation) {
