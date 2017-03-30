@@ -718,15 +718,15 @@ public interface DBMSListener extends ParseTreeListener {
 	 */
 	void exitOrder_by(DBMSParser.Order_byContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DBMSParser#comma_exp_ad_k}.
+	 * Enter a parse tree produced by {@link DBMSParser#comma_id_ad_k}.
 	 * @param ctx the parse tree
 	 */
-	void enterComma_exp_ad_k(DBMSParser.Comma_exp_ad_kContext ctx);
+	void enterComma_id_ad_k(DBMSParser.Comma_id_ad_kContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DBMSParser#comma_exp_ad_k}.
+	 * Exit a parse tree produced by {@link DBMSParser#comma_id_ad_k}.
 	 * @param ctx the parse tree
 	 */
-	void exitComma_exp_ad_k(DBMSParser.Comma_exp_ad_kContext ctx);
+	void exitComma_id_ad_k(DBMSParser.Comma_id_ad_kContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DBMSParser#select_k_id}.
 	 * @param ctx the parse tree

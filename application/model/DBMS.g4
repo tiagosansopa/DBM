@@ -516,11 +516,11 @@ where_exp
 	;
 
 order_by
-	:	(order by exp (asc | desc) comma_exp_ad_k)?
+	:	(order by ID (asc | desc) comma_id_ad_k)?
 	;
 
-comma_exp_ad_k
-	:	( COMMA exp ( asc | desc ) )*
+comma_id_ad_k
+	:	( COMMA ID ( asc | desc ) )*
 	;
 	
 select_k_id

@@ -514,7 +514,7 @@ public class DBMSBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements D
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitComma_exp_ad_k(DBMSParser.Comma_exp_ad_kContext ctx) { return visitChildren(ctx); }
+	@Override public T visitComma_id_ad_k(DBMSParser.Comma_id_ad_kContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

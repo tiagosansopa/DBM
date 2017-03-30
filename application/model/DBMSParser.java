@@ -56,7 +56,7 @@ public class DBMSParser extends Parser {
 		RULE_drop_table = 59, RULE_show_tables = 60, RULE_show_columns = 61, RULE_action = 62, 
 		RULE_sql_dml = 63, RULE_some_order = 64, RULE_insert_value = 65, RULE_update_value = 66, 
 		RULE_delete_value = 67, RULE_select_value = 68, RULE_where_exp = 69, RULE_order_by = 70, 
-		RULE_comma_exp_ad_k = 71, RULE_select_k_id = 72, RULE_literal = 73, RULE_rel_op = 74, 
+		RULE_comma_id_ad_k = 71, RULE_select_k_id = 72, RULE_literal = 73, RULE_rel_op = 74, 
 		RULE_cond_op = 75, RULE_eq_op = 76, RULE_add_op = 77, RULE_mult_op = 78, 
 		RULE_exp = 79, RULE_expression = 80, RULE_andExpr = 81, RULE_eqExpr = 82, 
 		RULE_relationExpr = 83, RULE_unaryExpr = 84, RULE_unifactor = 85, RULE_factor = 86;
@@ -72,7 +72,7 @@ public class DBMSParser extends Parser {
 		"create_table", "constraintAt", "primaryKey", "foreignKey", "checks", 
 		"type", "alter_table", "drop_table", "show_tables", "show_columns", "action", 
 		"sql_dml", "some_order", "insert_value", "update_value", "delete_value", 
-		"select_value", "where_exp", "order_by", "comma_exp_ad_k", "select_k_id", 
+		"select_value", "where_exp", "order_by", "comma_id_ad_k", "select_k_id", 
 		"literal", "rel_op", "cond_op", "eq_op", "add_op", "mult_op", "exp", "expression", 
 		"andExpr", "eqExpr", "relationExpr", "unaryExpr", "unifactor", "factor"
 	};
@@ -4334,11 +4334,9 @@ public class DBMSParser extends Parser {
 		public ByContext by() {
 			return getRuleContext(ByContext.class,0);
 		}
-		public ExpContext exp() {
-			return getRuleContext(ExpContext.class,0);
-		}
-		public Comma_exp_ad_kContext comma_exp_ad_k() {
-			return getRuleContext(Comma_exp_ad_kContext.class,0);
+		public TerminalNode ID() { return getToken(DBMSParser.ID, 0); }
+		public Comma_id_ad_kContext comma_id_ad_k() {
+			return getRuleContext(Comma_id_ad_kContext.class,0);
 		}
 		public AscContext asc() {
 			return getRuleContext(AscContext.class,0);
@@ -4381,7 +4379,7 @@ public class DBMSParser extends Parser {
 				setState(518);
 				by();
 				setState(519);
-				exp();
+				match(ID);
 				setState(522);
 				switch (_input.LA(1)) {
 				case T__68:
@@ -4404,7 +4402,7 @@ public class DBMSParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				setState(524);
-				comma_exp_ad_k();
+				comma_id_ad_k();
 				}
 			}
 
@@ -4421,16 +4419,14 @@ public class DBMSParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Comma_exp_ad_kContext extends ParserRuleContext {
+	public static class Comma_id_ad_kContext extends ParserRuleContext {
 		public List<TerminalNode> COMMA() { return getTokens(DBMSParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(DBMSParser.COMMA, i);
 		}
-		public List<ExpContext> exp() {
-			return getRuleContexts(ExpContext.class);
-		}
-		public ExpContext exp(int i) {
-			return getRuleContext(ExpContext.class,i);
+		public List<TerminalNode> ID() { return getTokens(DBMSParser.ID); }
+		public TerminalNode ID(int i) {
+			return getToken(DBMSParser.ID, i);
 		}
 		public List<AscContext> asc() {
 			return getRuleContexts(AscContext.class);
@@ -4444,28 +4440,28 @@ public class DBMSParser extends Parser {
 		public DescContext desc(int i) {
 			return getRuleContext(DescContext.class,i);
 		}
-		public Comma_exp_ad_kContext(ParserRuleContext parent, int invokingState) {
+		public Comma_id_ad_kContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_comma_exp_ad_k; }
+		@Override public int getRuleIndex() { return RULE_comma_id_ad_k; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof DBMSListener ) ((DBMSListener)listener).enterComma_exp_ad_k(this);
+			if ( listener instanceof DBMSListener ) ((DBMSListener)listener).enterComma_id_ad_k(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof DBMSListener ) ((DBMSListener)listener).exitComma_exp_ad_k(this);
+			if ( listener instanceof DBMSListener ) ((DBMSListener)listener).exitComma_id_ad_k(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof DBMSVisitor ) return ((DBMSVisitor<? extends T>)visitor).visitComma_exp_ad_k(this);
+			if ( visitor instanceof DBMSVisitor ) return ((DBMSVisitor<? extends T>)visitor).visitComma_id_ad_k(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Comma_exp_ad_kContext comma_exp_ad_k() throws RecognitionException {
-		Comma_exp_ad_kContext _localctx = new Comma_exp_ad_kContext(_ctx, getState());
-		enterRule(_localctx, 142, RULE_comma_exp_ad_k);
+	public final Comma_id_ad_kContext comma_id_ad_k() throws RecognitionException {
+		Comma_id_ad_kContext _localctx = new Comma_id_ad_kContext(_ctx, getState());
+		enterRule(_localctx, 142, RULE_comma_id_ad_k);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -4479,7 +4475,7 @@ public class DBMSParser extends Parser {
 				setState(528);
 				match(COMMA);
 				setState(529);
-				exp();
+				match(ID);
 				setState(532);
 				switch (_input.LA(1)) {
 				case T__68:
@@ -4930,12 +4926,6 @@ public class DBMSParser extends Parser {
 				expression(0);
 				}
 				break;
-			case T__68:
-			case T__69:
-			case T__70:
-			case T__71:
-			case T__72:
-			case T__73:
 			case T__101:
 			case T__102:
 			case T__103:
@@ -5762,11 +5752,11 @@ public class DBMSParser extends Parser {
 		"\u0200\5\u008eH\2\u0200\u0201\7\u008c\2\2\u0201\u008b\3\2\2\2\u0202\u0203"+
 		"\5.\30\2\u0203\u0204\5\u00a0Q\2\u0204\u0206\3\2\2\2\u0205\u0202\3\2\2"+
 		"\2\u0205\u0206\3\2\2\2\u0206\u008d\3\2\2\2\u0207\u0208\5F$\2\u0208\u0209"+
-		"\5H%\2\u0209\u020c\5\u00a0Q\2\u020a\u020d\5\60\31\2\u020b\u020d\5\62\32"+
-		"\2\u020c\u020a\3\2\2\2\u020c\u020b\3\2\2\2\u020d\u020e\3\2\2\2\u020e\u020f"+
-		"\5\u0090I\2\u020f\u0211\3\2\2\2\u0210\u0207\3\2\2\2\u0210\u0211\3\2\2"+
-		"\2\u0211\u008f\3\2\2\2\u0212\u0213\7\u008d\2\2\u0213\u0216\5\u00a0Q\2"+
-		"\u0214\u0217\5\60\31\2\u0215\u0217\5\62\32\2\u0216\u0214\3\2\2\2\u0216"+
+		"\5H%\2\u0209\u020c\7\u0085\2\2\u020a\u020d\5\60\31\2\u020b\u020d\5\62"+
+		"\32\2\u020c\u020a\3\2\2\2\u020c\u020b\3\2\2\2\u020d\u020e\3\2\2\2\u020e"+
+		"\u020f\5\u0090I\2\u020f\u0211\3\2\2\2\u0210\u0207\3\2\2\2\u0210\u0211"+
+		"\3\2\2\2\u0211\u008f\3\2\2\2\u0212\u0213\7\u008d\2\2\u0213\u0216\7\u0085"+
+		"\2\2\u0214\u0217\5\60\31\2\u0215\u0217\5\62\32\2\u0216\u0214\3\2\2\2\u0216"+
 		"\u0215\3\2\2\2\u0217\u0219\3\2\2\2\u0218\u0212\3\2\2\2\u0219\u021c\3\2"+
 		"\2\2\u021a\u0218\3\2\2\2\u021a\u021b\3\2\2\2\u021b\u0091\3\2\2\2\u021c"+
 		"\u021a\3\2\2\2\u021d\u0221\7~\2\2\u021e\u021f\7\u0085\2\2\u021f\u0221"+

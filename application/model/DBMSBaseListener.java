@@ -868,13 +868,13 @@ public class DBMSBaseListener implements DBMSListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterComma_exp_ad_k(DBMSParser.Comma_exp_ad_kContext ctx) { }
+	@Override public void enterComma_id_ad_k(DBMSParser.Comma_id_ad_kContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitComma_exp_ad_k(DBMSParser.Comma_exp_ad_kContext ctx) { }
+	@Override public void exitComma_id_ad_k(DBMSParser.Comma_id_ad_kContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

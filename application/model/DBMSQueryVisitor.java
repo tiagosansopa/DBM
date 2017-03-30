@@ -193,10 +193,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				 keys_list.add(key);
 			}
 		}
-		return "";
+		return "HEY";
 	}
-	
-	//TODO
+
 	//ALTER TABLE
 	@Override
 	public String visitAlter_table(DBMSParser.Alter_tableContext ctx){
@@ -208,7 +207,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 			String id_number_2 = ctx.getChild(4).getText();
 			System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
 		} else {
-			
+			//action
 		}
 		return "HEY";
 	}
@@ -219,6 +218,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	}
 
 	//DROP TABLES
+	@Override
 	public String visitDrop_table(DBMSParser.Drop_tableContext ctx){
 		//drop table ID END_SQL
 		System.out.println("visitDrop_table");
@@ -228,6 +228,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	}
 	
 	//SHOW TABLES
+	@Override
 	public String visitShow_tables(DBMSParser.Show_tablesContext ctx){
 		//show tables END_SQL
 		System.out.println("visitShow_tables");
@@ -235,7 +236,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	}
 	
 	//SHOW COLUMNS
-	public String visitiShow_columns(DBMSParser.Show_columnsContext ctx){
+	@Override
+	public String visitShow_columns(DBMSParser.Show_columnsContext ctx){
 		//show columns from ID END_SQL
 		System.out.println("visitShow_columns");
 		String id = ctx.getChild(3).getText();
@@ -330,18 +332,63 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		//select select_k_id from ID comma_id_k where_exp order_by END_SQL
 		System.out.println("visitSelect_value");
 		ArrayList<String> columns_list = new ArrayList<String>();
+		ArrayList<String> tables_list = new ArrayList<String>();
+		ArrayList<String> order_by_id_list = new ArrayList<String>();
+		ArrayList<Integer> order_by_ad_list = new ArrayList<Integer>();
 		if(ctx.select_k_id().KL() != null){
 			columns_list.add("*");
 			System.out.println("*");
 		} else {
 			//ID comma_id_k
 			columns_list.add(ctx.select_k_id().getChild(0).getText());
+			System.out.println(columns_list.get(0));
 			Integer total_number_columns = ctx.select_k_id().comma_id_k().getChildCount()/2;
 			for(Integer i = 0; i < total_number_columns; i++){
 				columns_list.add(ctx.select_k_id().comma_id_k().getChild((i*2)+1).getText());
+				System.out.println(columns_list.get(i+1));
 			}
-		} 
-		return visitChildren(ctx);
+		}
+		tables_list.add(ctx.ID().getText());
+		System.out.println(tables_list.get(0));
+		if(ctx.comma_id_k() != null){
+			// (COMMA ID)*
+			Integer total_number_tables = ctx.comma_id_k().getChildCount()/2;
+			for(Integer i = 0; i < total_number_tables; i++){
+				tables_list.add(ctx.comma_id_k().getChild((i*2)+1).getText());
+				System.out.println(tables_list.get(i+1));
+			}
+		}
+		if(ctx.where_exp() != null){
+			System.out.println("WHERE EXPRESSION");
+		}
+		if(ctx.order_by().getChildCount() > 0){
+			//(order by ID (asc | desc) comma_id_ad_k)?
+			System.out.println("ORDER BY");
+			order_by_id_list.add(ctx.order_by().ID().getText());
+			if(ctx.order_by().asc() != null){
+				order_by_ad_list.add(1);
+			} else {
+				order_by_ad_list.add(0);
+			}
+			System.out.println(order_by_id_list.get(0));
+			System.out.println(order_by_ad_list.get(0));
+			Integer total_number_order_by = ctx.order_by().comma_id_ad_k().getChildCount()/3; 
+			if(total_number_order_by > 0){
+				//( COMMA ID ( asc | desc ) )*
+				for(Integer i = 0; i < total_number_order_by; i++){
+					order_by_id_list.add(ctx.order_by().comma_id_ad_k().ID(i).getText());
+					String current_order_by = ctx.order_by().comma_id_ad_k().getChild((i*3)+2).getText();
+					if(current_order_by.equals("ASC") || current_order_by.equals("Asc") || current_order_by.equals("asc")){
+						order_by_ad_list.add(1);
+					} else {
+						order_by_ad_list.add(0);
+					}
+					System.out.println(order_by_id_list.get(i+1));
+					System.out.println(order_by_ad_list.get(i+1));
+				}
+			}
+		}
+		return "HEY";
 	}
 	
 	public void handleSemanticError(String message){
