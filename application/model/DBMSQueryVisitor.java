@@ -6,10 +6,14 @@ import application.model.DBMSParser.ConstraintAtContext;
 
 public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	public StringBuffer errors = new StringBuffer("\n Semantic Errors: \n");
-	int n = 0;
+	public Integer n = 0;
+	public DBmanagerDDL ddl;
+	public DBmanagerDML dml;
 	
 	public DBMSQueryVisitor (){
 		System.out.println("DBMSVisitor");
+		ddl = new DBmanagerDDL();
+		dml = new DBmanagerDML();
 		//Hello Santiago Koch
 	}
 	
@@ -53,6 +57,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		System.out.println("visitCreate_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id); //Santiago function
+		ddl.createDatabase(id);
 		return "HEY"; //errors
 	}
 	
@@ -64,6 +69,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		String id_number_1 = ctx.getChild(2).getText(); //arg 1
 		String id_number_2 = ctx.getChild(5).getText(); //arg 2
 		System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
+		ddl.alterDatabase(id_number_1, id_number_2);
 		return "HEY"; //Errors :)
 	}
 	
@@ -74,6 +80,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);//FUNCTION SANTIAGO
+		ddl.killDatabase(id);
 		return "HEY";
 	}
 	
@@ -83,6 +90,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	public String visitShow_database(DBMSParser.Show_databaseContext ctx){
 		//show databases END_SQL
 		System.out.println("visitShow_database");
+		ddl.showDatabases();
 		return "HEY";
 	}
 	
@@ -93,6 +101,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		System.out.println("visitUse_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
+		ddl.useDatabase(id);
 		return "HEY";
 	}
 	
