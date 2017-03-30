@@ -1,25 +1,52 @@
 package application;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class DBmanagerDML {
 	
 	String actualDatabase = "";
-	
 	public DBmanagerDML() {
 		
 	}
 	
 	/**
 	 * Insert INTO
+	 * @throws IOException 
 	**/
-	public void insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes)
+	public void insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
+		String archivoMetadata = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt";
+		String[] columnsAndTypes;
+		String actual = "";
+		BufferedReader br;
+		InputStream fis = null;
+		fis = new FileInputStream(archivoMetadata);
+		InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+		br = new BufferedReader(isr);
+		
+		columnsAndTypes = br.readLine().split(",");
+		
+		for(int i=0; i<=colTypes.size();i++)
+		{
+			actual = colNames.get(i);
+			for(int j=0;j<=columnsAndTypes.length();)
+			
+		}
+		
+		
+		
+		
 		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
 		File table = new File(dir);
 		
@@ -49,6 +76,8 @@ public class DBmanagerDML {
 		        ex.printStackTrace();
 		    }
 		}
+		
+		br.close();
 		
 	}
 	

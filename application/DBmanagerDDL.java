@@ -176,8 +176,9 @@ public class DBmanagerDDL {
 		else{
 			
 			File newTable = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
+			File newTablemeta = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt");
 			
-		    try(BufferedWriter  output = new BufferedWriter(new FileWriter(newTable)))
+		    try(BufferedWriter  output = new BufferedWriter(new FileWriter(newTablemeta)))
 		    {
 		    	String temp = "";
 		    	int temp2 = 0;
@@ -186,8 +187,22 @@ public class DBmanagerDDL {
 		        	temp2++;
 		        }
 		        output.write(temp.substring(0, temp.length()-1)+";");
+		        output.newLine();
+		        output.write("PK");
+		        output.newLine();
+		        output.write("FK");
+		        output.newLine();
+		        output.write("CHECK");
 		        output.close();
-		        return true;
+		        try(BufferedWriter  output2 = new BufferedWriter(new FileWriter(newTable)))
+			    {
+		        	return true;
+			    }
+		        catch(IOException ex)
+			    {
+			        ex.printStackTrace();
+			        return false;
+			    }
 		    }
 		    catch(IOException ex)
 		    {
@@ -197,101 +212,6 @@ public class DBmanagerDDL {
 		}
 	}
 	
-	/**
-	 * Create table in existing database WITH PRIMARY KEY 
-	**/
-	public boolean createTable(String tableName, ArrayList<String> colNames, ArrayList<String> colTypes,String pk,ArrayList<String> pkCols){
-		if (actualDatabase.equals("")){
-			System.out.println("NO DATABASE IN USE");
-			return false;
-		}
-		else{
-			
-			File newTable = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
-			
-		    try(FileWriter fw=new FileWriter(newTable))
-		    {
-		    	String temp = "";
-		    	int temp2 = 0;
-		        for(String s : colNames){
-		        	temp +=s+":"+colTypes.get(temp2)+",";
-		        }
-		        fw.write(temp.substring(0, temp.length()-1)+";");
-		        fw.flush();
-		        fw.close();
-		        return true;
-		    }
-		    catch(IOException ex)
-		    {
-		        ex.printStackTrace();
-		        return false;
-		    }
-		}
-	}
-	
-	/**
-	 * Create table in existing database WITH PRIMARY KEY and FOREIGN KEY(s)
-	**/
-	public boolean createTable(String tableName, ArrayList<String> colNames, ArrayList<String> colTypes,String pkey,ArrayList<String> pkCols,ArrayList<String> fkeys, ArrayList<ArrayList<String>> fkeysReferences){
-		if (actualDatabase.equals("")){
-			System.out.println("NO DATABASE IN USE");
-			return false;
-		}
-		else{
-			
-			File newTable = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
-			
-		    try(FileWriter fw=new FileWriter(newTable))
-		    {
-		    	String temp = "";
-		    	int temp2 = 0;
-		        for(String s : colNames){
-		        	temp +=s+":"+colTypes.get(temp2)+",";
-		        }
-		        fw.write(temp.substring(0, temp.length()-1)+";");
-		        fw.flush();
-		        fw.close();
-		        return true;
-		    }
-		    catch(IOException ex)
-		    {
-		        ex.printStackTrace();
-		        return false;
-		    }
-		}
-	}
-	
-	/**
-	 * Create table in existing database WITH PRIMARY KEY and FOREIGN KEY(s) and CHECK(s)
-	**/
-	public boolean createTable(String tableName, ArrayList<String> colNames, ArrayList<String> colTypes,String pkey,ArrayList<String> pkCols,ArrayList<String> fkeys, ArrayList<ArrayList<String>> fkeysReferences, ArrayList<String> checks ){
-		if (actualDatabase.equals("")){
-			System.out.println("NO DATABASE IN USE");
-			return false;
-		}
-		else{
-			
-			File newTable = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
-			
-		    try(FileWriter fw=new FileWriter(newTable))
-		    {
-		    	String temp = "";
-		    	int temp2 = 0;
-		        for(String s : colNames){
-		        	temp +=s+":"+colTypes.get(temp2)+",";
-		        }
-		        fw.write(temp.substring(0, temp.length()-1)+";");
-		        fw.flush();
-		        fw.close();
-		        return true;
-		    }
-		    catch(IOException ex)
-		    {
-		        ex.printStackTrace();
-		        return false;
-		    }
-		}
-	}
 	
 	/*
 	

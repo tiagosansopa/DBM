@@ -20,14 +20,14 @@ public class UIMmain {
 		while(!query.equals("salir"))
 		{
 			System.out.println("Ingresar Query");
-			query = scan.next();
+			query = scan.nextLine();
 			switch (query) 
 			{
-				case "CREATE":
+				case "CREATE DATABASE":
 				{
 					System.out.println("CREATE DATABASE");
 					System.out.println("Ingrese nombre");
-					temp = scan.next();
+					temp = scan.nextLine();
 					
 					if(ddl.createDatabase(temp)){
 						System.out.println(temp + " Creado");
@@ -35,13 +35,13 @@ public class UIMmain {
 				}
 				break;
 				
-				case "ALTER":
+				case "ALTER DATABASE":
 				{
 					System.out.println("ALTER DATABASE");
 					System.out.println("Ingrese nombre original");
-					temp = scan.next();
+					temp = scan.nextLine();
 					System.out.println("Ingrese nombre nuevo");
-					temp2 = scan.next();
+					temp2 = scan.nextLine();
 					
 					if(ddl.alterDatabase(temp, temp2)){
 						System.out.println(temp + " Renombrado a " + temp2); 
@@ -49,11 +49,11 @@ public class UIMmain {
 				}
 				break;
 				
-				case "DROP":
+				case "DROP DATABASE":
 				{
 					System.out.println("DROP DATABASE");
 					System.out.println("Ingrese nombre");
-					temp = scan.next();
+					temp = scan.nextLine();
 					
 					if(ddl.killDatabase(temp)){
 						System.out.println(temp + " Eliminado");
@@ -61,11 +61,11 @@ public class UIMmain {
 				}
 				break;
 				
-				case "USE":
+				case "USE DATABASE":
 				{
 					System.out.println("USE DATABASE");
 					System.out.println("Ingrese nombre");
-					temp = scan.next();
+					temp = scan.nextLine();
 					
 					if(ddl.useDatabase(temp)){
 						System.out.println(temp + " en Uso");
@@ -74,28 +74,29 @@ public class UIMmain {
 				}
 				break;
 				
-				case "SHOW":
+				case "SHOW DATABASE":
 				{
 					System.out.println("SHOW DATABASE");
 					ddl.showDatabases();
 				}
 				break;
 				
-				case "CREATE_TABLE":
+				case "CREATE TABLE":
 				{
 					System.out.println("CREATE TABLE");
 					System.out.println("Nombre? ");
-					temp = scan.next();
+					temp = scan.nextLine();
 					System.out.println("Cuantas columnas va a ingresar? ");
 					cantidad = scan.nextInt();
+					scan.nextLine();
 					nombres = new ArrayList<String>();
 					tipos = new ArrayList<String>();
 					while(cantidad>0)
 					{ 
 						System.out.println("Ingrese nombre de columna: ");
-						nombres.add(scan.next());
+						nombres.add(scan.nextLine());
 						System.out.println("Ingrese tipo de dato de columna: ");
-						tipos.add(scan.next());
+						tipos.add(scan.nextLine());
 						cantidad--;
 					} 
 					
@@ -106,13 +107,13 @@ public class UIMmain {
 				}
 				break;
 				
-				case "ALTER_TABLE_RENAME":
+				case "ALTER TABLE RENAME":
 				{
 					System.out.println("ALTER TABLE RENAME");
 					System.out.println("antiguo nombre? ");
-					temp = scan.next();
+					temp = scan.nextLine();
 					System.out.println("nuevo nombre? ");
-					temp2 = scan.next();
+					temp2 = scan.nextLine();
 					
 					if(ddl.alterTableRename(temp, temp2)){
 						System.out.println(temp + " TABLA Renombrada a " + temp2); 
@@ -120,11 +121,11 @@ public class UIMmain {
 				}
 				break;
 				
-				case "DROP_TABLE":
+				case "DROP TABLE":
 				{
 					System.out.println("DROP TABLE");
 					System.out.println("Ingrese nombre");
-					temp = scan.next();
+					temp = scan.nextLine();
 					
 					if(ddl.killTable(temp)){
 						System.out.println(temp + " Eliminado");
@@ -132,18 +133,18 @@ public class UIMmain {
 				}
 				break;
 				
-				case "SHOW_TABLES":
+				case "SHOW TABLES":
 				{
 					System.out.println("SHOW TABLES");
 					ddl.showTables();
 				}
 				break;
 				
-				case "SHOW_COLUMNS_FROM":
+				case "SHOW COLUMNS FROM":
 				{
 					System.out.println("SHOW COLUMNS FROM");
 					System.out.println("cual tabla?");
-					temp = scan.next();
+					temp = scan.nextLine();
 					try {
 						ddl.showColumns(temp);
 					} catch (IOException e) {
@@ -156,17 +157,18 @@ public class UIMmain {
 				{
 					System.out.println("INSERT INTO");
 					System.out.println("Insert en cual tabla? ");
-					temp = scan.next();
+					temp = scan.nextLine();
 					System.out.println("Cuantas columnas va a ingresar? ");
 					cantidad = scan.nextInt();
+					scan.nextLine();
 					nombres = new ArrayList<String>();
 					tipos = new ArrayList<String>();
 					while(cantidad>0)
 					{ 
 						System.out.println("Ingrese nombre de columna: ");
-						nombres.add(scan.next());
+						nombres.add(scan.nextLine());
 						System.out.println("Ingrese valor: ");
-						tipos.add(scan.next());
+						tipos.add(scan.nextLine());
 						cantidad--;
 					} 
 					
