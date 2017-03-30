@@ -43,7 +43,6 @@ public class QueryGUIController {
 		
 	}
 	
-	
 	public void displayTreeView(String inputDirectoryLocation) {
 	    // Creates the root item.
 	    CheckBoxTreeItem<String> rootItem = new CheckBoxTreeItem<String>(inputDirectoryLocation);
@@ -89,6 +88,7 @@ public class QueryGUIController {
 	 * Called whenever we click on the run button. 
 	 * Specification has been set on Scene Builder. 
 	 **/
+
 	public void handleText(){
 		String inputText = queryLabel.getText();
 		System.out.println(inputText);
