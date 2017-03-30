@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class UIMmain {
 
-    public static void main(String[] args) 
+    public static void main(String[] args) throws IOException 
 	{
 		Scanner scan = new Scanner(System.in);
 		String query = "",temp = "",temp2 = "";
