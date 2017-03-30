@@ -32,57 +32,58 @@ public class DBmanagerDML {
 		fis = new FileInputStream(archivoMetadata);
 		InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
 		br = new BufferedReader(isr);
-		System.out.println("Ya abrio");
+	
 		String[] columnsAndTypes= br.readLine().split(",");
 		//delete the ; 
 		columnsAndTypes[columnsAndTypes.length-1] = columnsAndTypes[columnsAndTypes.length-1].substring(0,columnsAndTypes[columnsAndTypes.length-1].length()-1 );  
-		System.out.println("Ya separo");
-		System.out.println(columnsAndTypes[columnsAndTypes.length-1]);
-		
+	
 		for(int i=0; i<columnsAndTypes.length;i++)
 		{
 			String[] typeAndName = columnsAndTypes[i].split(":");
-			System.out.println("voy por "+typeAndName[0]+" "+typeAndName[1]);
-			
+	
 			for(int j=0;j<colNames.size();j++)
-			{
-				if(colNames.get(j).equals(typeAndName[1]))
+			{	
+				if(colNames.get(j).equals(typeAndName[0]))
 				{
-					if(typeAndName[0].contains("INT")){
+					System.out.println(colNames.get(j) + " " + typeAndName[0] + colNames.get(j).equals(typeAndName[0]));
+					
+					if(typeAndName[1].contains("INT")){
 						if(validateInt(colTypes.get(j))){
 							System.out.println("Si es int");
 						}
 						else{
-							System.out.println(colTypes.get(j)+"NO es int");
+							System.out.println(colTypes.get(j)+" NO es int");
 							error = true;
 						}
 					}
-					else if(typeAndName[0].contains("CHAR")){
-						if(validateCHAR(colTypes.get(j))){
+					else if(typeAndName[1].contains("CHAR")){
+						if(validateCHAR(typeAndName[1],colTypes.get(j))){
 							System.out.println("Si es char");
 						}
 						else{
-							System.out.println(colTypes.get(j)+"NO es char");
 							error = true;
 						}
 					}
-					else if(typeAndName[0].contains("DATE")){
+					else if(typeAndName[1].contains("DATE")){
 						if(validateDate(colTypes.get(j))){
 							System.out.println("Si es date");
 						}
 						else{
-							System.out.println(colTypes.get(j)+"NO es date");
+							System.out.println(colTypes.get(j)+" NO es date");
 							error = true;
 						}
 					}
-					else if(typeAndName[0].contains("FLOAT")){
+					else if(typeAndName[1].contains("FLOAT")){
 						if(validateFloat(colTypes.get(j))){
 							System.out.println("Si es Float");
 						}
 						else{
-							System.out.println(colTypes.get(j)+"NO es float");
+							System.out.println(colTypes.get(j)+" NO es float");
 							error = true;
 						}
+					}
+					else{
+						System.out.println("NULL!");
 					}
 				}
 			}
@@ -168,13 +169,14 @@ public class DBmanagerDML {
 	/*
 	 * Validate if given string' length is equal or less than specified
 	 */
-	public boolean validateCHAR(String valor){
-		String tamano=valor.substring(5,valor.length()-1);
-		if (valor.length()<=Integer.parseInt(tamano))
+	public boolean validateCHAR(String valor,String aInsertar){
+		String tamano = valor.substring(5,valor.length()-1);
+		if (aInsertar.length()<=Integer.parseInt(tamano))
 		{
 			return true;
 		}
 		else{
+			System.out.println(aInsertar.length() + " ES MAYOR QUE " + tamano);
 			return false;
 		}
 	}
