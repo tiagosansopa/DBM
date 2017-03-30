@@ -25,27 +25,70 @@ public class DBmanagerDML {
 	**/
 	public void insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
+		boolean error = false;
 		BufferedReader br;
 		InputStream fis = null;
 		String archivoMetadata = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt";
 		fis = new FileInputStream(archivoMetadata);
 		InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
 		br = new BufferedReader(isr);
-		
+		System.out.println("Ya abrio");
 		String[] columnsAndTypes= br.readLine().split(",");
-		columnsAndTypes[columnsAndTypes.length()-1]=columnsAndTypes[columnsAndTypes.length()-1].substring(0, );  
-		String actual = "";
-				
-		for(int i=0; i<=colTypes.size();i++)
+		//delete the ; 
+		columnsAndTypes[columnsAndTypes.length-1] = columnsAndTypes[columnsAndTypes.length-1].substring(0,columnsAndTypes[columnsAndTypes.length-1].length()-1 );  
+		System.out.println("Ya separo");
+		System.out.println(columnsAndTypes[columnsAndTypes.length-1]);
+		
+		for(int i=0; i<columnsAndTypes.length;i++)
 		{
-			actual = colNames.get(i);
-			for(int j=0;j<=columnsAndTypes.length;i++)
+			String[] typeAndName = columnsAndTypes[i].split(":");
+			System.out.println("voy por "+typeAndName[0]+" "+typeAndName[1]);
+			
+			for(int j=0;j<colNames.size();j++)
 			{
-				
+				if(colNames.get(j).equals(typeAndName[1]))
+				{
+					if(typeAndName[0].contains("INT")){
+						if(validateInt(colTypes.get(j))){
+							System.out.println("Si es int");
+						}
+						else{
+							System.out.println(colTypes.get(j)+"NO es int");
+							error = true;
+						}
+					}
+					else if(typeAndName[0].contains("CHAR")){
+						if(validateCHAR(colTypes.get(j))){
+							System.out.println("Si es char");
+						}
+						else{
+							System.out.println(colTypes.get(j)+"NO es char");
+							error = true;
+						}
+					}
+					else if(typeAndName[0].contains("DATE")){
+						if(validateDate(colTypes.get(j))){
+							System.out.println("Si es date");
+						}
+						else{
+							System.out.println(colTypes.get(j)+"NO es date");
+							error = true;
+						}
+					}
+					else if(typeAndName[0].contains("FLOAT")){
+						if(validateFloat(colTypes.get(j))){
+							System.out.println("Si es Float");
+						}
+						else{
+							System.out.println(colTypes.get(j)+"NO es float");
+							error = true;
+						}
+					}
+				}
 			}
 			
 		}
-		
+		if (error==false){
 		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
 		File table = new File(dir);
 		
@@ -61,7 +104,7 @@ public class DBmanagerDML {
 		    {
 		    	String temp = "";
 		    	int temp2 = 0;
-		        for(String s : colNames){
+		        for(String s : colTypes){
 		        	temp +=s+",";
 		        	System.out.println(temp2 + s);
 		        	temp2++;
@@ -75,7 +118,7 @@ public class DBmanagerDML {
 		        ex.printStackTrace();
 		    }
 		}
-		
+		}
 		br.close();
 		
 	}
@@ -125,7 +168,7 @@ public class DBmanagerDML {
 	/*
 	 * Validate if given string' length is equal or less than specified
 	 */
-	public boolean validateCHAR(String tipo, String valor){
+	public boolean validateCHAR(String valor){
 		String tamano=valor.substring(5,valor.length()-1);
 		if (valor.length()<=Integer.parseInt(tamano))
 		{
