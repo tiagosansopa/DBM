@@ -1,15 +1,16 @@
 package application.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import application.model.DBMSParser.ConstraintAtContext;
 import application.model.DBmanagerDDL;
 import application.model.DBmanagerDML;
 
-public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
+public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<String>>> {
 	public StringBuffer errors = new StringBuffer("\n Semantic Errors: \n");
 	public Integer n = 0;
-	public DBmanagerDDL ddl;
-	public DBmanagerDML dml;
+	static public DBmanagerDDL ddl;
+	static public DBmanagerDML dml;
 	
 	public DBMSQueryVisitor (){
 		System.out.println("DBMSVisitor");
@@ -19,13 +20,13 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	}
 	
 	@Override 
-	public String visitSql(DBMSParser.SqlContext ctx) {
+	public ArrayList<ArrayList<String>> visitSql(DBMSParser.SqlContext ctx) {
 		System.out.println("visitSql");
 		return visitChildren(ctx); 
 	}
 	
 	@Override
-	public String visitSql_executable(DBMSParser.Sql_executableContext ctx){
+	public ArrayList<ArrayList<String>> visitSql_executable(DBMSParser.Sql_executableContext ctx){
 		System.out.println("visitSql_Executable");
 		if(ctx.sql_dml() != null){
 			System.out.println("sql_dml"); // <- noten como la gramatica nos permite saber que onda
@@ -38,7 +39,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	//SQL DDL
 	
 	@Override
-	public String visitSql_ddl(DBMSParser.Sql_ddlContext ctx){
+	public  ArrayList<ArrayList<String>> visitSql_ddl(DBMSParser.Sql_ddlContext ctx){
 		System.out.println("visitSql_ddl");
 		if(ctx.database_statement() != null){
 			System.out.println("database_statement");
@@ -53,64 +54,64 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	
 	//CREATE DATABASE
 	@Override
-	public String visitCreate_database(DBMSParser.Create_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitCreate_database(DBMSParser.Create_databaseContext ctx){
 		//create database ID END_SQL
 		System.out.println("visitCreate_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id); //Santiago function
 		ddl.createDatabase(id);
-		return "HEY"; //errors
+		return null; //errors
 	}
 	
 	//ALTER DATABASE
 	@Override
-	public String visitAlter_database(DBMSParser.Alter_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitAlter_database(DBMSParser.Alter_databaseContext ctx){
 		//alter database ID rename to ID END_SQL
 		System.out.println("visitAlter_database");
 		String id_number_1 = ctx.getChild(2).getText(); //arg 1
 		String id_number_2 = ctx.getChild(5).getText(); //arg 2
 		System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
 		ddl.alterDatabase(id_number_1, id_number_2);
-		return "HEY"; //Errors :)
+		return null; //Errors :)
 	}
 	
 	//DROP DATABASE
 	@Override
-	public String visitDrop_database(DBMSParser.Drop_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitDrop_database(DBMSParser.Drop_databaseContext ctx){
 		//drop database ID END_SQL
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);//FUNCTION SANTIAGO
 		ddl.killDatabase(id);
-		return "HEY";
+		return null;
 	}
 	
 	
 	//SHOW DATABASE
 	@Override
-	public String visitShow_database(DBMSParser.Show_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitShow_database(DBMSParser.Show_databaseContext ctx){
 		//show databases END_SQL
 		System.out.println("visitShow_database");
 		ddl.showDatabases();
-		return "HEY";
+		return null;
 	}
 	
 	//USE DATABASE
 	@Override
-	public String visitUse_database(DBMSParser.Use_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitUse_database(DBMSParser.Use_databaseContext ctx){
 		//use database ID END_SQL
 		System.out.println("visitUse_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
 		ddl.useDatabase(id);
-		return "HEY";
+		return null;
 	}
 	
 	//TABLE STATEMENT
 	
 	//CREATE TABLE
 	@Override
-	public String visitCreate_table(DBMSParser.Create_tableContext ctx){
+	public ArrayList<ArrayList<String>> visitCreate_table(DBMSParser.Create_tableContext ctx){
 		//create table ID LPAREN ID type comma_id_type_k comma_constraint_constraintAt_k  RPAREN END_SQL
 		System.out.println("visitCreate_table");
 		String table_id = ctx.getChild(2).getText();
@@ -191,7 +192,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 							 System.out.println(key_column_i);
 						 }
 					 }
-				 } else {
+				 } else if(constraintAt.checks() != null) {
 					 System.out.println("CH");
 					 //ID check LPAREN exp RPAREN
 					 String id = constraintAt.checks().getChild(0).getText();
@@ -203,12 +204,13 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				 keys_list.add(key);
 			}
 		}
-		return "HEY";
+		ddl.createTable(table_id, columns_list, types_list);
+		return null;
 	}
 
 	//ALTER TABLE
 	@Override
-	public String visitAlter_table(DBMSParser.Alter_tableContext ctx){
+	public ArrayList<ArrayList<String>> visitAlter_table(DBMSParser.Alter_tableContext ctx){
 		//alter table ID rename to ID END_SQL
 	    //|   alter table ID action comma_action_k END_SQL
 		System.out.println("visitAlter_table");
@@ -219,53 +221,54 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		} else {
 			//action
 		}
-		return "HEY";
+		return null;
 	}
 	
-	public String visitAction(DBMSParser.ActionContext ctx){
-		
-		return "HEY";
-	}
-
 	//DROP TABLES
 	@Override
-	public String visitDrop_table(DBMSParser.Drop_tableContext ctx){
+	public ArrayList<ArrayList<String>> visitDrop_table(DBMSParser.Drop_tableContext ctx){
 		//drop table ID END_SQL
 		System.out.println("visitDrop_table");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
-		return "HEY";
+		return null;
 	}
 	
 	//SHOW TABLES
 	@Override
-	public String visitShow_tables(DBMSParser.Show_tablesContext ctx){
+	public ArrayList<ArrayList<String>> visitShow_tables(DBMSParser.Show_tablesContext ctx){
 		//show tables END_SQL
 		System.out.println("visitShow_tables");
-		return "HEY";
+		ddl.showTables();
+		return null;
 	}
 	
 	//SHOW COLUMNS
 	@Override
-	public String visitShow_columns(DBMSParser.Show_columnsContext ctx){
+	public ArrayList<ArrayList<String>> visitShow_columns(DBMSParser.Show_columnsContext ctx){
 		//show columns from ID END_SQL
 		System.out.println("visitShow_columns");
 		String id = ctx.getChild(3).getText();
 		System.out.println(id);
-		return visitChildren(ctx);
+		try{
+			ddl.showColumns(id);
+		} catch(IOException ex) {
+	        ex.printStackTrace();
+	    }
+		return null;
 	}
 	
 	//SQL DML
 	
 	@Override
-	public String visitSql_dml(DBMSParser.Sql_dmlContext ctx){
+	public ArrayList<ArrayList<String>> visitSql_dml(DBMSParser.Sql_dmlContext ctx){
 		System.out.println("visitSql_dml");
 		return visitChildren(ctx);
 	}
 	
 	//INSERT
 	@Override
-	public String visitInsert_value(DBMSParser.Insert_valueContext ctx){
+	public ArrayList<ArrayList<String>> visitInsert_value(DBMSParser.Insert_valueContext ctx){
 		//insert into ID some_order values LPAREN literal comma_literal_k RPAREN END_SQL
 		System.out.println("visitInsert_value");
 		String id = ctx.getChild(2).getText();
@@ -292,12 +295,17 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				System.out.println(literal_list.get(i+1));
 			}
 		}
-		return visitChildren(ctx);
+		try {
+			dml.insertInto(id, order_list, literal_list);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	//UPDATE
 	@Override
-	public String visitUpdate_value(DBMSParser.Update_valueContext ctx){
+	public ArrayList<ArrayList<String>> visitUpdate_value(DBMSParser.Update_valueContext ctx){
 		//update ID set ID EQ literal comma_id_eq_literal_k  where_exp END_SQL
 		System.out.println("visitUpdate_value");
 		String id = ctx.getChild(1).getText();
@@ -319,13 +327,14 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		if(ctx.where_exp() != null){
 			System.out.println(ctx.where_exp().getText());
 		}
-		return visitChildren(ctx);
+		
+		return null;
 	}
 	
 	
 	//DELETE
 	@Override
-	public String visitDelete_value(DBMSParser.Delete_valueContext ctx){
+	public ArrayList<ArrayList<String>> visitDelete_value(DBMSParser.Delete_valueContext ctx){
 		//delete from ID where_exp END_SQL
 		System.out.println("visitDelete_value");
 		String id = ctx.getChild(2).getText();
@@ -333,12 +342,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		if(ctx.where_exp() != null){
 			System.out.println(ctx.where_exp().getText());
 		}
-		return visitChildren(ctx);
+		return null;
 	}
 	
 	//SELECT
 	@Override
-	public String visitSelect_value(DBMSParser.Select_valueContext ctx){
+	public ArrayList<ArrayList<String>> visitSelect_value(DBMSParser.Select_valueContext ctx){
 		//select select_k_id from ID comma_id_k where_exp order_by END_SQL
 		System.out.println("visitSelect_value");
 		ArrayList<String> columns_list = new ArrayList<String>();
@@ -368,8 +377,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				System.out.println(tables_list.get(i+1));
 			}
 		}
+		for(String table : tables_list){
+			
+		}
 		if(ctx.where_exp() != null){
 			System.out.println("WHERE EXPRESSION");
+			ArrayList<ArrayList<String>> result = visit(ctx.where_exp().exp());
 		}
 		if(ctx.order_by().getChildCount() > 0){
 			//(order by ID (asc | desc) comma_id_ad_k)?
@@ -398,8 +411,76 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				}
 			}
 		}
-		return "HEY";
+		return null;
 	}
+	
+	
+	//Exp
+	@Override
+	public ArrayList<ArrayList<String>> visitExp(DBMSParser.ExpContext ctx){
+		//:   expression |   //epsilon
+		if(ctx.expression() != null){
+			return visitChildren(ctx);
+		}
+		return null;
+	}
+	
+	@Override
+	public ArrayList<ArrayList<String>> visitExpression(DBMSParser.ExpressionContext ctx){
+		/*expression 
+    		:   andExpr
+    		|   expression or andExpr*/
+		if(ctx.andExpr() != null){
+			return visitChildren(ctx);
+		} else {
+			ArrayList<ArrayList<String>> t1 = visit(ctx.expression());
+			ArrayList<ArrayList<String>> t2 = visit(ctx.andExpr());
+			if(t1.size() > t2.size()){
+				for(ArrayList<String> row : t2){
+					if(!t1.contains(row)){
+						t1.add(row);
+					}
+				}
+			} else {
+				for(ArrayList<String> row : t1){
+					if(!t2.contains(row)){
+						t2.add(row);
+					}
+				}
+			}
+			return t2;
+		}
+	}
+
+	@Override
+	public ArrayList<ArrayList<String>> visitAndExpr(DBMSParser.AndExprContext ctx){
+		/*andExpr
+			: eqExpr 
+    		| andExpr and eqExpr */
+		if(ctx.getChildCount() == 1){
+			return visitChildren(ctx);
+		} else {
+			ArrayList<ArrayList<String>> t1 = visit(ctx.andExpr());
+			ArrayList<ArrayList<String>> t2 = visit(ctx.eqExpr());
+			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+			if(t1.size() > t2.size()){
+				for(ArrayList<String> row : t1){
+					if(t2.contains(row)){
+						result.add(row);
+					}
+				}
+			} else {
+				for(ArrayList<String> row : t2){
+					if(t1.contains(row)){
+						result.add(row);
+					}
+				}
+			}
+			return result;
+		}
+	}
+	
+	
 	
 	public void handleSemanticError(String message){
 		errors.append("["+n+"]: "+message+"\n \n");
