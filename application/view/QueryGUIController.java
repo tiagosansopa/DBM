@@ -13,19 +13,30 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import application.model.DBMSLexer;
 import application.model.DBMSParser;
 import application.model.DBMSQueryVisitor;
-
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import application.main;
 
 public class QueryGUIController {
@@ -36,14 +47,47 @@ public class QueryGUIController {
 	@FXML
 	private TreeView <String>treeView = new TreeView<String>();
 	
+	@FXML
+	private TableView<ObservableList<String>> dataTable = new TableView<ObservableList<String>>();
+	
 	private main mainApp;
+	
+	ObservableList<ObservableList<String>> csvData = FXCollections.observableArrayList();
 	
 	
 	public QueryGUIController(){
 		
 	}
-	
-	
+	public void displayTable(ArrayList<String> columnNames,ArrayList<ArrayList<String>> rows){
+		csvData.clear();
+		ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
+		for (int i = 0;i<rows.size();i++){
+			ArrayList<String> row = rows.get(i);
+			csvData.add(FXCollections.observableArrayList(row));
+		}
+		for (int i = 0; i<columnNames.size();i++){
+			final int index = i;
+			System.out.println(index);
+			TableColumn<ObservableList<String>,String> columna = new TableColumn<>(columnNames.get(i));
+			
+			columna.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>, String>, ObservableValue<String>>() 
+			{
+                @Override
+                public ObservableValue<String> call(CellDataFeatures<ObservableList<String>, String> p) {
+                    return new SimpleStringProperty((p.getValue().get(index)));
+                }
+             });
+			System.out.println(index);
+			//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
+			columns.add(columna);
+		
+		}
+		dataTable.getColumns().clear();
+		for (int j = 0;j<columns.size();j++){
+			dataTable.getColumns().add(columns.get(j));
+		}
+		dataTable.getItems().setAll(csvData);
+	}
 	public void displayTreeView(String inputDirectoryLocation) {
 	    // Creates the root item.
 	    CheckBoxTreeItem<String> rootItem = new CheckBoxTreeItem<String>(inputDirectoryLocation);
@@ -99,15 +143,32 @@ public class QueryGUIController {
 		ParseTree tree = parser.sql();
 		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor();
 		qVisitor.visit(tree);
+		String fileLocation= (System.getProperty("user.dir"));
+		displayTreeView(fileLocation);
+		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
+		ArrayList<String> row = new ArrayList<String>();
+		row.add("Pedro");
+		row.add("Koch");
+		row.add("UVG");
+		row.add("Men");
+		row.add("Men2");
+		row.add("Men3");
+		rows.add(row);
+		ArrayList<String> top = new ArrayList<String>();
+		top.add("First Name");
+		top.add("Last Name");
+		top.add("id");
+		top.add("dir");
+		top.add("direccion");
+		top.add("dir3");
+		displayTable(top,rows);
 	}
 	
 	public  void setMainApp(main app){
 		this.mainApp = app;
-		String fileLocation= (System.getProperty("user.dir"));
+		
 		//String fileLocation= ("C:\\Users\\Pablo\\Desktop\\UVG\\Base de Datos Tests");
-		displayTreeView(fileLocation);
-		//TreeItem<String> root = new TreeItem<>("Root");
-		//treeView.setRoot(root);
+		
 	}
 	
 }
