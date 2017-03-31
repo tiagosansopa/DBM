@@ -42,7 +42,7 @@
                            <children>
                               <TextArea fx:id="queryLabel" layoutX="11.0" layoutY="45.0" prefHeight="294.0" prefWidth="554.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="45.0" />
                               <Text layoutX="14.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SQL Query:" />
-                              <Button fx:id="runButton" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#handleText" prefHeight="50.0" prefWidth="50.0" text="Run" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="470.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="260.0" />
+                              <Button fx:id="runButton" layoutX="366.0" layoutY="262.0" mnemonicParsing="false" onAction="#handleText" text="Run" />
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

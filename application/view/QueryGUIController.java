@@ -88,63 +88,6 @@ public class QueryGUIController {
 		}
 		dataTable.getItems().setAll(csvData);
 	}
-	public void displayTable(){
-		dataTable.setTableMenuButtonVisible(true);
-		dataTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-		ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
-		ArrayList<String> top = new ArrayList<String>();
-		
-		ArrayList<String> row = new ArrayList<String>();
-		row.add("Pedro");
-		row.add("Barre");
-		row.add("UVG");
-		row.add("Men");
-		row.add("Men2");
-		row.add("Men3");
-		
-		csvData.add(FXCollections.observableArrayList(row));
-		top.add("First Name");
-		top.add("Last Name");
-		top.add("id");
-		top.add("dir");
-		top.add("dir2");
-		top.add("dir3");
-		System.out.println(top);
-		
-		for (int i = 0; i<top.size();i++){
-			final int index = i;
-			System.out.println(index);
-			TableColumn<ObservableList<String>,String> columna = new TableColumn<>(top.get(i));
-			
-			columna.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>, String>, ObservableValue<String>>() 
-			{
-                @Override
-                public ObservableValue<String> call(CellDataFeatures<ObservableList<String>, String> p) {
-                    return new SimpleStringProperty((p.getValue().get(index)));
-                }
-             });
-			System.out.println(index);
-			//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
-			columns.add(columna);
-		
-		}
-		System.out.println(columns.get(1).getText());
-		ObservableList<TableColumn> list = FXCollections.observableArrayList(columns);
-		
-		dataTable.getColumns().clear();
-		dataTable.getColumns().add(columns.get(0));
-		dataTable.getColumns().add(columns.get(1));
-		dataTable.getColumns().add(columns.get(2));
-		dataTable.getColumns().add(columns.get(3));
-		dataTable.getColumns().add(columns.get(4));
-		dataTable.getColumns().add(columns.get(5));
-		
-		dataTable.getItems().setAll(csvData);
-		
-		
-		
-	}
-	
 	public void displayTreeView(String inputDirectoryLocation) {
 	    // Creates the root item.
 	    CheckBoxTreeItem<String> rootItem = new CheckBoxTreeItem<String>(inputDirectoryLocation);
@@ -200,15 +143,8 @@ public class QueryGUIController {
 		ParseTree tree = parser.sql();
 		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor();
 		qVisitor.visit(tree);
-	}
-	
-	public  void setMainApp(main app){
-		this.mainApp = app;
 		String fileLocation= (System.getProperty("user.dir"));
-		//String fileLocation= ("C:\\Users\\Pablo\\Desktop\\UVG\\Base de Datos Tests");
 		displayTreeView(fileLocation);
-		//TreeItem<String> root = new TreeItem<>("Root");
-		//treeView.setRoot(root);
 		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
 		ArrayList<String> row = new ArrayList<String>();
 		row.add("Pedro");
@@ -226,6 +162,13 @@ public class QueryGUIController {
 		top.add("direccion");
 		top.add("dir3");
 		displayTable(top,rows);
+	}
+	
+	public  void setMainApp(main app){
+		this.mainApp = app;
+		
+		//String fileLocation= ("C:\\Users\\Pablo\\Desktop\\UVG\\Base de Datos Tests");
+		
 	}
 	
 }
