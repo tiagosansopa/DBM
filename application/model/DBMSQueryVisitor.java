@@ -16,7 +16,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("DBMSVisitor");
 		ddl = new DBmanagerDDL();
 		dml = new DBmanagerDML();
-		//Hello Santiago Koch
+		//Hello Santiago Koch Hello Diego
 	}
 	
 	@Override 
