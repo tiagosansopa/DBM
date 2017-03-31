@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -231,5 +232,64 @@ public class DBmanagerDML {
 			return false;
 		}
 	}
+	
+	/**
+	 * Given filename convert file to arraylist of arraylist<string>
+	 * @throws IOException 
+	 */
+	public ArrayList<ArrayList<String>> tableToArraylist(String tableName) throws IOException
+	{
+		BufferedReader reader = null;
+		ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
+		ArrayList<String> registry = new ArrayList<String>();
+		
+		File file = new File(tableName);
+		reader = new BufferedReader(new FileReader(file));
+
+		String line;
+		while ((line = reader.readLine()) != null) 
+		{
+			System.out.println(line);
+			String[] columns = line.split(",");
+			
+			for(int i=0; i<columns.length;i++)
+			{
+				registry.add(columns[i]);
+			}
+			table.add(registry);
+			registry = new ArrayList<String>();
+		}	
+		reader.close();
+		return table;
+	}
+	
+	
+	/**
+	 * Extract Types and Names
+	 * @throws IOException 
+	 */
+	public ArrayList<ArrayList<String>> tableTypesAndNames(String tableName) throws IOException
+	{
+		BufferedReader reader = null;
+		ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
+		ArrayList<String> types = new ArrayList<String>();
+		ArrayList<String> Names = new ArrayList<String>();
+		File file = new File(tableName);
+		reader = new BufferedReader(new FileReader(file));
+
+		String[] columns  = reader.readLine().split(",");
+	
+		for(int i=0; i<columns.length;i++)
+		{
+			String[] data  = columns[i].split(":");
+			types.add(data[0]);
+			Names.add(data[1]);
+		}
+		table.add(types);
+		table.add(Names);
+		reader.close();
+		return table;
+	}
+	
 	
 }
