@@ -467,12 +467,6 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCond_op(DBMSParser.Cond_opContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DBMSParser#eq_op}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEq_op(DBMSParser.Eq_opContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link DBMSParser#add_op}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -503,33 +497,27 @@ public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAndExpr(DBMSParser.AndExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DBMSParser#eqExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEqExpr(DBMSParser.EqExprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DBMSParser#relationExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelationExpr(DBMSParser.RelationExprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DBMSParser#unaryExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUnaryExpr(DBMSParser.UnaryExprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link DBMSParser#unifactor}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUnifactor(DBMSParser.UnifactorContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link DBMSParser#factor}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFactor(DBMSParser.FactorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#primaryExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimaryExpr(DBMSParser.PrimaryExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#compareExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompareExpr(DBMSParser.CompareExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#term}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTerm(DBMSParser.TermContext ctx);
 }

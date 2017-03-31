@@ -13,6 +13,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import application.model.DBMSLexer;
 import application.model.DBMSParser;
 import application.model.DBMSQueryVisitor;
+import application.model.DBmanagerDDL;
+import application.model.DBmanagerDML;
 
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -38,9 +40,12 @@ public class QueryGUIController {
 	
 	private main mainApp;
 	
+	private DBmanagerDDL ddl;
+	private DBmanagerDML dml;
 	
 	public QueryGUIController(){
-		
+		ddl = new DBmanagerDDL();
+		dml = new DBmanagerDML();
 	}
 	
 	public void displayTreeView(String inputDirectoryLocation) {
@@ -97,7 +102,7 @@ public class QueryGUIController {
 		TokenStream tokens = new CommonTokenStream(lexer);
 		DBMSParser parser = new DBMSParser(tokens);
 		ParseTree tree = parser.sql();
-		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor();
+		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
 		qVisitor.visit(tree);
 	}
 	

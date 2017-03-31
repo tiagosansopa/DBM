@@ -9,13 +9,13 @@ import application.model.DBmanagerDML;
 public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<String>>> {
 	public StringBuffer errors = new StringBuffer("\n Semantic Errors: \n");
 	public Integer n = 0;
-	static public DBmanagerDDL ddl;
-	static public DBmanagerDML dml;
+	public DBmanagerDDL ddl;
+	public DBmanagerDML dml;
 	
-	public DBMSQueryVisitor (){
+	public DBMSQueryVisitor (DBmanagerDDL ddl, DBmanagerDML dml){
 		System.out.println("DBMSVisitor");
-		ddl = new DBmanagerDDL();
-		dml = new DBmanagerDML();
+		this.ddl = ddl;
+		this.dml = dml;
 		//Hello Santiago Koch
 	}
 	
@@ -461,7 +461,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			return visitChildren(ctx);
 		} else {
 			ArrayList<ArrayList<String>> t1 = visit(ctx.andExpr());
-			ArrayList<ArrayList<String>> t2 = visit(ctx.eqExpr());
+			ArrayList<ArrayList<String>> t2 = visit(ctx.factor());
 			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 			if(t1.size() > t2.size()){
 				for(ArrayList<String> row : t1){
@@ -478,9 +478,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			}
 			return result;
 		}
+		
 	}
-	
-	
 	
 	public void handleSemanticError(String message){
 		errors.append("["+n+"]: "+message+"\n \n");
