@@ -34,9 +34,7 @@ public class DBmanagerDML {
 		br = new BufferedReader(isr);
 	
 		String[] columnsAndTypes= br.readLine().split(",");
-		//delete the ; 
-		columnsAndTypes[columnsAndTypes.length-1] = columnsAndTypes[columnsAndTypes.length-1].substring(0,columnsAndTypes[columnsAndTypes.length-1].length()-1 );  
-	
+		
 		for(int i=0; i<columnsAndTypes.length;i++)
 		{
 			String[] typeAndName = columnsAndTypes[i].split(":");
