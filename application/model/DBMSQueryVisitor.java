@@ -517,10 +517,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			|	literal
 		 */
 		
-		ArrayList<ArrayList<String>> table1 = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> table1;
 		String literal1 = "";
-		ArrayList<ArrayList<String>> table2 = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> table2;
 		String literal2 = "";
+		String rel_op = ctx.rel_op().getText();
 		
 		if(ctx.term(0).ID() != null){
 			for(String table : tables_list){
@@ -533,13 +534,13 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				}
 			}
 		} else {
-			literal1 = ctx.rel_op().getText();
+			literal1 = ctx.term(0).literal().getText();
 		}
 		
 		if(ctx.term(1).ID() != null){
 			for(String table : tables_list){
 				try {
-					if(dml.tableTypesAndNames(table).get(1).contains(ctx.term(0).ID().getText())){
+					if(dml.tableTypesAndNames(table).get(1).contains(ctx.term(1).ID().getText())){
 						table2 = dml.tableToArraylist(table);
 					}
 				} catch (IOException e) {
@@ -547,7 +548,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				}
 			}
 		} else {
-			literal2 = ctx.rel_op().getText();
+			literal1 = ctx.term(1).literal().getText();
 		}
 		
 		if(literal1.equals("") && literal2.equals("")){
@@ -555,8 +556,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			return null;
 		} else if(literal1.equals("")){
 			//Tabla 1 tiene contenido
+			String column = ctx.term(0).ID().getText();
+			
 		} else if(literal2.equals("")){
 			//Tabla 2 tiene contenido
+			String column = ctx.term(1).ID().getText();
 		} else {
 			
 		}
