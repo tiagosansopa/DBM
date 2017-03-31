@@ -48,7 +48,7 @@ public class QueryGUIController {
 	private TreeView <String>treeView = new TreeView<String>();
 	
 	@FXML
-	private TableView<String> dataTable = new TableView<String>();
+	private TableView<ObservableList<String>> dataTable = new TableView<ObservableList<String>>();
 	
 	private main mainApp;
 	
@@ -58,7 +58,36 @@ public class QueryGUIController {
 	public QueryGUIController(){
 		
 	}
-	
+	public void displayTable(ArrayList<String> columnNames,ArrayList<ArrayList<String>> rows){
+		csvData.clear();
+		ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
+		for (int i = 0;i<rows.size();i++){
+			ArrayList<String> row = rows.get(i);
+			csvData.add(FXCollections.observableArrayList(row));
+		}
+		for (int i = 0; i<columnNames.size();i++){
+			final int index = i;
+			System.out.println(index);
+			TableColumn<ObservableList<String>,String> columna = new TableColumn<>(columnNames.get(i));
+			
+			columna.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>, String>, ObservableValue<String>>() 
+			{
+                @Override
+                public ObservableValue<String> call(CellDataFeatures<ObservableList<String>, String> p) {
+                    return new SimpleStringProperty((p.getValue().get(index)));
+                }
+             });
+			System.out.println(index);
+			//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
+			columns.add(columna);
+		
+		}
+		dataTable.getColumns().clear();
+		for (int j = 0;j<columns.size();j++){
+			dataTable.getColumns().add(columns.get(j));
+		}
+		dataTable.getItems().setAll(csvData);
+	}
 	public void displayTable(){
 		dataTable.setTableMenuButtonVisible(true);
 		dataTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
@@ -69,16 +98,11 @@ public class QueryGUIController {
 		row.add("Pedro");
 		row.add("Barre");
 		row.add("UVG");
+		row.add("Men");
+		row.add("Men2");
+		row.add("Men3");
 		
-		 ObservableList<String> datap =
-		        FXCollections.observableArrayList(
-		          
-		        );
-		
-		datap.add("Barreno");
-		datap.add("14159");
-		
-		csvData.add(datap);
+		csvData.add(FXCollections.observableArrayList(row));
 		top.add("First Name");
 		top.add("Last Name");
 		top.add("id");
@@ -88,16 +112,21 @@ public class QueryGUIController {
 		System.out.println(top);
 		
 		for (int i = 0; i<top.size();i++){
-			TableColumn<String,String> columna = new TableColumn<>(top.get(i));
-			columna.setCellValueFactory(new Callback<CellDataFeatures<String, String>, ObservableValue<String>>() 
+			final int index = i;
+			System.out.println(index);
+			TableColumn<ObservableList<String>,String> columna = new TableColumn<>(top.get(i));
+			
+			columna.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>, String>, ObservableValue<String>>() 
 			{
                 @Override
-                public ObservableValue<String> call(CellDataFeatures<String, String> p) {
-                    return new SimpleStringProperty((p.getValue()));
+                public ObservableValue<String> call(CellDataFeatures<ObservableList<String>, String> p) {
+                    return new SimpleStringProperty((p.getValue().get(index)));
                 }
              });
+			System.out.println(index);
 			//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
 			columns.add(columna);
+		
 		}
 		System.out.println(columns.get(1).getText());
 		ObservableList<TableColumn> list = FXCollections.observableArrayList(columns);
@@ -110,7 +139,7 @@ public class QueryGUIController {
 		dataTable.getColumns().add(columns.get(4));
 		dataTable.getColumns().add(columns.get(5));
 		
-		dataTable.getItems().setAll(datap);
+		dataTable.getItems().setAll(csvData);
 		
 		
 		
@@ -180,7 +209,23 @@ public class QueryGUIController {
 		displayTreeView(fileLocation);
 		//TreeItem<String> root = new TreeItem<>("Root");
 		//treeView.setRoot(root);
-		displayTable();
+		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
+		ArrayList<String> row = new ArrayList<String>();
+		row.add("Pedro");
+		row.add("Koch");
+		row.add("UVG");
+		row.add("Men");
+		row.add("Men2");
+		row.add("Men3");
+		rows.add(row);
+		ArrayList<String> top = new ArrayList<String>();
+		top.add("First Name");
+		top.add("Last Name");
+		top.add("id");
+		top.add("dir");
+		top.add("direccion");
+		top.add("dir3");
+		displayTable(top,rows);
 	}
 	
 }
