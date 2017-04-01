@@ -72,8 +72,11 @@ public class QueryGUIController {
 		ddl = new DBmanagerDDL();
 		dml = new DBmanagerDML();
 	}
-	public void displayTable(ArrayList<String> columnNames,ArrayList<ArrayList<String>> rows){
+	public void displayTable(ArrayList<ArrayList<String>> rows){
 		csvData.clear();
+		ArrayList<String> columnNames = rows.get(0);
+		rows.remove(0);
+		rows.remove(0);
 		ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
 		for (int i = 0;i<rows.size();i++){
 			ArrayList<String> row = rows.get(i);
@@ -81,7 +84,7 @@ public class QueryGUIController {
 		}
 		for (int i = 0; i<columnNames.size();i++){
 			final int index = i;
-			System.out.println(index);
+			//System.out.println(index);
 			TableColumn<ObservableList<String>,String> columna = new TableColumn<>(columnNames.get(i));
 			
 			columna.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>, String>, ObservableValue<String>>() 
@@ -91,7 +94,7 @@ public class QueryGUIController {
                     return new SimpleStringProperty((p.getValue().get(index)));
                 }
              });
-			System.out.println(index);
+			//System.out.println(index);
 			//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
 			columns.add(columna);
 		
@@ -178,28 +181,13 @@ public class QueryGUIController {
         } catch ( IOException e ) {
             outputArea.setText(" No Syntactic Errors \n ");
             DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
-    		qVisitor.visit(tree);
+            ArrayList<ArrayList<String>> table = qVisitor.visit(tree);
     		String fileLocation= (System.getProperty("user.dir")+File.separator+"db");
     		displayTreeView(fileLocation);
+    		if(table != null){
+    			displayTable(table);
+    		}
         }
-		
-		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
-		ArrayList<String> row = new ArrayList<String>();
-		row.add("Pedro");
-		row.add("Koch");
-		row.add("UVG");
-		row.add("Men");
-		row.add("Men2");
-		row.add("Men3");
-		rows.add(row);
-		ArrayList<String> top = new ArrayList<String>();
-		top.add("First Name");
-		top.add("Last Name");
-		top.add("id");
-		top.add("dir");
-		top.add("direccion");
-		top.add("dir3");
-		displayTable(top,rows);
 	}
 	
 	public  void setMainApp(main app){
