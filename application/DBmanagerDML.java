@@ -25,7 +25,7 @@ public class DBmanagerDML {
 	/**
 	 * Insert INTO
 	**/
-	public boolean insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
+	public String insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
 		File table = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
 		/*
@@ -34,13 +34,11 @@ public class DBmanagerDML {
 		 * 
 		 */
 		if (actualDatabase.equals("")){
-			System.out.println("NO DATABASE IN USE");
-			return false;
+			return "NO DATABASE IN USE";
 		}
 		else if(!table.isFile())
 		{
-			System.out.println("TABLE DOES NOT EXISTS");
-			return false;
+			return "TABLE DOES NOT EXISTS";
 		}
 		
 		/*
@@ -78,42 +76,34 @@ public class DBmanagerDML {
 					System.out.println("Associado a " + typeAndName[1]);
 					if(typeAndName[1].contains("INT")){
 						if(validateInt(colTypes.get(j))){
-							System.out.println("Si es int");
 							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							System.out.println(colTypes.get(j)+" NO es int");
-							return false;
+							return colTypes.get(j)+" NO es INT";
 						}
 					}
 					else if(typeAndName[1].contains("CHAR")){
 						if(validateCHAR(typeAndName[1],colTypes.get(j))){
-							System.out.println("Si es char");
 							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							System.out.println(colTypes.get(j)+" NO es CHAR");
-							return false;
+							return colTypes.get(j)+" CHAR es mas largo que el valor especificado";
 						}
 					}
 					else if(typeAndName[1].contains("DATE")){
 						if(validateDate(colTypes.get(j))){
-							System.out.println("Si es date");
 							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							System.out.println(colTypes.get(j)+" NO es date");
-							return false;
+							return colTypes.get(j)+" NO es DATE";
 						}
 					}
 					else if(typeAndName[1].contains("FLOAT")){
 						if(validateFloat(colTypes.get(j))){
-							System.out.println("Si es Float");
 							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							System.out.println(colTypes.get(j)+" NO es float");
-							return false;
+							return colTypes.get(j)+" NO es FLOAT";
 						}
 					}
 				}
@@ -121,7 +111,6 @@ public class DBmanagerDML {
 				{
 					if(no==colNames.size()-1)
 					{
-						System.out.println("NULL!");
 						newRegistry +="NULL"+",";
 						no=0;
 					}
@@ -140,6 +129,7 @@ public class DBmanagerDML {
 		ArrayList<String> FK = new ArrayList<String>();
 		ArrayList<ArrayList<String>> FKs = new ArrayList<ArrayList<String>>();
 		ArrayList<String> CH = new ArrayList<String>();
+		
 		BufferedReader readMetadata = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
 		String constraints ="";
 		while (!constraints.contains("PK")) 
@@ -150,16 +140,38 @@ public class DBmanagerDML {
 		while (!constraints.contains("CH")) 
 		{
 			constraints = readMetadata.readLine();
-			FK.addAll(Arrays.asList(constraints.split(",")));
-			FKs.add(FK);
-			FK = new ArrayList<String>();
+			if(!constraints.contains("CH")&&!constraints.contains("FK"))
+			{
+				FK.addAll(Arrays.asList(constraints.split(",")));
+				FKs.add(FK);
+				FK = new ArrayList<String>();
+			}
 		}
+		readMetadata.close();
 		
 		/*
 		 * 
 		 * Reviso que PRIMARY KEY no se repita
 		 * 
 		 */
+		
+		ArrayList<Integer> pkColumns = new ArrayList<Integer>();
+		ArrayList<String> pkValues = new ArrayList<String>();
+		for(int i=0; i<columnsAndTypes.length;i++)
+		{
+			String[] nameAndType = columnsAndTypes[i].split(":");
+			for(String s : PK)
+			{
+				if(nameAndType[0].equals(s))
+				{
+					String[] newRegSplit = newRegistry.split(",");
+					pkValues.add(newRegSplit[i]);
+					pkColumns.add(i);
+				}
+			}
+		}
+		
+		
 		
 		
 		
@@ -238,7 +250,7 @@ public class DBmanagerDML {
 			file2.newLine();
 		}
 		file2.close();
-		return true;
+		return "";
 		
 	}
 	
