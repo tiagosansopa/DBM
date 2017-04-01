@@ -60,7 +60,6 @@ public class DBmanagerDML {
 			rowsInMetadata+=1;
 		}
 
-		output.close();
 		br.close();
 		newRegistry = "";
 
@@ -151,7 +150,7 @@ public class DBmanagerDML {
 		
 		/*
 		 * 
-		 * Reviso que PRIMARY KEY no se repita
+		 * Reviso que PRIMARY KEY no se repita en ningun registro
 		 * 
 		 */
 		
@@ -171,10 +170,48 @@ public class DBmanagerDML {
 			}
 		}
 		
+		System.out.println("PK "+pkValues+" EN COLUMNA " + pkColumns );
 		
+		ArrayList<ArrayList<String>> tableToInsert = new ArrayList<ArrayList<String>>();
+		ArrayList<String> rows = new ArrayList<String>();
+		int repeated = 0;
+		BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
+
+		String line;
+		while ((line = reader.readLine()) != null) 
+		{
+			System.out.println(line.substring(0, line.length()-1));
+			String[] columns = line.substring(0, line.length()-1).split(",");
+			
+			for(int i=0; i<columns.length;i++)
+			{
+				rows.add(columns[i]);
+			}
+			tableToInsert.add(rows);
+			rows = new ArrayList<String>();
+		}	
+		reader.close();
 		
-		
-		
+		for(ArrayList<String> n : tableToInsert)
+		{
+			for(int c = 0; c<pkColumns.size();c++)
+			{
+				//System.out.println("Es igual " + n.get(pkColumns.get(c)) + " = " + pkValues.get(c));
+				if(n.get(pkColumns.get(c)).equals(pkValues.get(c)))
+				{
+					//System.out.println("Primary key " + n.get(pkColumns.get(c)) + " = " + pkValues.get(c) + " Se repitio");
+					repeated+=1;
+				}
+			}
+			if(repeated==pkColumns.size())
+			{
+				//System.out.println("Primary key en registro " + n + " Se repitio");
+				return "Primary key en registro " + n + " Se repitio";
+			}
+			else{
+				repeated=0;	
+			}
+		}
 		
 		/*
 		 * 
@@ -185,7 +222,7 @@ public class DBmanagerDML {
 		
 		/*
 		 * 
-		 * Reviso que PRIMARY KEY no se repita
+		 * Reviso CHECKS
 		 * 
 		 */
 		
@@ -201,7 +238,6 @@ public class DBmanagerDML {
 		
 	
 		BufferedReader readTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
-		String line;
 		int regCount = 1;
 		while ((line = readTable.readLine()) != null) 
 		{
@@ -230,7 +266,7 @@ public class DBmanagerDML {
 		 */
 		
 		
-		ArrayList<String> rows = new ArrayList<String>();
+		rows = new ArrayList<String>();
 		
 		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
 		while ((newRegistry = file.readLine())!=null) 
@@ -250,6 +286,8 @@ public class DBmanagerDML {
 			file2.newLine();
 		}
 		file2.close();
+		output.close();
+
 		return "";
 		
 	}
