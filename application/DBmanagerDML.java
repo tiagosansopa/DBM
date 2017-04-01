@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DBmanagerDML {
 	
@@ -27,7 +28,11 @@ public class DBmanagerDML {
 	public boolean insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
 		File table = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
-		
+		/*
+		 * 
+		 * Reviso que la tabla exista o que si tengamos una base de datos en uso
+		 * 
+		 */
 		if (actualDatabase.equals("")){
 			System.out.println("NO DATABASE IN USE");
 			return false;
@@ -38,21 +43,28 @@ public class DBmanagerDML {
 			return false;
 		}
 		
+		/*
+		 * 
+		 * Reviso las columnas en las que voy a insertar. Valido el tipo de dato. Valido si viene vacio
+		 * y agrego un NULL. 
+		 * 
+		 */
+		
 		BufferedWriter  output = new BufferedWriter(new FileWriter(table,true));
-		String temp = "";
+		String newRegistry = "";
 		int no=0,rowsInMetadata=0;
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"), Charset.forName("UTF-8")));
 	
 		String[] columnsAndTypes= br.readLine().split(",");
 		
-		while ((temp = br.readLine()) != null) {
+		while ((newRegistry = br.readLine()) != null) {
 			rowsInMetadata+=1;
 		}
 
 		output.close();
 		br.close();
-		temp = "";
+		newRegistry = "";
 
 		for(int i=0; i<columnsAndTypes.length;i++)
 		{
@@ -67,7 +79,7 @@ public class DBmanagerDML {
 					if(typeAndName[1].contains("INT")){
 						if(validateInt(colTypes.get(j))){
 							System.out.println("Si es int");
-							temp +=colTypes.get(j)+",";
+							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
 							System.out.println(colTypes.get(j)+" NO es int");
@@ -77,7 +89,7 @@ public class DBmanagerDML {
 					else if(typeAndName[1].contains("CHAR")){
 						if(validateCHAR(typeAndName[1],colTypes.get(j))){
 							System.out.println("Si es char");
-							temp +=colTypes.get(j)+",";
+							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
 							System.out.println(colTypes.get(j)+" NO es CHAR");
@@ -87,7 +99,7 @@ public class DBmanagerDML {
 					else if(typeAndName[1].contains("DATE")){
 						if(validateDate(colTypes.get(j))){
 							System.out.println("Si es date");
-							temp +=colTypes.get(j)+",";
+							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
 							System.out.println(colTypes.get(j)+" NO es date");
@@ -97,7 +109,7 @@ public class DBmanagerDML {
 					else if(typeAndName[1].contains("FLOAT")){
 						if(validateFloat(colTypes.get(j))){
 							System.out.println("Si es Float");
-							temp +=colTypes.get(j)+",";
+							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
 							System.out.println(colTypes.get(j)+" NO es float");
@@ -110,7 +122,7 @@ public class DBmanagerDML {
 					if(no==colNames.size()-1)
 					{
 						System.out.println("NULL!");
-						temp +="NULL"+",";
+						newRegistry +="NULL"+",";
 						no=0;
 					}
 					no+=1;
@@ -119,7 +131,63 @@ public class DBmanagerDML {
 			
 		}
 		
+		/*
+		 * 
+		 * Guardar los Constraints
+		 * 
+		 */
+		ArrayList<String> PK = new ArrayList<String>();
+		ArrayList<String> FK = new ArrayList<String>();
+		ArrayList<ArrayList<String>> FKs = new ArrayList<ArrayList<String>>();
+		ArrayList<String> CH = new ArrayList<String>();
+		BufferedReader readMetadata = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		String constraints ="";
+		while (!constraints.contains("PK")) 
+		{
+			constraints = readMetadata.readLine();
+		}
+		PK.addAll(Arrays.asList(readMetadata.readLine().split(",")));
+		while (!constraints.contains("CH")) 
+		{
+			constraints = readMetadata.readLine();
+			FK.addAll(Arrays.asList(constraints.split(",")));
+			FKs.add(FK);
+			FK = new ArrayList<String>();
+		}
 		
+		/*
+		 * 
+		 * Reviso que PRIMARY KEY no se repita
+		 * 
+		 */
+		
+		
+		
+		
+		/*
+		 * 
+		 * Reviso que FOREING KEY exista  (ya sea la referencia o el registro)
+		 * 
+		 */
+		
+		
+		/*
+		 * 
+		 * Reviso que PRIMARY KEY no se repita
+		 * 
+		 */
+		
+		
+		
+		
+		
+		/*
+		 * 
+		 * Cuento cantidad de registros actuales y escribo el nuevo registro
+		 * 
+		 */
+		
+	
 		BufferedReader readTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
 		String line;
 		int regCount = 1;
@@ -131,29 +199,36 @@ public class DBmanagerDML {
 		
 		if(regCount==0)
 		{
-			output.write(temp.substring(0, temp.length()-1)+";");
+			output.write(newRegistry.substring(0, newRegistry.length()-1)+";");
 			output.close();
 			br.close();
 		}
 		else
 		{
 			output.newLine();
-			output.write(temp.substring(0, temp.length()-1)+";");
+			output.write(newRegistry.substring(0, newRegistry.length()-1)+";");
 			output.close();
 			br.close();
 		}
 		
+		/*
+		 * 
+		 * Sobreescribo en archivo de metadata con nueva cantidad de regs 
+		 * 
+		 */
+		
+		
 		ArrayList<String> rows = new ArrayList<String>();
 		
 		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
-		while ((temp = file.readLine())!=null) 
+		while ((newRegistry = file.readLine())!=null) 
 		{
-			if(temp.contains("R:"))
+			if(newRegistry.contains("R:"))
 			{
 				rows.add("R:"+regCount);
 			}
 			else{
-				rows.add(temp);
+				rows.add(newRegistry);
 			}
 		}
 		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
