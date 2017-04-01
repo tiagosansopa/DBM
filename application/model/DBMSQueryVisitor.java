@@ -1,26 +1,34 @@
 package application.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import application.model.KeyPFC;
 import application.model.DBMSParser.ConstraintAtContext;
+import application.model.DBmanagerDDL;
+import application.model.DBmanagerDML;
 
-public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
+public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<String>>> {
 	public StringBuffer errors = new StringBuffer("\n Semantic Errors: \n");
-	int n = 0;
+	public Integer n = 0;
+	public DBmanagerDDL ddl;
+	public DBmanagerDML dml;
+	public ArrayList<String> tables_list;
+	public ArrayList<String> columns_list;
 	
-	public DBMSQueryVisitor (){
+	public DBMSQueryVisitor (DBmanagerDDL ddl, DBmanagerDML dml){
 		System.out.println("DBMSVisitor");
+		this.ddl = ddl;
+		this.dml = dml;
 		//Hello Santiago Koch
 	}
 	
 	@Override 
-	public String visitSql(DBMSParser.SqlContext ctx) {
+	public ArrayList<ArrayList<String>> visitSql(DBMSParser.SqlContext ctx) {
 		System.out.println("visitSql");
 		return visitChildren(ctx); 
 	}
 	
 	@Override
-	public String visitSql_executable(DBMSParser.Sql_executableContext ctx){
+	public ArrayList<ArrayList<String>> visitSql_executable(DBMSParser.Sql_executableContext ctx){
 		System.out.println("visitSql_Executable");
 		if(ctx.sql_dml() != null){
 			System.out.println("sql_dml"); // <- noten como la gramatica nos permite saber que onda
@@ -33,7 +41,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	//SQL DDL
 	
 	@Override
-	public String visitSql_ddl(DBMSParser.Sql_ddlContext ctx){
+	public  ArrayList<ArrayList<String>> visitSql_ddl(DBMSParser.Sql_ddlContext ctx){
 		System.out.println("visitSql_ddl");
 		if(ctx.database_statement() != null){
 			System.out.println("database_statement");
@@ -48,59 +56,64 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 	
 	//CREATE DATABASE
 	@Override
-	public String visitCreate_database(DBMSParser.Create_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitCreate_database(DBMSParser.Create_databaseContext ctx){
 		//create database ID END_SQL
 		System.out.println("visitCreate_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id); //Santiago function
-		return "HEY"; //errors
+		ddl.createDatabase(id);
+		return null; //errors
 	}
 	
 	//ALTER DATABASE
 	@Override
-	public String visitAlter_database(DBMSParser.Alter_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitAlter_database(DBMSParser.Alter_databaseContext ctx){
 		//alter database ID rename to ID END_SQL
 		System.out.println("visitAlter_database");
 		String id_number_1 = ctx.getChild(2).getText(); //arg 1
 		String id_number_2 = ctx.getChild(5).getText(); //arg 2
 		System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
-		return "HEY"; //Errors :)
+		ddl.alterDatabase(id_number_1, id_number_2);
+		return null; //Errors :)
 	}
 	
 	//DROP DATABASE
 	@Override
-	public String visitDrop_database(DBMSParser.Drop_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitDrop_database(DBMSParser.Drop_databaseContext ctx){
 		//drop database ID END_SQL
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);//FUNCTION SANTIAGO
-		return "HEY";
+		ddl.killDatabase(id);
+		return null;
 	}
 	
 	
 	//SHOW DATABASE
 	@Override
-	public String visitShow_database(DBMSParser.Show_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitShow_database(DBMSParser.Show_databaseContext ctx){
 		//show databases END_SQL
 		System.out.println("visitShow_database");
-		return "HEY";
+		ddl.showDatabases();
+		return null;
 	}
 	
 	//USE DATABASE
 	@Override
-	public String visitUse_database(DBMSParser.Use_databaseContext ctx){
+	public ArrayList<ArrayList<String>> visitUse_database(DBMSParser.Use_databaseContext ctx){
 		//use database ID END_SQL
 		System.out.println("visitUse_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
-		return "HEY";
+		ddl.useDatabase(id);
+		return null;
 	}
 	
 	//TABLE STATEMENT
 	
 	//CREATE TABLE
 	@Override
-	public String visitCreate_table(DBMSParser.Create_tableContext ctx){
+	public ArrayList<ArrayList<String>> visitCreate_table(DBMSParser.Create_tableContext ctx){
 		//create table ID LPAREN ID type comma_id_type_k comma_constraint_constraintAt_k  RPAREN END_SQL
 		System.out.println("visitCreate_table");
 		String table_id = ctx.getChild(2).getText();
@@ -181,7 +194,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 							 System.out.println(key_column_i);
 						 }
 					 }
-				 } else {
+				 } else if(constraintAt.checks() != null) {
 					 System.out.println("CH");
 					 //ID check LPAREN exp RPAREN
 					 String id = constraintAt.checks().getChild(0).getText();
@@ -193,12 +206,13 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				 keys_list.add(key);
 			}
 		}
-		return "HEY";
+		ddl.createTable(table_id, columns_list, types_list);
+		return null;
 	}
 
 	//ALTER TABLE
 	@Override
-	public String visitAlter_table(DBMSParser.Alter_tableContext ctx){
+	public ArrayList<ArrayList<String>> visitAlter_table(DBMSParser.Alter_tableContext ctx){
 		//alter table ID rename to ID END_SQL
 	    //|   alter table ID action comma_action_k END_SQL
 		System.out.println("visitAlter_table");
@@ -209,53 +223,54 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		} else {
 			//action
 		}
-		return "HEY";
+		return null;
 	}
 	
-	public String visitAction(DBMSParser.ActionContext ctx){
-		
-		return "HEY";
-	}
-
 	//DROP TABLES
 	@Override
-	public String visitDrop_table(DBMSParser.Drop_tableContext ctx){
+	public ArrayList<ArrayList<String>> visitDrop_table(DBMSParser.Drop_tableContext ctx){
 		//drop table ID END_SQL
 		System.out.println("visitDrop_table");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
-		return "HEY";
+		return null;
 	}
 	
 	//SHOW TABLES
 	@Override
-	public String visitShow_tables(DBMSParser.Show_tablesContext ctx){
+	public ArrayList<ArrayList<String>> visitShow_tables(DBMSParser.Show_tablesContext ctx){
 		//show tables END_SQL
 		System.out.println("visitShow_tables");
-		return "HEY";
+		ddl.showTables();
+		return null;
 	}
 	
 	//SHOW COLUMNS
 	@Override
-	public String visitShow_columns(DBMSParser.Show_columnsContext ctx){
+	public ArrayList<ArrayList<String>> visitShow_columns(DBMSParser.Show_columnsContext ctx){
 		//show columns from ID END_SQL
 		System.out.println("visitShow_columns");
 		String id = ctx.getChild(3).getText();
 		System.out.println(id);
-		return visitChildren(ctx);
+		try{
+			ddl.showColumns(id);
+		} catch(IOException ex) {
+	        ex.printStackTrace();
+	    }
+		return null;
 	}
 	
 	//SQL DML
 	
 	@Override
-	public String visitSql_dml(DBMSParser.Sql_dmlContext ctx){
+	public ArrayList<ArrayList<String>> visitSql_dml(DBMSParser.Sql_dmlContext ctx){
 		System.out.println("visitSql_dml");
 		return visitChildren(ctx);
 	}
 	
 	//INSERT
 	@Override
-	public String visitInsert_value(DBMSParser.Insert_valueContext ctx){
+	public ArrayList<ArrayList<String>> visitInsert_value(DBMSParser.Insert_valueContext ctx){
 		//insert into ID some_order values LPAREN literal comma_literal_k RPAREN END_SQL
 		System.out.println("visitInsert_value");
 		String id = ctx.getChild(2).getText();
@@ -282,12 +297,17 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				System.out.println(literal_list.get(i+1));
 			}
 		}
-		return visitChildren(ctx);
+		try {
+			dml.insertInto(id, order_list, literal_list);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	//UPDATE
 	@Override
-	public String visitUpdate_value(DBMSParser.Update_valueContext ctx){
+	public ArrayList<ArrayList<String>> visitUpdate_value(DBMSParser.Update_valueContext ctx){
 		//update ID set ID EQ literal comma_id_eq_literal_k  where_exp END_SQL
 		System.out.println("visitUpdate_value");
 		String id = ctx.getChild(1).getText();
@@ -309,13 +329,14 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		if(ctx.where_exp() != null){
 			System.out.println(ctx.where_exp().getText());
 		}
-		return visitChildren(ctx);
+		
+		return null;
 	}
 	
 	
 	//DELETE
 	@Override
-	public String visitDelete_value(DBMSParser.Delete_valueContext ctx){
+	public ArrayList<ArrayList<String>> visitDelete_value(DBMSParser.Delete_valueContext ctx){
 		//delete from ID where_exp END_SQL
 		System.out.println("visitDelete_value");
 		String id = ctx.getChild(2).getText();
@@ -323,16 +344,16 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 		if(ctx.where_exp() != null){
 			System.out.println(ctx.where_exp().getText());
 		}
-		return visitChildren(ctx);
+		return null;
 	}
 	
 	//SELECT
 	@Override
-	public String visitSelect_value(DBMSParser.Select_valueContext ctx){
+	public ArrayList<ArrayList<String>> visitSelect_value(DBMSParser.Select_valueContext ctx){
 		//select select_k_id from ID comma_id_k where_exp order_by END_SQL
 		System.out.println("visitSelect_value");
-		ArrayList<String> columns_list = new ArrayList<String>();
-		ArrayList<String> tables_list = new ArrayList<String>();
+		columns_list = new ArrayList<String>();
+		tables_list = new ArrayList<String>();
 		ArrayList<String> order_by_id_list = new ArrayList<String>();
 		ArrayList<Integer> order_by_ad_list = new ArrayList<Integer>();
 		if(ctx.select_k_id().KL() != null){
@@ -358,8 +379,13 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				System.out.println(tables_list.get(i+1));
 			}
 		}
+
 		if(ctx.where_exp() != null){
 			System.out.println("WHERE EXPRESSION");
+			ArrayList<ArrayList<String>> result = visit(ctx.where_exp().exp());
+			if(result == null){
+				//AUN ASI TENEMOS QUE TRABAJAR AMBAS TABLAS :(
+			}
 		}
 		if(ctx.order_by().getChildCount() > 0){
 			//(order by ID (asc | desc) comma_id_ad_k)?
@@ -388,7 +414,303 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor<String> {
 				}
 			}
 		}
-		return "HEY";
+		return null;
+	}
+	
+	
+	//Exp
+	@Override
+	public ArrayList<ArrayList<String>> visitExp(DBMSParser.ExpContext ctx){
+		//:   expression |   //epsilon
+		if(ctx.expression() != null){
+			return visitChildren(ctx);
+		}
+		return null;
+	}
+	
+	@Override
+	public ArrayList<ArrayList<String>> visitExpression(DBMSParser.ExpressionContext ctx){
+		/*expression 
+    		:   andExpr
+    		|   expression or andExpr*/
+		if(ctx.getChildCount() == 1){
+			return visitChildren(ctx);
+		} else {
+			ArrayList<ArrayList<String>> t1 = visit(ctx.expression());
+			if(t1 == null){
+				return null;
+			}
+			ArrayList<ArrayList<String>> t2 = visit(ctx.andExpr());
+			if(t2 == null){
+				return null;
+			}
+			if(t1.size() > t2.size()){
+				for(ArrayList<String> row : t2){
+					if(!t1.contains(row)){
+						t1.add(row);
+					}
+				}
+			} else {
+				for(ArrayList<String> row : t1){
+					if(!t2.contains(row)){
+						t2.add(row);
+					}
+				}
+			}
+			return t2;
+		}
+	}
+
+	@Override
+	public ArrayList<ArrayList<String>> visitAndExpr(DBMSParser.AndExprContext ctx){
+		/*andExpr
+			: factor 
+    		| andExpr and factor */
+		if(ctx.getChildCount() == 1){
+			return visitChildren(ctx);
+		} else {
+			ArrayList<ArrayList<String>> t1 = visit(ctx.andExpr());
+			if(t1 == null){
+				return null;
+			}
+			ArrayList<ArrayList<String>> t2 = visit(ctx.factor());
+			if(t2 == null){
+				return null;
+			}
+			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+			if(t1.size() > t2.size()){
+				for(ArrayList<String> row : t1){
+					if(t2.contains(row)){
+						result.add(row);
+					}
+				}
+			} else {
+				for(ArrayList<String> row : t2){
+					if(t1.contains(row)){
+						result.add(row);
+					}
+				}
+			}
+			return result;
+		}
+		
+	}
+	
+	@Override
+	public ArrayList<ArrayList<String>> visitFactor(DBMSParser.FactorContext ctx){
+		/*factor
+    		: primaryExpr 
+    		| not primaryExpr*/
+		if(ctx.getChildCount() == 1){
+			return visitChildren(ctx);
+		} else {
+			return null;
+		}
+	}
+	
+	@Override
+	public ArrayList<ArrayList<String>> visitPrimaryExpr(DBMSParser.PrimaryExprContext ctx){
+		/*primaryExpr
+			: compareExpr
+			| LPAREN expression RPAREN
+			;*/
+		if(ctx.getChildCount() == 1){
+			return visitChildren(ctx);
+		} else {
+			return visitChildren(ctx.expression());
+		}
+	}
+	
+	@Override
+	public ArrayList<ArrayList<String>> visitCompareExpr(DBMSParser.CompareExprContext ctx){
+		/*	compareExpr
+				:	term rel_op term
+		 */
+		
+		/*term
+			:	ID
+			|	literal
+		 */
+		ArrayList<ArrayList<String>> current_table_info;
+		ArrayList<ArrayList<String>> table1 = new ArrayList<ArrayList<String>>();
+		String literal1 = "";
+		Integer index1;
+		String type1 = "";
+		ArrayList<ArrayList<String>> table2 = new ArrayList<ArrayList<String>>();
+		String literal2 = "";
+		Integer index2;
+		String type2 = "";
+		String rel_op = ctx.rel_op().getText();
+		
+		if(ctx.term(0).literal() == null){
+			System.out.println("term 0 es ID ");
+			String column_name = ctx.term(0).ID().getText();
+			for(String table_name : tables_list){
+				System.out.println(table_name);
+				try {
+					current_table_info = dml.tableTypesAndNames(table_name);
+				} catch (IOException e1) {
+					System.out.println("Error info de tabla "+table_name);
+					e1.printStackTrace();
+					return null;
+				}
+				if(current_table_info.get(0).contains(column_name)){
+					try {
+						table1 = dml.tableToArraylist(table_name);
+					} catch (IOException e) {
+						System.out.println("Error cargar tabla "+table_name);
+						e.printStackTrace();
+						return null;
+					}
+					index1 = current_table_info.get(0).indexOf(column_name);
+					type1 = current_table_info.get(1).get(index1);
+					System.out.println(current_table_info.get(0));
+					System.out.println("Nombre de tabla "+table_name);
+					System.out.println("Nombre de columna "+column_name);
+					System.out.println("Indice de columna "+index1);
+					System.out.println("Tipo de columna "+type1);
+				}
+			}
+		} else {
+			literal1 = ctx.term(0).literal().getText();
+			if(dml.validateInt(literal1)){
+				type1 = "INT";
+			} else if (dml.validateFloat(literal1)){
+				type1 = "FLOAT";
+			} else if (dml.validateDate(literal1)){
+				type1 = "DATE";
+			} else {
+				type1 = "CHAR("+String.valueOf(literal1.length())+")";
+			}
+			System.out.println("Tipo de columna "+type1);
+		}
+		
+		if(ctx.term(1).literal() == null){
+			System.out.println("term 1 es ID ");
+			String column_name = ctx.term(1).ID().getText();
+			for(String table_name : tables_list){
+				System.out.println(table_name);
+				try {
+					current_table_info = dml.tableTypesAndNames(table_name);
+				} catch (IOException e1) {
+					System.out.println("Error info de tabla "+table_name);
+					e1.printStackTrace();
+					return null;
+				}
+				if(current_table_info.get(0).contains(column_name)){
+					try {
+						table2 = dml.tableToArraylist(table_name);
+					} catch (IOException e) {
+						System.out.println("Error cargar tabla "+table_name);
+						e.printStackTrace();
+						return null;
+					}
+					index2 = current_table_info.get(0).indexOf(column_name);
+					type2 = current_table_info.get(1).get(index2);
+					System.out.println(current_table_info.get(0));
+					System.out.println("Nombre de tabla "+table_name);
+					System.out.println("Nombre de columna "+column_name);
+					System.out.println("Indice de columna "+index2);
+					System.out.println("Tipo de columna "+type2);
+				}
+			}
+		} else {
+			literal2 = ctx.term(1).literal().getText();
+			if(dml.validateInt(literal2)){
+				type2 = "INT";
+			} else if (dml.validateFloat(literal2)){
+				type2 = "FLOAT";
+			} else if (dml.validateDate(literal2)){
+				type2 = "DATE";
+			} else {
+				type2 = "CHAR("+String.valueOf(literal2.length())+")";
+			}
+			System.out.println("Tipo de columna "+type2);
+		}
+		
+		if(literal1.equals("") && literal2.equals("")){
+			System.out.println("Ambas son columnas.. producto cruz");
+			return null;
+		} else if(literal1.equals("")){
+			//Tabla 2 tiene contenido
+			System.out.println("Tabla 0 tiene contenido");
+			if(!table1.isEmpty()){
+				for(ArrayList<String> row : table1){
+					System.out.println(row);
+				}
+			}
+		} else if(literal2.equals("")){
+			//Tabla 1 tiene contenido
+			System.out.println("Tabla 1 tiene contenido");
+		} else {
+			System.out.println("ERROR, ambas son literales");
+			return null;
+		}
+		return null;
+	}
+	
+	public boolean relation(String op, String item1, String item2, String type1, String type2){
+		if(type1.equals(type2)){
+			if(type1.equals("INT")){
+				switch (op) {
+					case "<" :
+						return Integer.valueOf(item1) < Integer.valueOf(item2);
+					case ">" :
+						return Integer.valueOf(item1) > Integer.valueOf(item2);
+					case "<=" :
+						return Integer.valueOf(item1) <= Integer.valueOf(item2);
+					case ">=" :
+						return Integer.valueOf(item1) >= Integer.valueOf(item2);
+					case "=" :
+						return Integer.valueOf(item1) == Integer.valueOf(item2);
+					case "<>" :
+						return Integer.valueOf(item1) != Integer.valueOf(item2);
+				}
+			} else if(type1.equals("FLOAT")){
+				switch (op) {
+					case "<" :
+						return Float.valueOf(item1) < Float.valueOf(item2);
+					case ">" :
+						return Float.valueOf(item1) > Float.valueOf(item2);
+					case "<=" :
+						return Float.valueOf(item1) <= Float.valueOf(item2);
+					case ">=" :
+						return Float.valueOf(item1) >= Float.valueOf(item2);
+					case "=" :
+						return Float.valueOf(item1) == Float.valueOf(item2);
+					case "<>" :
+						return Float.valueOf(item1) != Float.valueOf(item2);
+				}
+			} else if(type1.equals("DATE")){
+				
+			} else {
+				//CHAR
+				switch(op) {
+					case "=" :
+						return item1.equals(item2);
+					case "<>" :
+						return !item1.equals(item2);
+					default	:
+						return false;
+				}
+			}
+		} else if((type1.equals("FLOAT") && type2.equals("INT")) || (type2.equals("FLOAT") && type1.equals("INT"))){
+			switch (op) {
+				case "<" :
+					return Float.valueOf(item1) < Float.valueOf(item2);
+				case ">" :
+					return Float.valueOf(item1) > Float.valueOf(item2);
+				case "<=" :
+					return Float.valueOf(item1) <= Float.valueOf(item2);
+				case ">=" :
+					return Float.valueOf(item1) >= Float.valueOf(item2);
+				case "=" :
+					return Float.valueOf(item1) == Float.valueOf(item2);
+				case "<>" :
+					return Float.valueOf(item1) != Float.valueOf(item2);
+			}
+		}
+		return false;
 	}
 	
 	public void handleSemanticError(String message){

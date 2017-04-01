@@ -25,9 +25,9 @@ public class main extends Application {
         showQueryGUI();
     }
 
-    /**
-     * Initializes the root layout.
-     */
+    
+    /// Initializes the root layout.
+     
     public void initRootLayout() {
         try {
             // Load root layout from fxml file.
@@ -44,9 +44,9 @@ public class main extends Application {
         }
     }
 
-    /**
-     * Shows queryGUI inside the root layout.
-     */
+    
+    /// Shows queryGUI inside the root layout.
+     
     public void showQueryGUI() {
         try {
             // Load query overview.
@@ -67,10 +67,10 @@ public class main extends Application {
         }
     }
 
-    /**
-     * Returns the main stage.
-     * @return
-     */
+    
+    /// Returns the main stage.
+    /// @return
+     
     public Stage getPrimaryStage() {
         return primaryStage;
     }

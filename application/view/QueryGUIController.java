@@ -13,6 +13,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import application.model.DBMSLexer;
 import application.model.DBMSParser;
 import application.model.DBMSQueryVisitor;
+import application.model.DBmanagerDDL;
+import application.model.DBmanagerDML;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -52,11 +54,14 @@ public class QueryGUIController {
 	
 	private main mainApp;
 	
-	ObservableList<ObservableList<String>> csvData = FXCollections.observableArrayList();
+	private ObservableList<ObservableList<String>> csvData = FXCollections.observableArrayList();
 	
+	private DBmanagerDDL ddl;
+	private DBmanagerDML dml;
 	
 	public QueryGUIController(){
-		
+		ddl = new DBmanagerDDL();
+		dml = new DBmanagerDML();
 	}
 	public void displayTable(ArrayList<String> columnNames,ArrayList<ArrayList<String>> rows){
 		csvData.clear();
@@ -88,6 +93,7 @@ public class QueryGUIController {
 		}
 		dataTable.getItems().setAll(csvData);
 	}
+
 	public void displayTreeView(String inputDirectoryLocation) {
 	    // Creates the root item.
 	    CheckBoxTreeItem<String> rootItem = new CheckBoxTreeItem<String>(inputDirectoryLocation);
@@ -133,6 +139,7 @@ public class QueryGUIController {
 	 * Called whenever we click on the run button. 
 	 * Specification has been set on Scene Builder. 
 	 **/
+
 	public void handleText(){
 		String inputText = queryLabel.getText();
 		System.out.println(inputText);
@@ -141,7 +148,7 @@ public class QueryGUIController {
 		TokenStream tokens = new CommonTokenStream(lexer);
 		DBMSParser parser = new DBMSParser(tokens);
 		ParseTree tree = parser.sql();
-		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor();
+		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
 		qVisitor.visit(tree);
 		String fileLocation= (System.getProperty("user.dir"));
 		displayTreeView(fileLocation);
@@ -166,9 +173,6 @@ public class QueryGUIController {
 	
 	public  void setMainApp(main app){
 		this.mainApp = app;
-		
-		//String fileLocation= ("C:\\Users\\Pablo\\Desktop\\UVG\\Base de Datos Tests");
-		
 	}
 	
 }

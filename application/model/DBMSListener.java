@@ -768,16 +768,6 @@ public interface DBMSListener extends ParseTreeListener {
 	 */
 	void exitCond_op(DBMSParser.Cond_opContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DBMSParser#eq_op}.
-	 * @param ctx the parse tree
-	 */
-	void enterEq_op(DBMSParser.Eq_opContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DBMSParser#eq_op}.
-	 * @param ctx the parse tree
-	 */
-	void exitEq_op(DBMSParser.Eq_opContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link DBMSParser#add_op}.
 	 * @param ctx the parse tree
 	 */
@@ -828,46 +818,6 @@ public interface DBMSListener extends ParseTreeListener {
 	 */
 	void exitAndExpr(DBMSParser.AndExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DBMSParser#eqExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqExpr(DBMSParser.EqExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DBMSParser#eqExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqExpr(DBMSParser.EqExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DBMSParser#relationExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterRelationExpr(DBMSParser.RelationExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DBMSParser#relationExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitRelationExpr(DBMSParser.RelationExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DBMSParser#unaryExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterUnaryExpr(DBMSParser.UnaryExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DBMSParser#unaryExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitUnaryExpr(DBMSParser.UnaryExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DBMSParser#unifactor}.
-	 * @param ctx the parse tree
-	 */
-	void enterUnifactor(DBMSParser.UnifactorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DBMSParser#unifactor}.
-	 * @param ctx the parse tree
-	 */
-	void exitUnifactor(DBMSParser.UnifactorContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link DBMSParser#factor}.
 	 * @param ctx the parse tree
 	 */
@@ -877,4 +827,34 @@ public interface DBMSListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFactor(DBMSParser.FactorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#primaryExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrimaryExpr(DBMSParser.PrimaryExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#primaryExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrimaryExpr(DBMSParser.PrimaryExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#compareExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompareExpr(DBMSParser.CompareExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#compareExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompareExpr(DBMSParser.CompareExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void enterTerm(DBMSParser.TermContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void exitTerm(DBMSParser.TermContext ctx);
 }

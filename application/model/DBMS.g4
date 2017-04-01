@@ -550,8 +550,6 @@ cond_op
     |   or
     ;
 
-eq_op : '==' | '!=' ;
-
 add_op: '+'| '-';
 
 mult_op: '*' | '/' | '%' ;
@@ -569,34 +567,25 @@ expression
     ;
 
 andExpr
-    : eqExpr 
-    | andExpr and eqExpr 
+    : factor 
+    | andExpr and factor 
     ;
 
-eqExpr
-    :   relationExpr 
-    |   eqExpr eq_op relationExpr 
-    ; 
-
-relationExpr
-    : unaryExpr 
-    | relationExpr rel_op unaryExpr 
+factor
+    : primaryExpr 
+    | not primaryExpr 
     ;
 
-unaryExpr
-    :   '(' (not)? ID  ')' 
-    | (not)? ID 
-    | literal
-    ; // verificar
+primaryExpr
+	: compareExpr
+	| LPAREN expression RPAREN
+	;
+	
+compareExpr
+	:	term rel_op term
+	;
 
-unifactor
-    :   not factor
-    |   factor
-    ;
-    
-factor      
-    :   LPAREN expression RPAREN
-    |   ID
-    |   ID.ID
-    ;
-    
+term
+	:	ID
+	|	literal
+	;
