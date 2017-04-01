@@ -49,7 +49,8 @@ public class DBmanagerDML {
 		while ((temp = br.readLine()) != null) {
 			rowsInMetadata+=1;
 		}
-		System.out.println("CANTIDAD DE FILAS "+rowsInMetadata);
+
+		output.close();
 		br.close();
 		temp = "";
 
@@ -121,7 +122,7 @@ public class DBmanagerDML {
 		
 		BufferedReader readTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
 		String line;
-		int regCount = 0;
+		int regCount = 1;
 		while ((line = readTable.readLine()) != null) 
 		{
 			regCount+=1;
@@ -156,7 +157,7 @@ public class DBmanagerDML {
 			}
 		}
 		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
-		for(int i=0;i<=rows.size();i++)
+		for(int i=0;i<rows.size();i++)
 		{
 			file2.write(rows.get(i));
 			file2.newLine();
