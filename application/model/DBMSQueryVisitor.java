@@ -2,6 +2,9 @@ package application.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import application.model.DBMSParser.ConstraintAtContext;
 import application.model.DBmanagerDDL;
 import application.model.DBmanagerDML;
@@ -682,6 +685,80 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 						return Float.valueOf(item1) != Float.valueOf(item2);
 				}
 			} else if(type1.equals("DATE")){
+				List<String> date1 = Arrays.asList(item1.split("\\s*-\\s*"));
+				List<String> date2 = Arrays.asList(item2.split("\\s*-\\s*"));
+				int year1 = Integer.valueOf(date1.get(0));
+				int year2 = Integer.valueOf(date2.get(0));
+				int month1 = Integer.valueOf(date1.get(1));
+				int month2 = Integer.valueOf(date2.get(1));
+				int day1 = Integer.valueOf(date1.get(2));
+				int day2 = Integer.valueOf(date2.get(2));
+				switch(op){
+					case "<":
+						if ( year1 < year2 ){
+							return true;
+						}
+						else if ( month1 < month2 ){
+							return true; 
+						}
+						else if ( day1 < day2 ){
+							return true;
+						}
+						else 
+							return false;
+					case ">":
+						if ( year1 > year2 ){
+							return true;
+						}
+						else if ( month1 > month2 ){
+							return true; 
+						}
+						else if ( day1 > day2 ){
+							return true;
+						}
+						else 
+							return false;
+					case "<=":
+						if ( year1 <= year2 ){
+							return true;
+						}
+						else if ( month1 <= month2 ){
+							return true; 
+						}
+						else if ( day1 <= day2 ){
+							return true;
+						}
+						else 
+							return false;
+					case ">=":
+						if ( year1 >= year2 ){
+							return true;
+						}
+						else if ( month1 >= month2 ){
+							return true; 
+						}
+						else if ( day1 >= day2 ){
+							return true;
+						}
+						else 
+							return false;
+					case "=":
+						if ( ( year1 == year2 )
+							&& ( month1 == month2)
+							&& ( day1 == day2)
+							)
+							return true;
+						else 
+							return false; 
+					case "<>":
+						if(( year1 != year2 )
+						   ||( month1 != month2 )
+						   ||( day1 != day2 )
+						  )
+							return true;
+						else
+							return false; 
+				}
 				
 			} else {
 				//CHAR
