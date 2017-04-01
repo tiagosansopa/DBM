@@ -533,14 +533,17 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		 */
 		ArrayList<ArrayList<String>> current_table_info;
 		ArrayList<ArrayList<String>> table1 = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> table1_info = new ArrayList<ArrayList<String>>();
 		String literal1 = "";
-		Integer index1;
+		Integer index1 = 0;
 		String type1 = "";
 		ArrayList<ArrayList<String>> table2 = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> table2_info = new ArrayList<ArrayList<String>>();
 		String literal2 = "";
-		Integer index2;
+		Integer index2 = 0;
 		String type2 = "";
 		String rel_op = ctx.rel_op().getText();
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		
 		if(ctx.term(0).literal() == null){
 			System.out.println("term 0 es ID ");
@@ -562,6 +565,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 						e.printStackTrace();
 						return null;
 					}
+					table1_info = current_table_info;
 					index1 = current_table_info.get(0).indexOf(column_name);
 					type1 = current_table_info.get(1).get(index1);
 					System.out.println(current_table_info.get(0));
@@ -573,15 +577,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			}
 		} else {
 			literal1 = ctx.term(0).literal().getText();
-			if(dml.validateInt(literal1)){
-				type1 = "INT";
-			} else if (dml.validateFloat(literal1)){
-				type1 = "FLOAT";
-			} else if (dml.validateDate(literal1)){
-				type1 = "DATE";
-			} else {
-				type1 = "CHAR("+String.valueOf(literal1.length())+")";
-			}
+			type1 = type(literal1);
 			System.out.println("Tipo de columna "+type1);
 		}
 		
@@ -605,6 +601,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 						e.printStackTrace();
 						return null;
 					}
+					table2_info = current_table_info;
 					index2 = current_table_info.get(0).indexOf(column_name);
 					type2 = current_table_info.get(1).get(index2);
 					System.out.println(current_table_info.get(0));
@@ -616,15 +613,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			}
 		} else {
 			literal2 = ctx.term(1).literal().getText();
-			if(dml.validateInt(literal2)){
-				type2 = "INT";
-			} else if (dml.validateFloat(literal2)){
-				type2 = "FLOAT";
-			} else if (dml.validateDate(literal2)){
-				type2 = "DATE";
-			} else {
-				type2 = "CHAR("+String.valueOf(literal2.length())+")";
-			}
+			type2 = type(literal2);
 			System.out.println("Tipo de columna "+type2);
 		}
 		
@@ -634,57 +623,73 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		} else if(literal1.equals("")){
 			//Tabla 2 tiene contenido
 			System.out.println("Tabla 0 tiene contenido");
-			if(!table1.isEmpty()){
-				for(ArrayList<String> row : table1){
-					System.out.println(row);
+			result.addAll(table1_info);
+			for(ArrayList<String> row : table1){
+				System.out.println(row);
+				if(relation(rel_op, row.get(index1), literal2, type1, type2)){
+					//System.out.println("Relacion "+rel_op+" cumple con " + row.get(index1) + " y " + literal2);
+					result.add(row);
 				}
 			}
+			return result;
 		} else if(literal2.equals("")){
 			//Tabla 1 tiene contenido
 			System.out.println("Tabla 1 tiene contenido");
+			result.addAll(table2_info);
+			for(ArrayList<String> row : table2){
+				System.out.println(row);
+				if(relation(rel_op, literal1, row.get(index2), type1, type2)){
+					//System.out.println("Relacion "+rel_op+" cumple con " + literal1  + " y " + row.get(index2));
+					result.add(row);
+				}
+			}
+			return result;
 		} else {
 			System.out.println("ERROR, ambas son literales");
 			return null;
 		}
-		return null;
 	}
 	
 	public boolean relation(String op, String item1, String item2, String type1, String type2){
 		if(type1.equals(type2)){
+			System.out.println("same type");
 			if(type1.equals("INT")){
+				System.out.println("INT");
 				switch (op) {
 					case "<" :
-						return Integer.valueOf(item1) < Integer.valueOf(item2);
+						return Integer.parseInt(item1) < Integer.parseInt(item2);
 					case ">" :
-						return Integer.valueOf(item1) > Integer.valueOf(item2);
+						return Integer.parseInt(item1) > Integer.parseInt(item2);
 					case "<=" :
-						return Integer.valueOf(item1) <= Integer.valueOf(item2);
+						return Integer.parseInt(item1) <= Integer.parseInt(item2);
 					case ">=" :
-						return Integer.valueOf(item1) >= Integer.valueOf(item2);
+						return Integer.parseInt(item1) >= Integer.parseInt(item2);
 					case "=" :
-						return Integer.valueOf(item1) == Integer.valueOf(item2);
+						return Integer.parseInt(item1) == Integer.parseInt(item2);
 					case "<>" :
-						return Integer.valueOf(item1) != Integer.valueOf(item2);
+						return Integer.parseInt(item1) != Integer.parseInt(item2);
 				}
 			} else if(type1.equals("FLOAT")){
+				System.out.println("FLOAT");
 				switch (op) {
 					case "<" :
-						return Float.valueOf(item1) < Float.valueOf(item2);
+						return Float.parseFloat(item1) < Float.parseFloat(item2);
 					case ">" :
-						return Float.valueOf(item1) > Float.valueOf(item2);
+						return Float.parseFloat(item1) > Float.parseFloat(item2);
 					case "<=" :
-						return Float.valueOf(item1) <= Float.valueOf(item2);
+						return Float.parseFloat(item1) <= Float.parseFloat(item2);
 					case ">=" :
-						return Float.valueOf(item1) >= Float.valueOf(item2);
+						return Float.parseFloat(item1) >= Float.parseFloat(item2);
 					case "=" :
-						return Float.valueOf(item1) == Float.valueOf(item2);
+						return Float.parseFloat(item1) == Float.parseFloat(item2);
 					case "<>" :
-						return Float.valueOf(item1) != Float.valueOf(item2);
+						return Float.parseFloat(item1) != Float.parseFloat(item2);
 				}
 			} else if(type1.equals("DATE")){
-				
+				System.out.println("DATE");
 			} else {
 				//CHAR
+				System.out.println("CHAR");
 				switch(op) {
 					case "=" :
 						return item1.equals(item2);
@@ -695,22 +700,37 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				}
 			}
 		} else if((type1.equals("FLOAT") && type2.equals("INT")) || (type2.equals("FLOAT") && type1.equals("INT"))){
+			System.out.println("FLOAT or INT");
 			switch (op) {
 				case "<" :
-					return Float.valueOf(item1) < Float.valueOf(item2);
+					return Float.parseFloat(item1) < Float.parseFloat(item2);
 				case ">" :
-					return Float.valueOf(item1) > Float.valueOf(item2);
+					return Float.parseFloat(item1) > Float.parseFloat(item2);
 				case "<=" :
-					return Float.valueOf(item1) <= Float.valueOf(item2);
+					return Float.parseFloat(item1) <= Float.parseFloat(item2);
 				case ">=" :
-					return Float.valueOf(item1) >= Float.valueOf(item2);
+					return Float.parseFloat(item1) >= Float.parseFloat(item2);
 				case "=" :
-					return Float.valueOf(item1) == Float.valueOf(item2);
+					return Float.parseFloat(item1) == Float.parseFloat(item2);
 				case "<>" :
-					return Float.valueOf(item1) != Float.valueOf(item2);
+					return Float.parseFloat(item1) != Float.parseFloat(item2);
 			}
 		}
 		return false;
+	}
+	
+	public String type(String literal){
+		String type = "";
+		if(dml.validateInt(literal)){
+			type = "INT";
+		} else if (dml.validateFloat(literal)){
+			type = "FLOAT";
+		} else if (dml.validateDate(literal)){
+			type = "DATE";
+		} else {
+			type = "CHAR("+String.valueOf(literal.length())+")";
+		}
+		return type;
 	}
 	
 	public void handleSemanticError(String message){
