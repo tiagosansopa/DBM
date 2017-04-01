@@ -433,7 +433,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		/*expression 
     		:   andExpr
     		|   expression or andExpr*/
-		if(ctx.andExpr() != null){
+		if(ctx.getChildCount() == 1){
 			return visitChildren(ctx);
 		} else {
 			ArrayList<ArrayList<String>> t1 = visit(ctx.expression());
@@ -532,11 +532,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			|	literal
 		 */
 		ArrayList<ArrayList<String>> current_table_info;
-		ArrayList<ArrayList<String>> table1;
+		ArrayList<ArrayList<String>> table1 = new ArrayList<ArrayList<String>>();
 		String literal1 = "";
 		Integer index1;
 		String type1 = "";
-		ArrayList<ArrayList<String>> table2;
+		ArrayList<ArrayList<String>> table2 = new ArrayList<ArrayList<String>>();
 		String literal2 = "";
 		Integer index2;
 		String type2 = "";
@@ -634,6 +634,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		} else if(literal1.equals("")){
 			//Tabla 2 tiene contenido
 			System.out.println("Tabla 0 tiene contenido");
+			if(!table1.isEmpty()){
+				for(ArrayList<String> row : table1){
+					System.out.println(row);
+				}
+			}
 		} else if(literal2.equals("")){
 			//Tabla 1 tiene contenido
 			System.out.println("Tabla 1 tiene contenido");
@@ -680,9 +685,30 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				
 			} else {
 				//CHAR
+				switch(op) {
+					case "=" :
+						return item1.equals(item2);
+					case "<>" :
+						return !item1.equals(item2);
+					default	:
+						return false;
+				}
 			}
 		} else if((type1.equals("FLOAT") && type2.equals("INT")) || (type2.equals("FLOAT") && type1.equals("INT"))){
-			
+			switch (op) {
+				case "<" :
+					return Float.valueOf(item1) < Float.valueOf(item2);
+				case ">" :
+					return Float.valueOf(item1) > Float.valueOf(item2);
+				case "<=" :
+					return Float.valueOf(item1) <= Float.valueOf(item2);
+				case ">=" :
+					return Float.valueOf(item1) >= Float.valueOf(item2);
+				case "=" :
+					return Float.valueOf(item1) == Float.valueOf(item2);
+				case "<>" :
+					return Float.valueOf(item1) != Float.valueOf(item2);
+			}
 		}
 		return false;
 	}
