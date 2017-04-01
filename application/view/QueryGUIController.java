@@ -63,7 +63,7 @@ public class QueryGUIController {
 	private DBmanagerDDL ddl;
 	private DBmanagerDML dml;
 	private List<String> errors;
-	private Path path = Paths.get(System.getProperty("user.dir")-"application.view"+"application.model"+File.separator+"ErrorLog_Syntax.log");
+	private Path path = Paths.get(System.getProperty("user.dir").replace("application.view", "application.model")+File.separator+"ErrorLog_Syntax.log");
 	
 	public QueryGUIController(){
 		ddl = new DBmanagerDDL();
@@ -163,21 +163,17 @@ public class QueryGUIController {
 		try {
             areaError.setText("");
 
-            errors = Files.readAllLines(file, Charset.forName("UTF-8"));
+            errors = Files.readAllLines(path, Charset.forName("UTF-8"));
 
-            Files.deleteIfExists(file);
+            Files.deleteIfExists(path);
 
             System.out.println(errors);
 
             for (int i = 0; i < errors.size(); i++) {
                 areaError.append("(" + (i + 1) + "): " + errors.get(i) + "\n");
             }
-            areaError.append(visitor.errors.toString());
-            return 1;
         } catch ( IOException e ) {
             areaError.setText(" No Syntactic Errors \n ");
-            areaError.append(visitor.errors.toString());
-            return 1;
         }
 
 		
