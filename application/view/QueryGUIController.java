@@ -49,6 +49,8 @@ public class QueryGUIController {
 	
 	@FXML 
 	private TextArea queryLabel;
+	@FXML 
+	private TextArea outputArea;
 	
 	@FXML
 	private TreeView <String>treeView = new TreeView<String>();
@@ -161,7 +163,7 @@ public class QueryGUIController {
         parser.addErrorListener(miErrorListener);
 		ParseTree tree = parser.sql();
 		try {
-            areaError.setText("");
+            outputArea.setText("");
 
             errors = Files.readAllLines(path, Charset.forName("UTF-8"));
 
@@ -170,17 +172,16 @@ public class QueryGUIController {
             System.out.println(errors);
 
             for (int i = 0; i < errors.size(); i++) {
-                areaError.append("(" + (i + 1) + "): " + errors.get(i) + "\n");
+                outputArea.appendText("(" + (i + 1) + "): " + errors.get(i) + "\n");
             }
         } catch ( IOException e ) {
-            areaError.setText(" No Syntactic Errors \n ");
+            outputArea.setText(" No Syntactic Errors \n ");
+            DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
+    		qVisitor.visit(tree);
+    		String fileLocation= (System.getProperty("user.dir"));
+    		displayTreeView(fileLocation);
         }
-
 		
-		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
-		qVisitor.visit(tree);
-		String fileLocation= (System.getProperty("user.dir"));
-		displayTreeView(fileLocation);
 		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
 		ArrayList<String> row = new ArrayList<String>();
 		row.add("Pedro");
