@@ -188,6 +188,8 @@ public class DBmanagerDDL {
 		        }
 		        output.write(temp.substring(0, temp.length()-1));
 		        output.newLine();
+		        output.write("R:0");
+		        output.newLine();
 		        output.write("PK");
 		        output.newLine();
 		        output.write("FK");

@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,102 +24,144 @@ public class DBmanagerDML {
 	/**
 	 * Insert INTO
 	**/
-	public void insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
+	public boolean insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
-		boolean error = false;
-		BufferedReader br;
-		InputStream fis = null;
-		String archivoMetadata = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt";
-		fis = new FileInputStream(archivoMetadata);
-		InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-		br = new BufferedReader(isr);
+		File table = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
+		
+		if (actualDatabase.equals("")){
+			System.out.println("NO DATABASE IN USE");
+			return false;
+		}
+		else if(!table.isFile())
+		{
+			System.out.println("TABLE DOES NOT EXISTS");
+			return false;
+		}
+		
+		BufferedWriter  output = new BufferedWriter(new FileWriter(table,true));
+		String temp = "";
+		int no=0,rowsInMetadata=0;
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"), Charset.forName("UTF-8")));
 	
 		String[] columnsAndTypes= br.readLine().split(",");
 		
+		while ((temp = br.readLine()) != null) {
+			rowsInMetadata+=1;
+		}
+		System.out.println("CANTIDAD DE FILAS "+rowsInMetadata);
+		br.close();
+		temp = "";
+
 		for(int i=0; i<columnsAndTypes.length;i++)
 		{
 			String[] typeAndName = columnsAndTypes[i].split(":");
-	
+			no=0;
 			for(int j=0;j<colNames.size();j++)
 			{	
 				if(colNames.get(j).equals(typeAndName[0]))
 				{
 					System.out.println(colNames.get(j) + " " + typeAndName[0] + colNames.get(j).equals(typeAndName[0]));
-					
+					System.out.println("Associado a " + typeAndName[1]);
 					if(typeAndName[1].contains("INT")){
 						if(validateInt(colTypes.get(j))){
 							System.out.println("Si es int");
+							temp +=colTypes.get(j)+",";
 						}
 						else{
 							System.out.println(colTypes.get(j)+" NO es int");
-							error = true;
+							return false;
 						}
 					}
 					else if(typeAndName[1].contains("CHAR")){
 						if(validateCHAR(typeAndName[1],colTypes.get(j))){
 							System.out.println("Si es char");
+							temp +=colTypes.get(j)+",";
 						}
 						else{
-							error = true;
+							System.out.println(colTypes.get(j)+" NO es CHAR");
+							return false;
 						}
 					}
 					else if(typeAndName[1].contains("DATE")){
 						if(validateDate(colTypes.get(j))){
 							System.out.println("Si es date");
+							temp +=colTypes.get(j)+",";
 						}
 						else{
 							System.out.println(colTypes.get(j)+" NO es date");
-							error = true;
+							return false;
 						}
 					}
 					else if(typeAndName[1].contains("FLOAT")){
 						if(validateFloat(colTypes.get(j))){
 							System.out.println("Si es Float");
+							temp +=colTypes.get(j)+",";
 						}
 						else{
 							System.out.println(colTypes.get(j)+" NO es float");
-							error = true;
+							return false;
 						}
 					}
-					else{
+				}
+				else
+				{
+					if(no==colNames.size()-1)
+					{
 						System.out.println("NULL!");
+						temp +="NULL"+",";
+						no=0;
 					}
+					no+=1;
 				}
 			}
 			
 		}
-		if (error==false){
-		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
-		File table = new File(dir);
 		
-		if (actualDatabase.equals("")){
-			System.out.println("NO DATABASE IN USE");
-		}
-		else if(!table.isFile())
+		
+		BufferedReader readTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		String line;
+		int regCount = 0;
+		while ((line = readTable.readLine()) != null) 
 		{
-			System.out.println("TABLE DOES NOT EXISTS");
+			regCount+=1;
 		}
-		else{
-			try(BufferedWriter  output = new BufferedWriter(new FileWriter(table,true)))
-		    {
-		    	String temp = "";
-		    	int temp2 = 0;
-		        for(String s : colTypes){
-		        	temp +=s+",";
-		        	System.out.println(temp2 + s);
-		        	temp2++;
-		        }
-		        output.newLine();
-		        output.write(temp.substring(0, temp.length()-1)+";");
-		        output.close();
+		System.out.println("TotalRegs " + regCount);
+		
+		if(regCount==0)
+		{
+			output.write(temp.substring(0, temp.length()-1)+";");
+			output.close();
+			br.close();
+		}
+		else
+		{
+			output.newLine();
+			output.write(temp.substring(0, temp.length()-1)+";");
+			output.close();
+			br.close();
+		}
+		
+		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"),true));
+		
+		String input = "";
+		int count = 0;
+
+		while (count<=rowsInMetadata-1) {
+		    if (count == 1) {
+		    	file2.write("R:"+regCount);
+		    	file2.newLine();
 		    }
-		    catch(IOException ex)
-		    {
-		        ex.printStackTrace();
+		    else{
+		    	file2.write(file.readLine());
+		    	file2.newLine();
 		    }
+		    count+=1;
 		}
-		}
-		br.close();
+		
+		file2.close();
+		return true;
 		
 	}
 	
