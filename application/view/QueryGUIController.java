@@ -3,18 +3,22 @@ package application.view;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 
 import application.model.DBMSLexer;
 import application.model.DBMSParser;
 import application.model.DBMSQueryVisitor;
 import application.model.DBmanagerDDL;
 import application.model.DBmanagerDML;
+import application.model.ThrowingErrorListener;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -58,6 +62,8 @@ public class QueryGUIController {
 	
 	private DBmanagerDDL ddl;
 	private DBmanagerDML dml;
+	private List<String> errors;
+	private Path path = Paths.get(System.getProperty("user.dir")-"application.view"+"application.model"+File.separator+"ErrorLog_Syntax.log");
 	
 	public QueryGUIController(){
 		ddl = new DBmanagerDDL();
@@ -143,11 +149,38 @@ public class QueryGUIController {
 	public void handleText(){
 		String inputText = queryLabel.getText();
 		System.out.println(inputText);
+		BaseErrorListener miErrorListener = new ThrowingErrorListener();
 		ANTLRInputStream input = new ANTLRInputStream(inputText);
 		DBMSLexer lexer = new DBMSLexer(input);
+		lexer.removeErrorListeners();
+        lexer.addErrorListener(miErrorListener);
+        
 		TokenStream tokens = new CommonTokenStream(lexer);
 		DBMSParser parser = new DBMSParser(tokens);
+		parser.removeErrorListeners();
+        parser.addErrorListener(miErrorListener);
 		ParseTree tree = parser.sql();
+		try {
+            areaError.setText("");
+
+            errors = Files.readAllLines(file, Charset.forName("UTF-8"));
+
+            Files.deleteIfExists(file);
+
+            System.out.println(errors);
+
+            for (int i = 0; i < errors.size(); i++) {
+                areaError.append("(" + (i + 1) + "): " + errors.get(i) + "\n");
+            }
+            areaError.append(visitor.errors.toString());
+            return 1;
+        } catch ( IOException e ) {
+            areaError.setText(" No Syntactic Errors \n ");
+            areaError.append(visitor.errors.toString());
+            return 1;
+        }
+
+		
 		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
 		qVisitor.visit(tree);
 		String fileLocation= (System.getProperty("user.dir"));
