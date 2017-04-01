@@ -143,6 +143,10 @@ public class DBmanagerDML {
 		}
 		
 		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		while (file.readLine()!=null) 
+		{
+			
+		}
 		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"),true));
 		
 		String input = "";
