@@ -686,6 +686,30 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			} else {
 				//CHAR
 				switch(op) {
+					case "<":
+						boolean result = false; 
+						int cmp = item1.compareTo(item2);
+						if (cmp < 0)
+							result = true;
+						return result;
+					case ">":
+						result = false; 
+						cmp = item1.compareTo(item2);
+						if (cmp > 0)
+							result = true;
+						return result;
+					case "<=":
+						result = false; 
+						cmp = item1.compareTo(item2);
+						if (cmp <= 0)
+							result = true;
+						return result;
+					case ">=":
+						result = false; 
+						cmp = item1.compareTo(item2);
+						if (cmp >= 0)
+							result = true;
+						return result;
 					case "=" :
 						return item1.equals(item2);
 					case "<>" :

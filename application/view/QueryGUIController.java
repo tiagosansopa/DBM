@@ -49,6 +49,7 @@ public class QueryGUIController {
 	
 	@FXML 
 	private TextArea queryLabel;
+	
 	@FXML 
 	private TextArea outputArea;
 	
@@ -178,7 +179,7 @@ public class QueryGUIController {
             outputArea.setText(" No Syntactic Errors \n ");
             DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
     		qVisitor.visit(tree);
-    		String fileLocation= (System.getProperty("user.dir"));
+    		String fileLocation= (System.getProperty("user.dir")+File.separator+"db");
     		displayTreeView(fileLocation);
         }
 		
@@ -203,6 +204,7 @@ public class QueryGUIController {
 	
 	public  void setMainApp(main app){
 		this.mainApp = app;
+		outputArea.setWrapText(true);
 	}
 	
 }
