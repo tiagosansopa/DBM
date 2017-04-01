@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class DBmanagerDML {
 	
-	String actualDatabase = "";
+	String actualDatabase = "controlPersonas";
 	public DBmanagerDML() {
 		
 	}
@@ -243,8 +243,7 @@ public class DBmanagerDML {
 		ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
 		ArrayList<String> registry = new ArrayList<String>();
 		
-		File file = new File(tableName);
-		reader = new BufferedReader(new FileReader(file));
+		reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
 
 		String line;
 		while ((line = reader.readLine()) != null) 
@@ -274,8 +273,8 @@ public class DBmanagerDML {
 		ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
 		ArrayList<String> types = new ArrayList<String>();
 		ArrayList<String> Names = new ArrayList<String>();
-		File file = new File(tableName);
-		reader = new BufferedReader(new FileReader(file));
+		
+		reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
 
 		String[] columns  = reader.readLine().split(",");
 	

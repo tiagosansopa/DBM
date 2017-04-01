@@ -383,6 +383,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		if(ctx.where_exp() != null){
 			System.out.println("WHERE EXPRESSION");
 			ArrayList<ArrayList<String>> result = visit(ctx.where_exp().exp());
+			if(result == null){
+				//AUN ASI TENEMOS QUE TRABAJAR AMBAS TABLAS :(
+			}
 		}
 		if(ctx.order_by().getChildCount() > 0){
 			//(order by ID (asc | desc) comma_id_ad_k)?
@@ -434,7 +437,13 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			return visitChildren(ctx);
 		} else {
 			ArrayList<ArrayList<String>> t1 = visit(ctx.expression());
+			if(t1 == null){
+				return null;
+			}
 			ArrayList<ArrayList<String>> t2 = visit(ctx.andExpr());
+			if(t2 == null){
+				return null;
+			}
 			if(t1.size() > t2.size()){
 				for(ArrayList<String> row : t2){
 					if(!t1.contains(row)){
@@ -461,7 +470,13 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			return visitChildren(ctx);
 		} else {
 			ArrayList<ArrayList<String>> t1 = visit(ctx.andExpr());
+			if(t1 == null){
+				return null;
+			}
 			ArrayList<ArrayList<String>> t2 = visit(ctx.factor());
+			if(t2 == null){
+				return null;
+			}
 			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 			if(t1.size() > t2.size()){
 				for(ArrayList<String> row : t1){
@@ -516,55 +531,132 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			:	ID
 			|	literal
 		 */
-		
+		ArrayList<ArrayList<String>> current_table_info;
 		ArrayList<ArrayList<String>> table1;
 		String literal1 = "";
+		Integer index1;
+		String type1 = "";
 		ArrayList<ArrayList<String>> table2;
 		String literal2 = "";
+		Integer index2;
+		String type2 = "";
 		String rel_op = ctx.rel_op().getText();
 		
-		if(ctx.term(0).ID() != null){
-			for(String table : tables_list){
+		if(ctx.term(0).literal() == null){
+			System.out.println("term 0 es ID ");
+			String column_name = ctx.term(0).ID().getText();
+			for(String table_name : tables_list){
+				System.out.println(table_name);
 				try {
-					if(dml.tableTypesAndNames(table).get(1).contains(ctx.term(0).ID().getText())){
-						table1 = dml.tableToArraylist(table);
+					current_table_info = dml.tableTypesAndNames(table_name);
+				} catch (IOException e1) {
+					System.out.println("Error info de tabla "+table_name);
+					e1.printStackTrace();
+					return null;
+				}
+				if(current_table_info.get(0).contains(column_name)){
+					try {
+						table1 = dml.tableToArraylist(table_name);
+					} catch (IOException e) {
+						System.out.println("Error cargar tabla "+table_name);
+						e.printStackTrace();
+						return null;
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
+					index1 = current_table_info.get(0).indexOf(column_name);
+					type1 = current_table_info.get(1).get(index1);
+					System.out.println(current_table_info.get(0));
+					System.out.println("Nombre de tabla "+table_name);
+					System.out.println("Nombre de columna "+column_name);
+					System.out.println("Indice de columna "+index1);
+					System.out.println("Tipo de columna "+type1);
 				}
 			}
 		} else {
 			literal1 = ctx.term(0).literal().getText();
+			if(dml.validateInt(literal1)){
+				type1 = "INT";
+			} else if (dml.validateFloat(literal1)){
+				type1 = "FLOAT";
+			} else if (dml.validateDate(literal1)){
+				type1 = "DATE";
+			} else {
+				type1 = "CHAR("+String.valueOf(literal1.length())+")";
+			}
+			System.out.println("Tipo de columna "+type1);
 		}
 		
-		if(ctx.term(1).ID() != null){
-			for(String table : tables_list){
+		if(ctx.term(1).literal() == null){
+			System.out.println("term 1 es ID ");
+			String column_name = ctx.term(1).ID().getText();
+			for(String table_name : tables_list){
+				System.out.println(table_name);
 				try {
-					if(dml.tableTypesAndNames(table).get(1).contains(ctx.term(1).ID().getText())){
-						table2 = dml.tableToArraylist(table);
+					current_table_info = dml.tableTypesAndNames(table_name);
+				} catch (IOException e1) {
+					System.out.println("Error info de tabla "+table_name);
+					e1.printStackTrace();
+					return null;
+				}
+				if(current_table_info.get(0).contains(column_name)){
+					try {
+						table2 = dml.tableToArraylist(table_name);
+					} catch (IOException e) {
+						System.out.println("Error cargar tabla "+table_name);
+						e.printStackTrace();
+						return null;
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
+					index2 = current_table_info.get(0).indexOf(column_name);
+					type2 = current_table_info.get(1).get(index2);
+					System.out.println(current_table_info.get(0));
+					System.out.println("Nombre de tabla "+table_name);
+					System.out.println("Nombre de columna "+column_name);
+					System.out.println("Indice de columna "+index2);
+					System.out.println("Tipo de columna "+type2);
 				}
 			}
 		} else {
-			literal1 = ctx.term(1).literal().getText();
+			literal2 = ctx.term(1).literal().getText();
+			if(dml.validateInt(literal2)){
+				type2 = "INT";
+			} else if (dml.validateFloat(literal2)){
+				type2 = "FLOAT";
+			} else if (dml.validateDate(literal2)){
+				type2 = "DATE";
+			} else {
+				type2 = "CHAR("+String.valueOf(literal2.length())+")";
+			}
+			System.out.println("Tipo de columna "+type2);
 		}
 		
 		if(literal1.equals("") && literal2.equals("")){
-			System.out.println("ERROR ambas son literales");
+			System.out.println("Ambas son columnas.. producto cruz");
 			return null;
 		} else if(literal1.equals("")){
-			//Tabla 1 tiene contenido
-			String column = ctx.term(0).ID().getText();
-			
-		} else if(literal2.equals("")){
 			//Tabla 2 tiene contenido
-			String column = ctx.term(1).ID().getText();
+			System.out.println("Tabla 0 tiene contenido");
+		} else if(literal2.equals("")){
+			//Tabla 1 tiene contenido
+			System.out.println("Tabla 1 tiene contenido");
 		} else {
-			
+			System.out.println("ERROR, ambas son literales");
+			return null;
 		}
 		return null;
+	}
+	
+	public boolean relation(String op, String item1, String item2, String type1, String type2){
+		if(type1.equals(type2)){
+			if(type1.equals("FLOAT") || type1.equals("INT")){
+				
+			} else if(type1.equals("DATE")){
+				
+			} else {
+				//CHAR
+			}
+		} else if((type1.equals("FLOAT") && type2.equals("INT")) || (type2.equals("FLOAT") && type1.equals("INT"))){
+			
+		}
+		return false;
 	}
 	
 	public void handleSemanticError(String message){
