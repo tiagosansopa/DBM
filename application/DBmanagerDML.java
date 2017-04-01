@@ -142,28 +142,25 @@ public class DBmanagerDML {
 			br.close();
 		}
 		
+		ArrayList<String> rows = new ArrayList<String>();
+		
 		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
-		while (file.readLine()!=null) 
+		while ((temp = file.readLine())!=null) 
 		{
-			
+			if(temp.contains("R:"))
+			{
+				rows.add("R:"+regCount);
+			}
+			else{
+				rows.add(temp);
+			}
 		}
-		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"),true));
-		
-		String input = "";
-		int count = 0;
-
-		while (count<=rowsInMetadata-1) {
-		    if (count == 1) {
-		    	file2.write("R:"+regCount);
-		    	file2.newLine();
-		    }
-		    else{
-		    	file2.write(file.readLine());
-		    	file2.newLine();
-		    }
-		    count+=1;
+		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		for(int i=0;i<=rows.size();i++)
+		{
+			file2.write(rows.get(i));
+			file2.newLine();
 		}
-		
 		file2.close();
 		return true;
 		
