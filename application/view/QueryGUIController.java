@@ -63,8 +63,10 @@ public class QueryGUIController {
 		ddl = new DBmanagerDDL();
 		dml = new DBmanagerDML();
 	}
-	public void displayTable(ArrayList<String> columnNames,ArrayList<ArrayList<String>> rows){
+	public void displayTable(ArrayList<ArrayList<String>> rows){
 		csvData.clear();
+		ArrayList<String> columnNames = rows.get(0);
+		rows.remove(0);
 		ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
 		for (int i = 0;i<rows.size();i++){
 			ArrayList<String> row = rows.get(i);
@@ -160,7 +162,7 @@ public class QueryGUIController {
 		row.add("Men");
 		row.add("Men2");
 		row.add("Men3");
-		rows.add(row);
+		
 		ArrayList<String> top = new ArrayList<String>();
 		top.add("First Name");
 		top.add("Last Name");
@@ -168,7 +170,9 @@ public class QueryGUIController {
 		top.add("dir");
 		top.add("direccion");
 		top.add("dir3");
-		displayTable(top,rows);
+		rows.add(top);
+		rows.add(row);
+		displayTable(rows);
 	}
 	
 	public  void setMainApp(main app){
