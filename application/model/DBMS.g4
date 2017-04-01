@@ -30,19 +30,27 @@ KL
     :   '*'
     ;
 
-INT 
-    :   'int' 
+int
+    :   'INT'
+    |	'Int'
+    |	'int' 
     ;
 
-FLOATS
-    :   'float'
+float
+    :   'FLOAT'
+    |	'Float'
+    |	'float'
     ;
 
-DATES
-    :   'date'
+date
+    :	'DATE'
+    |	'Date'
+    |   'date'
     ;
-CHAR    
-    :   'char'
+char    
+    :   'CHAR'
+    |	'Char'
+    |	'char'
     ;
 
 and
@@ -448,10 +456,10 @@ foreignKey: ID foreign key LPAREN ID comma_id_k RPAREN references ID LPAREN ID c
 checks: ID check LPAREN exp RPAREN ;
 
 type
-    :   INT
-    |   FLOATS
-    |   DATES
-    |   CHAR LPAREN NUM RPAREN
+    :   int
+    |   float
+    |   date
+    |   char LPAREN NUM RPAREN
     ;
 
 alter_table

@@ -339,10 +339,15 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public ArrayList<ArrayList<String>> visitDelete_value(DBMSParser.Delete_valueContext ctx){
 		//delete from ID where_exp END_SQL
 		System.out.println("visitDelete_value");
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
 		if(ctx.where_exp() != null){
-			System.out.println(ctx.where_exp().getText());
+			System.out.println("WHERE EXPRESSION");
+			result = visit(ctx.where_exp().exp());
+			if(result == null){
+				//AUN ASI TENEMOS QUE TRABAJAR AMBAS TABLAS :(
+			}
 		}
 		return null;
 	}
@@ -352,6 +357,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public ArrayList<ArrayList<String>> visitSelect_value(DBMSParser.Select_valueContext ctx){
 		//select select_k_id from ID comma_id_k where_exp order_by END_SQL
 		System.out.println("visitSelect_value");
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		columns_list = new ArrayList<String>();
 		tables_list = new ArrayList<String>();
 		ArrayList<String> order_by_id_list = new ArrayList<String>();
@@ -382,9 +388,10 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 
 		if(ctx.where_exp() != null){
 			System.out.println("WHERE EXPRESSION");
-			ArrayList<ArrayList<String>> result = visit(ctx.where_exp().exp());
+			result = visit(ctx.where_exp().exp());
 			if(result == null){
 				//AUN ASI TENEMOS QUE TRABAJAR AMBAS TABLAS :(
+				
 			}
 		}
 		if(ctx.order_by().getChildCount() > 0){
@@ -414,9 +421,31 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				}
 			}
 		}
-		return null;
+		if(columns_list.get(0).equals("*")){
+			return result;
+		} else {
+			ArrayList<ArrayList<String>> temp_result = new ArrayList<ArrayList<String>>();
+			ArrayList<String> current_columns_list = result.get(0);
+			result.remove(0); //column list remove
+			ArrayList<String> current_types_list = result.get(0);
+			result.remove(0); //types remove
+			temp_result.add(columns_list); //columns_name
+			temp_result.add(rowByColumns(current_types_list, current_columns_list)); //types
+			for(ArrayList<String> row : result){
+				temp_result.add(rowByColumns(row, current_columns_list));
+			}
+			return temp_result;
+		}
 	}
 	
+	ArrayList<String> rowByColumns(ArrayList<String> row, ArrayList<String> current_columns_list){
+		ArrayList<String> row_result = new ArrayList<String>();
+		for(String column_name : columns_list){
+			row_result.add(row.get(current_columns_list.indexOf(column_name)));
+		}
+		return row_result;
+	}
+
 	
 	//Exp
 	@Override
@@ -436,28 +465,59 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		if(ctx.getChildCount() == 1){
 			return visitChildren(ctx);
 		} else {
+			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 			ArrayList<ArrayList<String>> t1 = visit(ctx.expression());
 			if(t1 == null){
 				return null;
 			}
+			ArrayList<String> t1_info = t1.get(0);
+			t1.remove(0);
+			ArrayList<String> t1_type = t1.get(0);
+			t1.remove(0);
 			ArrayList<ArrayList<String>> t2 = visit(ctx.andExpr());
 			if(t2 == null){
 				return null;
 			}
-			if(t1.size() > t2.size()){
-				for(ArrayList<String> row : t2){
-					if(!t1.contains(row)){
-						t1.add(row);
+			ArrayList<String> t2_info = t2.get(0);
+			t2.remove(0);
+			ArrayList<String> t2_type = t2.get(0);
+			t2.remove(0);
+			if(sameColumns(t1_info, t2_info) && sameColumns(t1_type, t2_type)){
+				if(t1.size() > t2.size()){
+					for(ArrayList<String> row : t2){
+						if(!t1.contains(row)){
+							t1.add(row);
+						}
 					}
+				result.add(t1_info);
+				result.add(t1_type);
+				result.addAll(t1);
+				} else {
+					for(ArrayList<String> row : t1){
+						if(!t2.contains(row)){
+							t2.add(row);
+						}
+					}
+				result.add(t2_info);
+				result.add(t2_type);
+				result.addAll(t2);
 				}
 			} else {
+				//PRODUCTO CARTESIANO
+				t1_info.addAll(t2_info);
+				t1_type.addAll(t2_type);
+				result.add(t1_info);
+				result.add(t1_type);
 				for(ArrayList<String> row : t1){
-					if(!t2.contains(row)){
-						t2.add(row);
-					}
+					for(ArrayList<String> row2 : t2){
+						ArrayList<String> temp = new ArrayList<String>();
+						temp = row;
+						temp.addAll(row2);
+						result.add(temp);
+ 					}
 				}
 			}
-			return t2;
+			return result;
 		}
 	}
 
@@ -631,6 +691,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					result.add(row);
 				}
 			}
+			System.out.println("Return table 1");
 			return result;
 		} else if(literal2.equals("")){
 			//Tabla 1 tiene contenido
@@ -643,6 +704,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					result.add(row);
 				}
 			}
+			System.out.println("Return table 2");
 			return result;
 		} else {
 			System.out.println("ERROR, ambas son literales");
@@ -731,6 +793,19 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			type = "CHAR("+String.valueOf(literal.length())+")";
 		}
 		return type;
+	}
+	
+	public boolean sameColumns(ArrayList<String> r1, ArrayList<String> r2){
+		if(r1.size() != r2.size()){
+			return false;
+		} else {
+			for(String column : r1){
+				if(!r2.contains(column)){
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 	
 	public void handleSemanticError(String message){

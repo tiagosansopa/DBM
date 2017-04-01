@@ -67,6 +67,7 @@ public class QueryGUIController {
 		csvData.clear();
 		ArrayList<String> columnNames = rows.get(0);
 		rows.remove(0);
+		rows.remove(0);
 		ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
 		for (int i = 0;i<rows.size();i++){
 			ArrayList<String> row = rows.get(i);
@@ -74,7 +75,7 @@ public class QueryGUIController {
 		}
 		for (int i = 0; i<columnNames.size();i++){
 			final int index = i;
-			System.out.println(index);
+			//System.out.println(index);
 			TableColumn<ObservableList<String>,String> columna = new TableColumn<>(columnNames.get(i));
 			
 			columna.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>, String>, ObservableValue<String>>() 
@@ -84,7 +85,7 @@ public class QueryGUIController {
                     return new SimpleStringProperty((p.getValue().get(index)));
                 }
              });
-			System.out.println(index);
+			//System.out.println(index);
 			//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
 			columns.add(columna);
 		
@@ -151,28 +152,12 @@ public class QueryGUIController {
 		DBMSParser parser = new DBMSParser(tokens);
 		ParseTree tree = parser.sql();
 		DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
-		qVisitor.visit(tree);
+		ArrayList<ArrayList<String>> table = qVisitor.visit(tree);
 		String fileLocation= (System.getProperty("user.dir"));
 		displayTreeView(fileLocation);
-		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
-		ArrayList<String> row = new ArrayList<String>();
-		row.add("Pedro");
-		row.add("Koch");
-		row.add("UVG");
-		row.add("Men");
-		row.add("Men2");
-		row.add("Men3");
-		
-		ArrayList<String> top = new ArrayList<String>();
-		top.add("First Name");
-		top.add("Last Name");
-		top.add("id");
-		top.add("dir");
-		top.add("direccion");
-		top.add("dir3");
-		rows.add(top);
-		rows.add(row);
-		displayTable(rows);
+		if(table != null){
+			displayTable(table);
+		}
 	}
 	
 	public  void setMainApp(main app){
