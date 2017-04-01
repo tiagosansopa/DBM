@@ -646,8 +646,36 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	
 	public boolean relation(String op, String item1, String item2, String type1, String type2){
 		if(type1.equals(type2)){
-			if(type1.equals("FLOAT") || type1.equals("INT")){
-				
+			if(type1.equals("INT")){
+				switch (op) {
+					case "<" :
+						return Integer.valueOf(item1) < Integer.valueOf(item2);
+					case ">" :
+						return Integer.valueOf(item1) > Integer.valueOf(item2);
+					case "<=" :
+						return Integer.valueOf(item1) <= Integer.valueOf(item2);
+					case ">=" :
+						return Integer.valueOf(item1) >= Integer.valueOf(item2);
+					case "=" :
+						return Integer.valueOf(item1) == Integer.valueOf(item2);
+					case "<>" :
+						return Integer.valueOf(item1) != Integer.valueOf(item2);
+				}
+			} else if(type1.equals("FLOAT")){
+				switch (op) {
+					case "<" :
+						return Float.valueOf(item1) < Float.valueOf(item2);
+					case ">" :
+						return Float.valueOf(item1) > Float.valueOf(item2);
+					case "<=" :
+						return Float.valueOf(item1) <= Float.valueOf(item2);
+					case ">=" :
+						return Float.valueOf(item1) >= Float.valueOf(item2);
+					case "=" :
+						return Float.valueOf(item1) == Float.valueOf(item2);
+					case "<>" :
+						return Float.valueOf(item1) != Float.valueOf(item2);
+				}
 			} else if(type1.equals("DATE")){
 				
 			} else {
