@@ -11,7 +11,7 @@ public class KeyPFC {
 	public ArrayList<String> columns_list_1;
 	public ArrayList<String> columns_list_2;
 	public String id_references;
-	public ExpContext exp;
+	public String exp;
 	
 	public KeyPFC(){
 		columns_list_1 = new ArrayList<String>();

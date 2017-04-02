@@ -205,7 +205,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					 System.out.println(id);
 					 key.id = id;
 					 key.type = "ch";
-					 key.exp = constraintAt.checks().exp();
+					 key.exp = constraintAt.checks().exp().getText();
 				 }
 				 keys_list.add(key);
 			}
@@ -685,7 +685,42 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		
 		if(literal1.equals("") && literal2.equals("")){
 			System.out.println("Ambas son columnas.. producto cruz");
-			return null;
+			if(sameColumns(table1_info.get(0), table2_info.get(0)) && sameColumns(table1_info.get(1), table2_info.get(1))){
+				if(table1.size() > table2.size()){
+					for(ArrayList<String> row : table2){
+						if(!table1.contains(row)){
+							table1.add(row);
+						}
+					}
+				result.add(table1_info.get(0));
+				result.add(table1_info.get(1));
+				result.addAll(table1);
+				} else {
+					for(ArrayList<String> row : table1){
+						if(!table2.contains(row)){
+							table2.add(row);
+						}
+					}
+				result.add(table2_info.get(0));
+				result.add(table2_info.get(1));
+				result.addAll(table2);
+				}
+			} else {
+				//PRODUCTO CARTESIANO
+				table1_info.get(0).addAll(table2_info.get(0));
+				table1_info.get(1).addAll(table2_info.get(1));
+				result.add(table1_info.get(0));
+				result.add(table1_info.get(1));
+				for(ArrayList<String> row : table1){
+					for(ArrayList<String> row2 : table2){
+						ArrayList<String> temp = new ArrayList<String>();
+						temp = row;
+						temp.addAll(row2);
+						result.add(temp);
+ 					}
+				}
+			}
+			return result;
 		} else if(literal1.equals("")){
 			//Tabla 2 tiene contenido
 			System.out.println("Tabla 0 tiene contenido");
