@@ -17,10 +17,28 @@ import java.util.Arrays;
 
 public class DBmanagerDML {
 	
-	String actualDatabase = "controlPersonas";
+	String actualDatabase = "";
+	
 	public DBmanagerDML() {
 		
 	}
+	
+	/**
+	 * USE an existing database given database' name
+	**/
+	public String useDatabase(String databaseName){
+		
+		File toBeUsed = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+databaseName);
+		if (toBeUsed.exists())
+		{
+			actualDatabase = toBeUsed.getName();
+			return "";
+		}
+		else
+		{
+			return "DATABASE " + toBeUsed.getName() + " DOES NOT EXISTS";
+		}
+	} 
 	
 	/**
 	 * Insert INTO
@@ -410,7 +428,7 @@ public class DBmanagerDML {
 		ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
 		ArrayList<String> registry = new ArrayList<String>();
 		
-		reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
 
 		String line;
 		while ((line = reader.readLine()) != null) 
@@ -441,7 +459,7 @@ public class DBmanagerDML {
 		ArrayList<String> types = new ArrayList<String>();
 		ArrayList<String> Names = new ArrayList<String>();
 		
-		reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
 
 		String[] columns  = reader.readLine().split(",");
 	

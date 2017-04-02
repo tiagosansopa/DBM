@@ -1,0 +1,5 @@
+c4:int,c5:int,c6:int
+R:0
+PK
+FK
+CHECK

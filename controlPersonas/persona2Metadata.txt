@@ -1,4 +1,0 @@
-c4:INT,c5:INT,c6:INT;
-PK
-FK
-CHECK

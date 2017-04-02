@@ -109,6 +109,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
 		ddl.useDatabase(id);
+		dml.useDatabase(id);
 		return null;
 	}
 	
@@ -718,7 +719,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public boolean relation(String op, String item1, String item2, String type1, String type2){
 		if(type1.equals(type2)){
 			System.out.println("same type");
-			if(type1.equals("INT")){
+			if(type1.equals("int")){
 				System.out.println("INT");
 				switch (op) {
 					case "<" :
@@ -734,7 +735,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					case "<>" :
 						return Integer.parseInt(item1) != Integer.parseInt(item2);
 				}
-			} else if(type1.equals("FLOAT")){
+			} else if(type1.equals("float")){
 				System.out.println("FLOAT");
 				switch (op) {
 					case "<" :
@@ -750,7 +751,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					case "<>" :
 						return Float.parseFloat(item1) != Float.parseFloat(item2);
 				}
-			} else if(type1.equals("DATE")){
+			} else if(type1.equals("date")){
 				List<String> date1 = Arrays.asList(item1.split("\\s*-\\s*"));
 				List<String> date2 = Arrays.asList(item2.split("\\s*-\\s*"));
 				int year1 = Integer.valueOf(date1.get(0));
@@ -861,7 +862,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 						return false;
 				}
 			}
-		} else if((type1.equals("FLOAT") && type2.equals("INT")) || (type2.equals("FLOAT") && type1.equals("INT"))){
+		} else if((type1.equals("float") && type2.equals("int")) || (type2.equals("float") && type1.equals("int"))){
 			System.out.println("FLOAT or INT");
 			switch (op) {
 				case "<" :
@@ -884,13 +885,13 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public String type(String literal){
 		String type = "";
 		if(dml.validateInt(literal)){
-			type = "INT";
+			type = "int";
 		} else if (dml.validateFloat(literal)){
-			type = "FLOAT";
+			type = "float";
 		} else if (dml.validateDate(literal)){
-			type = "DATE";
+			type = "date";
 		} else {
-			type = "CHAR("+String.valueOf(literal.length())+")";
+			type = "char("+String.valueOf(literal.length())+")";
 		}
 		return type;
 	}
