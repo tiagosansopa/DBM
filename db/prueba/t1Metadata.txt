@@ -1,5 +1,0 @@
-c1:int,c2:int,c3:int
-R:0
-PK
-FK
-CHECK

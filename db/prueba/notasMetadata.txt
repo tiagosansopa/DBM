@@ -1,0 +1,6 @@
+id:int,nombre:char(3),nac:date,promedio:float
+R:1
+PK
+pk,id
+FK
+CHECK

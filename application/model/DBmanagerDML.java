@@ -91,7 +91,7 @@ public class DBmanagerDML {
 				{
 					System.out.println(colNames.get(j) + " " + typeAndName[0] + colNames.get(j).equals(typeAndName[0]));
 					System.out.println("Associado a " + typeAndName[1]);
-					if(typeAndName[1].contains("INT")){
+					if(typeAndName[1].toUpperCase().contains("INT")){
 						if(validateInt(colTypes.get(j))){
 							newRegistry +=colTypes.get(j)+",";
 						}
@@ -99,15 +99,15 @@ public class DBmanagerDML {
 							return colTypes.get(j)+" NO es INT";
 						}
 					}
-					else if(typeAndName[1].contains("CHAR")){
-						if(validateCHAR(typeAndName[1],colTypes.get(j))){
-							newRegistry +=colTypes.get(j)+",";
+					else if(typeAndName[1].toUpperCase().contains("CHAR")){
+						if(validateCHAR(typeAndName[1],colTypes.get(j).substring(1, colTypes.get(j).length()-1))){
+							newRegistry +=colTypes.get(j).substring(1, colTypes.get(j).length()-1)+",";
 						}
 						else{
-							return colTypes.get(j)+" CHAR es mas largo que el valor especificado";
+							return colTypes.get(j).substring(1, colTypes.get(j).length()-1)+" CHAR es mas largo que el valor especificado";
 						}
 					}
-					else if(typeAndName[1].contains("DATE")){
+					else if(typeAndName[1].toUpperCase().contains("DATE")){
 						if(validateDate(colTypes.get(j))){
 							newRegistry +=colTypes.get(j)+",";
 						}
@@ -115,7 +115,7 @@ public class DBmanagerDML {
 							return colTypes.get(j)+" NO es DATE";
 						}
 					}
-					else if(typeAndName[1].contains("FLOAT")){
+					else if(typeAndName[1].toUpperCase().contains("FLOAT")){
 						if(validateFloat(colTypes.get(j))){
 							newRegistry +=colTypes.get(j)+",";
 						}
@@ -262,6 +262,7 @@ public class DBmanagerDML {
 			regCount+=1;
 		}
 		System.out.println("TotalRegs " + regCount);
+		System.out.println("newRegistry");
 		
 		if(regCount==0)
 		{
@@ -282,7 +283,6 @@ public class DBmanagerDML {
 		 * Sobreescribo en archivo de metadata con nueva cantidad de regs 
 		 * 
 		 */
-		
 		
 		rows = new ArrayList<String>();
 		

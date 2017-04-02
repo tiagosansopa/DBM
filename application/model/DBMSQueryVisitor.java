@@ -304,7 +304,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		}
 		System.out.println(literal_list);
 		try {
-			dml.insertInto(id, order_list, literal_list);
+			System.out.println(dml.insertInto(id, order_list, literal_list));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
