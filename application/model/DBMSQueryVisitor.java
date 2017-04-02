@@ -281,7 +281,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println(id);
 		ArrayList<String> order_list = new ArrayList<String>();
 		ArrayList<String> literal_list = new ArrayList<String>();
-		if(ctx.some_order() != null){
+		if(ctx.getChild(3).getChildCount()>0){
 			//( LPAREN ID comma_id_k  RPAREN )?
 			order_list.add(ctx.some_order().ID().getText());
 			System.out.println(order_list.get(0));
@@ -291,9 +291,10 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				System.out.println(order_list.get(i+1));
 			}
 		}
+		System.out.println(order_list);
 		literal_list.add(ctx.getChild(6).getText());
 		System.out.println(literal_list.get(0));
-		if(ctx.comma_literal_k() != null){
+		if(ctx.getChild(7).getChildCount()>0){
 			//MULTIPLE VALUES
 			Integer total_number_literal = ctx.comma_literal_k().getChildCount()/2;
 			for(Integer i = 0; i<total_number_literal; i++){
@@ -301,6 +302,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				System.out.println(literal_list.get(i+1));
 			}
 		}
+		System.out.println(literal_list);
 		try {
 			dml.insertInto(id, order_list, literal_list);
 		} catch (IOException e) {
