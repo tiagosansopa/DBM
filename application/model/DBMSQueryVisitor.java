@@ -197,6 +197,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 							 String key_column_i = constraintAt.foreignKey().comma_id_k(1).ID(j).getText();
 							 key.columns_list_2.add(key_column_i);
 							 System.out.println(key_column_i);
+	
 						 }
 					 }
 				 } else if(constraintAt.checks() != null) {
@@ -220,14 +221,32 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public ArrayList<ArrayList<String>> visitAlter_table(DBMSParser.Alter_tableContext ctx){
 		//alter table ID rename to ID END_SQL
 	    //|   alter table ID action comma_action_k END_SQL
+		
+		/*
+		 * rename te mando: idViejo y idNuevo
+		 * addColumn: id string, un ArrayList de PKC 
+		 * ADD Constraint: ArrayList de PKC
+		 * Drop column: nombre de la columna. String
+		 * Drop de la constraint: nombre de la constraint. String
+		 * 
+		 */
 		System.out.println("visitAlter_table");
 		if(ctx.getChildCount()==7){
 			String id_number_1 = ctx.getChild(2).getText();
 			String id_number_2 = ctx.getChild(4).getText();
 			System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
+			ddl.alterTableRename(id_number_1,id_number_2);
 		} else {
 			//action
+			visit(ctx.action());
 		}
+		return null;
+	}
+	
+	public ArrayList<ArrayList<String>> visitAction(DBMSParser.ActionContext ctx){
+		String addOrDrop = ctx.getChild(0).getText().toLowerCase();
+		String constraintOrColumn = ctx.getChild(1).getText().toLowerCase();
+		
 		return null;
 	}
 	
