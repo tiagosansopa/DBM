@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DBmanagerDML {
 	
@@ -24,104 +25,270 @@ public class DBmanagerDML {
 	/**
 	 * Insert INTO
 	**/
-	public void insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
+	public String insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
-		boolean error = false;
-		BufferedReader br;
-		InputStream fis = null;
-		String archivoMetadata = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt";
-		fis = new FileInputStream(archivoMetadata);
-		InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-		br = new BufferedReader(isr);
+		File table = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
+		/*
+		 * 
+		 * Reviso que la tabla exista o que si tengamos una base de datos en uso
+		 * 
+		 */
+		if (actualDatabase.equals("")){
+			return "NO DATABASE IN USE";
+		}
+		else if(!table.isFile())
+		{
+			return "TABLE DOES NOT EXISTS";
+		}
+		
+		/*
+		 * 
+		 * Reviso las columnas en las que voy a insertar. Valido el tipo de dato. Valido si viene vacio
+		 * y agrego un NULL. 
+		 * 
+		 */
+		
+		BufferedWriter  output = new BufferedWriter(new FileWriter(table,true));
+		String newRegistry = "";
+		int no=0,rowsInMetadata=0;
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"), Charset.forName("UTF-8")));
 	
 		String[] columnsAndTypes= br.readLine().split(",");
-		//delete the ; 
-		columnsAndTypes[columnsAndTypes.length-1] = columnsAndTypes[columnsAndTypes.length-1].substring(0,columnsAndTypes[columnsAndTypes.length-1].length()-1 );  
-	
+		
+		while ((newRegistry = br.readLine()) != null) {
+			rowsInMetadata+=1;
+		}
+
+		br.close();
+		newRegistry = "";
+
 		for(int i=0; i<columnsAndTypes.length;i++)
 		{
 			String[] typeAndName = columnsAndTypes[i].split(":");
-	
+			no=0;
 			for(int j=0;j<colNames.size();j++)
 			{	
 				if(colNames.get(j).equals(typeAndName[0]))
 				{
 					System.out.println(colNames.get(j) + " " + typeAndName[0] + colNames.get(j).equals(typeAndName[0]));
-					
+					System.out.println("Associado a " + typeAndName[1]);
 					if(typeAndName[1].contains("INT")){
 						if(validateInt(colTypes.get(j))){
-							System.out.println("Si es int");
+							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							System.out.println(colTypes.get(j)+" NO es int");
-							error = true;
+							return colTypes.get(j)+" NO es INT";
 						}
 					}
 					else if(typeAndName[1].contains("CHAR")){
 						if(validateCHAR(typeAndName[1],colTypes.get(j))){
-							System.out.println("Si es char");
+							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							error = true;
+							return colTypes.get(j)+" CHAR es mas largo que el valor especificado";
 						}
 					}
 					else if(typeAndName[1].contains("DATE")){
 						if(validateDate(colTypes.get(j))){
-							System.out.println("Si es date");
+							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							System.out.println(colTypes.get(j)+" NO es date");
-							error = true;
+							return colTypes.get(j)+" NO es DATE";
 						}
 					}
 					else if(typeAndName[1].contains("FLOAT")){
 						if(validateFloat(colTypes.get(j))){
-							System.out.println("Si es Float");
+							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							System.out.println(colTypes.get(j)+" NO es float");
-							error = true;
+							return colTypes.get(j)+" NO es FLOAT";
 						}
 					}
-					else{
-						System.out.println("NULL!");
+				}
+				else
+				{
+					if(no==colNames.size()-1)
+					{
+						newRegistry +="NULL"+",";
+						no=0;
 					}
+					no+=1;
 				}
 			}
 			
 		}
-		if (error==false){
-		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
-		File table = new File(dir);
 		
-		if (actualDatabase.equals("")){
-			System.out.println("NO DATABASE IN USE");
-		}
-		else if(!table.isFile())
+		/*
+		 * 
+		 * Guardar los Constraints
+		 * 
+		 */
+		ArrayList<String> PK = new ArrayList<String>();
+		ArrayList<String> FK = new ArrayList<String>();
+		ArrayList<ArrayList<String>> FKs = new ArrayList<ArrayList<String>>();
+		ArrayList<String> CH = new ArrayList<String>();
+		
+		BufferedReader readMetadata = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		String constraints ="";
+		while (!constraints.contains("PK")) 
 		{
-			System.out.println("TABLE DOES NOT EXISTS");
+			constraints = readMetadata.readLine();
 		}
-		else{
-			try(BufferedWriter  output = new BufferedWriter(new FileWriter(table,true)))
-		    {
-		    	String temp = "";
-		    	int temp2 = 0;
-		        for(String s : colTypes){
-		        	temp +=s+",";
-		        	System.out.println(temp2 + s);
-		        	temp2++;
-		        }
-		        output.newLine();
-		        output.write(temp.substring(0, temp.length()-1)+";");
-		        output.close();
-		    }
-		    catch(IOException ex)
-		    {
-		        ex.printStackTrace();
-		    }
+		PK.addAll(Arrays.asList(readMetadata.readLine().split(",")));
+		while (!constraints.contains("CH")) 
+		{
+			constraints = readMetadata.readLine();
+			if(!constraints.contains("CH")&&!constraints.contains("FK"))
+			{
+				FK.addAll(Arrays.asList(constraints.split(",")));
+				FKs.add(FK);
+				FK = new ArrayList<String>();
+			}
 		}
+		readMetadata.close();
+		
+		/*
+		 * 
+		 * Reviso que PRIMARY KEY no se repita en ningun registro
+		 * 
+		 */
+		
+		ArrayList<Integer> pkColumns = new ArrayList<Integer>();
+		ArrayList<String> pkValues = new ArrayList<String>();
+		for(int i=0; i<columnsAndTypes.length;i++)
+		{
+			String[] nameAndType = columnsAndTypes[i].split(":");
+			for(int s=1;s<PK.size();s++)
+			{
+				if(nameAndType[0].equals(PK.get(s)))
+				{
+					String[] newRegSplit = newRegistry.split(",");
+					pkValues.add(newRegSplit[i]);
+					pkColumns.add(i);
+				}
+			}
 		}
-		br.close();
+		
+		System.out.println("PK "+pkValues+" EN COLUMNA " + pkColumns );
+		
+		ArrayList<ArrayList<String>> tableToInsert = new ArrayList<ArrayList<String>>();
+		ArrayList<String> rows = new ArrayList<String>();
+		int repeated = 0;
+		BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+
+		String line;
+		while ((line = reader.readLine()) != null) 
+		{
+			System.out.println(line.substring(0, line.length()-1));
+			String[] columns = line.substring(0, line.length()-1).split(",");
+			
+			for(int i=0; i<columns.length;i++)
+			{
+				rows.add(columns[i]);
+			}
+			tableToInsert.add(rows);
+			rows = new ArrayList<String>();
+		}	
+		reader.close();
+		
+		for(ArrayList<String> n : tableToInsert)
+		{
+			for(int c = 0; c<pkColumns.size();c++)
+			{
+				//System.out.println("Es igual " + n.get(pkColumns.get(c)) + " = " + pkValues.get(c));
+				if(n.get(pkColumns.get(c)).equals(pkValues.get(c)))
+				{
+					//System.out.println("Primary key " + n.get(pkColumns.get(c)) + " = " + pkValues.get(c) + " Se repitio");
+					repeated+=1;
+				}
+			}
+			if(repeated==pkColumns.size())
+			{
+				//System.out.println("Primary key en registro " + n + " Se repitio");
+				return "Primary key en registro " + n + " Se repitio";
+			}
+			else{
+				repeated=0;	
+			}
+		}
+		
+		/*
+		 * 
+		 * Reviso que FOREING KEY exista  (ya sea la referencia o el registro)
+		 * 
+		 */
+		
+		
+		/*
+		 * 
+		 * Reviso CHECKS
+		 * 
+		 */
+		
+		
+		
+		
+		
+		/*
+		 * 
+		 * Cuento cantidad de registros actuales y escribo el nuevo registro
+		 * 
+		 */
+		
+	
+		BufferedReader readTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		int regCount = 1;
+		while ((line = readTable.readLine()) != null) 
+		{
+			regCount+=1;
+		}
+		System.out.println("TotalRegs " + regCount);
+		
+		if(regCount==0)
+		{
+			output.write(newRegistry.substring(0, newRegistry.length()-1)+";");
+			output.close();
+			br.close();
+		}
+		else
+		{
+			output.newLine();
+			output.write(newRegistry.substring(0, newRegistry.length()-1)+";");
+			output.close();
+			br.close();
+		}
+		
+		/*
+		 * 
+		 * Sobreescribo en archivo de metadata con nueva cantidad de regs 
+		 * 
+		 */
+		
+		
+		rows = new ArrayList<String>();
+		
+		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		while ((newRegistry = file.readLine())!=null) 
+		{
+			if(newRegistry.contains("R:"))
+			{
+				rows.add("R:"+regCount);
+			}
+			else{
+				rows.add(newRegistry);
+			}
+		}
+		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		for(int i=0;i<rows.size();i++)
+		{
+			file2.write(rows.get(i));
+			file2.newLine();
+		}
+		file2.close();
+		output.close();
+
+		return "";
 		
 	}
 	

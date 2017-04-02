@@ -17,12 +17,14 @@ public class DBmanagerDDL {
 
 	String actualDatabase = "";
 	
-	public DBmanagerDDL() {
+	public DBmanagerDDL() 
+	{
 		
 	}
 	
 	
-	public String getActualDatabase() {
+	public String getActualDatabase() 
+	{
 		return actualDatabase;
 	}
 	
@@ -31,8 +33,9 @@ public class DBmanagerDDL {
 	 * Create Database given name
 	 * If it exists already, notifies.
 	**/
-	public boolean createDatabase(String nameDatabase){
-		File theDir = new File(nameDatabase);
+	public String createDatabase(String nameDatabase)
+	{
+		File theDir = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+nameDatabase);
 		if (!theDir.exists()) 
 		{
 			try
@@ -43,21 +46,20 @@ public class DBmanagerDDL {
 			{
 			}        
 			actualDatabase = theDir.getName();
-			return true;
+			return "";
 		}
 		else{
-			System.out.println("DATABASE " + theDir.getName() + " ALREADY EXISTS");
+			return "DATABASE " + theDir.getName() + " ALREADY EXISTS";
 		}
-		return false;
 	}
 	
 	/**
 	 * Rename given database
 	**/
-	public boolean alterDatabase(String oldDatabaseName, String newDatabaseName){
+	public String alterDatabase(String oldDatabaseName, String newDatabaseName){
 		
-		File toBeChanged = new File(oldDatabaseName);
-		File changed = new File(newDatabaseName);
+		File toBeChanged = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+oldDatabaseName);
+		File changed = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+newDatabaseName);
 		
 		if (toBeChanged.exists()) 
 		{
@@ -69,11 +71,11 @@ public class DBmanagerDDL {
 			{
 			}
 			actualDatabase = changed.getName();
-			return true;
+			return "";
 		}
-		else{
-			System.out.println("DATABASE " + toBeChanged.getName() + " DOES NOT EXISTS");
-			return false;
+		else
+		{
+			return "DATABASE " + toBeChanged.getName() + " DOES NOT EXISTS";
 		}
 	}
 	
@@ -81,18 +83,18 @@ public class DBmanagerDDL {
 	/**
 	 * Kill an existing database given database' name
 	**/
-	public boolean killDatabase(String databaseName){
+	public String killDatabase(String databaseName){
 		
-		File toBeKilled = new File(databaseName);
+		File toBeKilled = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+databaseName);
 
 		if (toBeKilled.exists() && deleteDirectory(toBeKilled)) 
 		{
 			actualDatabase = "";
-			return true;
+			return "";
 		}
-		else{
-			System.out.println("DATABASE " + toBeKilled.getName() + " DOES NOT EXISTS");
-			return false;
+		else
+		{
+			return "DATABASE " + toBeKilled.getName() + " DOES NOT EXISTS";
 		}
 	}
 	
@@ -100,14 +102,19 @@ public class DBmanagerDDL {
 	 * Recursive method to empty a directory 
 	**/
 	private boolean deleteDirectory(File directory) {
-	    if(directory.exists()){
+	    if(directory.exists())
+	    {
 	        File[] files = directory.listFiles();
-	        if(null!=files){
-	            for(int i=0; i<files.length; i++) {
-	                if(files[i].isDirectory()) {
+	        if(null!=files)
+	        {
+	            for(int i=0; i<files.length; i++)
+	            {
+	                if(files[i].isDirectory()) 
+	                {
 	                    deleteDirectory(files[i]);
 	                }
-	                else {
+	                else 
+	                {
 	                    files[i].delete();
 	                }
 	            }
@@ -119,18 +126,17 @@ public class DBmanagerDDL {
 	/**
 	 * USE an existing database given database' name
 	**/
-	public boolean useDatabase(String databaseName){
+	public String useDatabase(String databaseName){
 		
-		File toBeUsed = new File(databaseName);
+		File toBeUsed = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+databaseName);
 		if (toBeUsed.exists())
 		{
 			actualDatabase = toBeUsed.getName();
-			return true;
+			return "";
 		}
 		else
 		{
-			System.out.println("DATABASE " + toBeUsed.getName() + " DOES NOT EXISTS");
-			return false;
+			return "DATABASE " + toBeUsed.getName() + " DOES NOT EXISTS";
 		}
 	} 
 	
@@ -138,10 +144,9 @@ public class DBmanagerDDL {
 	 * Show all existing databases  
 	**/
 	public void showDatabases(){
-		Path currentRelativePath = Paths.get("");
-		String s = currentRelativePath.toAbsolutePath().toString();
-		System.out.println("Actual Path for Databases is : " + s);
-		File[] files = new File(s).listFiles();
+	
+		System.out.println("Actual Path for Databases is : " + System.getProperty("user.dir")+File.separator+"db"+File.separator);
+		File[] files = new File(System.getProperty("user.dir")+File.separator+"db").listFiles();
 		
 		for (File file : files) 
 		{
@@ -168,25 +173,28 @@ public class DBmanagerDDL {
 	/**
 	 * Create table in existing database  
 	**/
-	public boolean createTable(String tableName, ArrayList<String> colNames, ArrayList<String> colTypes){
+	public String createTable(String tableName, ArrayList<String> colNames, ArrayList<String> colTypes){
 		if (actualDatabase.equals("")){
-			System.out.println("NO DATABASE IN USE");
-			return false;
+			return "NO DATABASE IN USE";
 		}
-		else{
+		else
+		{
 			
-			File newTable = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
-			File newTablemeta = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt");
+			File newTable = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
+			File newTablemeta = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt");
 			
 		    try(BufferedWriter  output = new BufferedWriter(new FileWriter(newTablemeta)))
 		    {
 		    	String temp = "";
 		    	int temp2 = 0;
-		        for(String s : colNames){
+		        for(String s : colNames)
+		        {
 		        	temp +=s+":"+colTypes.get(temp2)+",";
 		        	temp2++;
 		        }
-		        output.write(temp.substring(0, temp.length()-1)+";");
+		        output.write(temp.substring(0, temp.length()-1));
+		        output.newLine();
+		        output.write("R:0");
 		        output.newLine();
 		        output.write("PK");
 		        output.newLine();
@@ -196,18 +204,18 @@ public class DBmanagerDDL {
 		        output.close();
 		        try(BufferedWriter  output2 = new BufferedWriter(new FileWriter(newTable)))
 			    {
-		        	return true;
+		        	return "";
 			    }
 		        catch(IOException ex)
 			    {
 			        ex.printStackTrace();
-			        return false;
+			        return "Base de datos no existe";
 			    }
 		    }
 		    catch(IOException ex)
 		    {
 		        ex.printStackTrace();
-		        return false;
+		        return "Base de datos no existe";
 		    }
 		}
 	}
@@ -231,8 +239,8 @@ public class DBmanagerDDL {
 	**/
 	public boolean alterTableRename(String oldTableName, String newTableName){
 		
-		File toBeChanged = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+oldTableName+".txt");
-		File changed = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+newTableName+".txt");
+		File toBeChanged = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+oldTableName+".txt");
+		File changed = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+newTableName+".txt");
 		
 		if (toBeChanged.exists()) 
 		{
@@ -255,12 +263,13 @@ public class DBmanagerDDL {
 	/**
 	 * Kill an existing table on database in use
 	**/
-	public boolean killTable(String tableName){
+	public boolean killTable(String tableName)
+	{
 		if (actualDatabase.equals("")){
 			System.out.println("NO DATABASE IN USE");
 			return false;
 		}
-		File toBeKilled = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
+		File toBeKilled = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
 
 		if (toBeKilled.exists()) 
 		{
@@ -275,8 +284,10 @@ public class DBmanagerDDL {
 	/**
 	 * Show all TABLES in actual database
 	**/
-	public void showTables(){
-		if (actualDatabase.equals("")){
+	public void showTables()
+	{
+		if (actualDatabase.equals(""))
+		{
 			System.out.println("NO DATABASE IN USE");
 		}
 		else
@@ -284,7 +295,7 @@ public class DBmanagerDDL {
 			Path currentRelativePath = Paths.get("");
 			String s = currentRelativePath.toAbsolutePath().toString()+File.separator+actualDatabase;
 			System.out.println("Actual Path for Database is : " + s);
-			File[] files = new File(s).listFiles();
+			File[] files = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase).listFiles();
 			
 			for (File file : files) 
 			{
@@ -305,7 +316,8 @@ public class DBmanagerDDL {
 	public void showColumns(String tableName) throws IOException{
 		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
 		File table = new File(dir);
-		if (actualDatabase.equals("")){
+		if (actualDatabase.equals(""))
+		{
 			System.out.println("NO DATABASE IN USE");
 		}
 		else if(!table.isFile())
@@ -317,7 +329,8 @@ public class DBmanagerDDL {
 			BufferedReader br = new BufferedReader (new FileReader (dir));
 			String line;
 
-			while( (line = br.readLine() ) != null) {
+			while( (line = br.readLine() ) != null)
+			{
 			    System.out.println(line);
 			}
 			

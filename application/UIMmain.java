@@ -28,10 +28,7 @@ public class UIMmain {
 					System.out.println("CREATE DATABASE");
 					System.out.println("Ingrese nombre");
 					temp = scan.nextLine();
-					
-					if(ddl.createDatabase(temp)){
-						System.out.println(temp + " Creado");
-					}
+					ddl.createDatabase(temp);
 				}
 				break;
 				
@@ -42,10 +39,7 @@ public class UIMmain {
 					temp = scan.nextLine();
 					System.out.println("Ingrese nombre nuevo");
 					temp2 = scan.nextLine();
-					
-					if(ddl.alterDatabase(temp, temp2)){
-						System.out.println(temp + " Renombrado a " + temp2); 
-					}
+					ddl.alterDatabase(temp, temp2);
 				}
 				break;
 				
@@ -54,10 +48,7 @@ public class UIMmain {
 					System.out.println("DROP DATABASE");
 					System.out.println("Ingrese nombre");
 					temp = scan.nextLine();
-					
-					if(ddl.killDatabase(temp)){
-						System.out.println(temp + " Eliminado");
-					} 
+					ddl.killDatabase(temp);
 				}
 				break;
 				
@@ -66,10 +57,7 @@ public class UIMmain {
 					System.out.println("USE DATABASE");
 					System.out.println("Ingrese nombre");
 					temp = scan.nextLine();
-					
-					if(ddl.useDatabase(temp)){
-						System.out.println(temp + " en Uso");
-					}
+					System.out.println(ddl.useDatabase(temp));
 					
 				}
 				break;
@@ -99,10 +87,7 @@ public class UIMmain {
 						tipos.add(scan.nextLine());
 						cantidad--;
 					} 
-					
-					if(ddl.createTable(temp, nombres, tipos)){
-						System.out.println(temp + " creada");
-					}
+					ddl.createTable(temp, nombres, tipos);
 					
 				}
 				break;
@@ -114,10 +99,7 @@ public class UIMmain {
 					temp = scan.nextLine();
 					System.out.println("nuevo nombre? ");
 					temp2 = scan.nextLine();
-					
-					if(ddl.alterTableRename(temp, temp2)){
-						System.out.println(temp + " TABLA Renombrada a " + temp2); 
-					}
+					ddl.alterTableRename(temp, temp2);
 				}
 				break;
 				
@@ -126,10 +108,7 @@ public class UIMmain {
 					System.out.println("DROP TABLE");
 					System.out.println("Ingrese nombre");
 					temp = scan.nextLine();
-					
-					if(ddl.killTable(temp)){
-						System.out.println(temp + " Eliminado");
-					} 
+					ddl.killTable(temp);
 				}
 				break;
 				
@@ -173,7 +152,7 @@ public class UIMmain {
 					} 
 					
 					dml.setActualDatabase(ddl.getActualDatabase());
-					dml.insertInto(temp, nombres, tipos);
+					System.out.println(dml.insertInto(temp, nombres, tipos));
 				}
 				break;
 				
