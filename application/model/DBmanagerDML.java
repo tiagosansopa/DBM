@@ -256,7 +256,8 @@ public class DBmanagerDML {
 		
 	
 		BufferedReader readTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
-		int regCount = 1;
+		int regCount = 0;
+		line="";
 		while ((line = readTable.readLine()) != null) 
 		{
 			regCount+=1;
