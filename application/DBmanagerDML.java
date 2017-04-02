@@ -27,7 +27,7 @@ public class DBmanagerDML {
 	**/
 	public String insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
-		File table = new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt");
+		File table = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
 		/*
 		 * 
 		 * Reviso que la tabla exista o que si tengamos una base de datos en uso
@@ -52,7 +52,7 @@ public class DBmanagerDML {
 		String newRegistry = "";
 		int no=0,rowsInMetadata=0;
 		
-		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"), Charset.forName("UTF-8")));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"), Charset.forName("UTF-8")));
 	
 		String[] columnsAndTypes= br.readLine().split(",");
 		
@@ -129,7 +129,7 @@ public class DBmanagerDML {
 		ArrayList<ArrayList<String>> FKs = new ArrayList<ArrayList<String>>();
 		ArrayList<String> CH = new ArrayList<String>();
 		
-		BufferedReader readMetadata = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		BufferedReader readMetadata = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
 		String constraints ="";
 		while (!constraints.contains("PK")) 
 		{
@@ -159,9 +159,9 @@ public class DBmanagerDML {
 		for(int i=0; i<columnsAndTypes.length;i++)
 		{
 			String[] nameAndType = columnsAndTypes[i].split(":");
-			for(String s : PK)
+			for(int s=1;s<PK.size();s++)
 			{
-				if(nameAndType[0].equals(s))
+				if(nameAndType[0].equals(PK.get(s)))
 				{
 					String[] newRegSplit = newRegistry.split(",");
 					pkValues.add(newRegSplit[i]);
@@ -175,7 +175,7 @@ public class DBmanagerDML {
 		ArrayList<ArrayList<String>> tableToInsert = new ArrayList<ArrayList<String>>();
 		ArrayList<String> rows = new ArrayList<String>();
 		int repeated = 0;
-		BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
 
 		String line;
 		while ((line = reader.readLine()) != null) 
@@ -237,7 +237,7 @@ public class DBmanagerDML {
 		 */
 		
 	
-		BufferedReader readTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		BufferedReader readTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
 		int regCount = 1;
 		while ((line = readTable.readLine()) != null) 
 		{
@@ -268,7 +268,7 @@ public class DBmanagerDML {
 		
 		rows = new ArrayList<String>();
 		
-		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
 		while ((newRegistry = file.readLine())!=null) 
 		{
 			if(newRegistry.contains("R:"))
@@ -279,7 +279,7 @@ public class DBmanagerDML {
 				rows.add(newRegistry);
 			}
 		}
-		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
 		for(int i=0;i<rows.size();i++)
 		{
 			file2.write(rows.get(i));
