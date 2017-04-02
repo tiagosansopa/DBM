@@ -10,7 +10,8 @@ import application.model.DBmanagerDDL;
 import application.model.DBmanagerDML;
 
 public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<String>>> {
-	public StringBuffer errors = new StringBuffer("\n Semantic Errors: \n");
+	public StringBuffer errors = new StringBuffer("\n Execution \n");
+	//public StringBuffer outputText = new StringBuffer("");
 	public Integer n = 0;
 	public DBmanagerDDL ddl;
 	public DBmanagerDML dml;
@@ -64,7 +65,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitCreate_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id); //Santiago function
-		ddl.createDatabase(id);
+		handleSemanticError(ddl.createDatabase(id));
 		return null; //errors
 	}
 	
@@ -76,7 +77,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		String id_number_1 = ctx.getChild(2).getText(); //arg 1
 		String id_number_2 = ctx.getChild(5).getText(); //arg 2
 		System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
-		ddl.alterDatabase(id_number_1, id_number_2);
+		handleSemanticError(ddl.alterDatabase(id_number_1, id_number_2));
 		return null; //Errors :)
 	}
 	
@@ -87,7 +88,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);//FUNCTION SANTIAGO
-		ddl.killDatabase(id);
+		handleSemanticError(ddl.killDatabase(id));
 		return null;
 	}
 	
@@ -108,8 +109,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitUse_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
-		ddl.useDatabase(id);
-		dml.useDatabase(id);
+		handleSemanticError(ddl.useDatabase(id));
+		handleSemanticError(dml.useDatabase(id));
 		return null;
 	}
 	
@@ -210,7 +211,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				 keys_list.add(key);
 			}
 		}
-		ddl.createTable(table_id, columns_list, types_list);
+		handleSemanticError(ddl.createTable(table_id, columns_list, types_list));
 		return null;
 	}
 
@@ -304,7 +305,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		}
 		System.out.println(literal_list);
 		try {
-			System.out.println(dml.insertInto(id, order_list, literal_list));
+			handleSemanticError(dml.insertInto(id, order_list, literal_list));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
