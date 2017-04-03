@@ -242,11 +242,105 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		}
 		return null;
 	}
+	public KeyPFC makeListKeyPFC(ConstraintAtContext constraintAt){
+		KeyPFC key = new KeyPFC();
+		if(constraintAt.primaryKey() != null){
+			 System.out.println("PK");
+			 //ID primary key LPAREN ID comma_id_k RPAREN ;
+			 String id = constraintAt.primaryKey().getChild(0).getText();
+			 System.out.println(id);
+			 key.id = id;
+			 key.type = "pk";
+			 String key_column_1 = constraintAt.primaryKey().getChild(4).getText();
+			 key.columns_list_1.add(key_column_1);
+			 System.out.println(key_column_1);
+			 Integer columns_constraint_number = constraintAt.primaryKey().comma_id_k().getChildCount()/2;
+			 if(columns_constraint_number > 0){
+				 for(Integer j = 0; j < columns_constraint_number; j++){
+					 String key_column_i = constraintAt.primaryKey().comma_id_k().ID(j).getText();
+					 key.columns_list_1.add(key_column_i);
+					 System.out.println(key_column_i);
+				 }
+			 }
+		 } else if(constraintAt.foreignKey() != null){
+			 System.out.println("FK");
+			 //ID foreign key LPAREN ID comma_id_k RPAREN references ID LPAREN ID comma_id_k RPAREN;
+			 String id = constraintAt.foreignKey().getChild(0).getText();
+			 System.out.println(id);
+			 key.id = id;
+			 key.type = "fk";
+			 String id_references = constraintAt.foreignKey().getChild(8).getText();
+			 key.id_references = id_references;
+			 String key_column_1 = constraintAt.foreignKey().getChild(4).getText();
+			 key.columns_list_1.add(key_column_1);
+			 System.out.println(key_column_1);
+			 Integer columns_constraint_number = constraintAt.foreignKey().comma_id_k(0).getChildCount()/2;
+			 if(columns_constraint_number > 0){
+				 for(Integer j = 0; j < columns_constraint_number; j++){
+					 String key_column_i = constraintAt.foreignKey().comma_id_k(0).ID(j).getText();
+					 key.columns_list_1.add(key_column_i);
+					 System.out.println(key_column_i);
+				 }
+			 }
+			 String key_column_2 = constraintAt.foreignKey().getChild(10).getText();
+			 key.columns_list_2.add(key_column_2);
+			 System.out.println(key_column_2);
+			 columns_constraint_number = constraintAt.foreignKey().comma_id_k(1).getChildCount()/2;
+			 if(columns_constraint_number > 0){
+				 for(Integer j = 0; j < columns_constraint_number; j++){
+					 String key_column_i = constraintAt.foreignKey().comma_id_k(1).ID(j).getText();
+					 key.columns_list_2.add(key_column_i);
+					 System.out.println(key_column_i);
+
+				 }
+			 }
+		 } else if(constraintAt.checks() != null) {
+			 System.out.println("CH");
+			 //ID check LPAREN exp RPAREN
+			 String id = constraintAt.checks().getChild(0).getText();
+			 System.out.println(id);
+			 key.id = id;
+			 key.type = "ch";
+			 key.exp = constraintAt.checks().exp().getText();
+		 }
+		return key;
+	}
 	
 	public ArrayList<ArrayList<String>> visitAction(DBMSParser.ActionContext ctx){
 		String addOrDrop = ctx.getChild(0).getText().toLowerCase();
 		String constraintOrColumn = ctx.getChild(1).getText().toLowerCase();
-		
+		ArrayList<KeyPFC> keys_list = new ArrayList<KeyPFC>();
+		if(addOrDrop.equals("drop") && constraintOrColumn.equals("constraint")){
+			// Llamar a la funcion de Santiago borrar constraint
+			
+			System.out.println("Constraint a borrar: "
+					+ ctx.ID().getText()
+					);
+			ctx.ID().getText();
+		}
+		else if (addOrDrop.equals("drop") && constraintOrColumn.equals("column")){
+			// LLamar a la funcion de Santiago borrar columna
+			System.out.println("Columna a borrar: "
+					+ ctx.ID().getText()
+					);
+			ctx.ID().getText();
+		}
+		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
+			ConstraintAtContext constraint = ctx.constraintAt(0);
+			keys_list.add(makeListKeyPFC(constraint));
+		}
+		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
+			ConstraintAtContext constraint = ctx.constraintAt(0);
+			keys_list.add(makeListKeyPFC(constraint));
+			Integer constraints_number = ctx.comma_constraint_constraintAt_k().getChildCount()/3;
+			if(constraints_number > 0){
+				for(Integer i = 0; i < constraints_number; i++){
+					 ConstraintAtContext constraintAt = ctx.comma_constraint_constraintAt_k().constraintAt(i);
+					 keys_list.add(makeListKeyPFC(constraintAt));
+				}
+			}
+			
+		}
 		return null;
 	}
 	
