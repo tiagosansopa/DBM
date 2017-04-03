@@ -1,0 +1,6 @@
+id_prueba:int,nombre:char(90)
+R:1
+PK
+pk_id_prueba,id_prueba
+FK
+CHECK
