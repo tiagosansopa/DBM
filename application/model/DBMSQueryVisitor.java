@@ -17,12 +17,16 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public DBmanagerDML dml;
 	public ArrayList<String> tables_list;
 	public ArrayList<String> columns_list;
+	public Integer notExpression;
+	public boolean notCompareExpr;
 	
 	public DBMSQueryVisitor (DBmanagerDDL ddl, DBmanagerDML dml){
 		System.out.println("DBMSVisitor");
 		this.ddl = ddl;
 		this.dml = dml;
 		//Hello Santiago Koch
+		notExpression = 0;
+		notCompareExpr = false;
 	}
 	
 	@Override 
@@ -512,8 +516,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			System.out.println("WHERE EXPRESSION");
 			result = visit(ctx.where_exp().exp());
 			if(result == null || result.size() == 0){
-				//AUN ASI TENEMOS QUE TRABAJAR AMBAS TABLAS :(
-				
+				return null;
 			}
 		}
 		if(ctx.order_by().getChildCount() > 0){
@@ -587,67 +590,75 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		if(ctx.getChildCount() == 1){
 			return visitChildren(ctx);
 		} else {
-			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 			ArrayList<ArrayList<String>> t1 = visit(ctx.expression());
+			ArrayList<ArrayList<String>> t2 = visit(ctx.andExpr());
 			if(t1 == null){
 				return null;
 			}
-			ArrayList<String> t1_info = t1.get(0);
-			t1.remove(0);
-			ArrayList<String> t1_type = t1.get(0);
-			t1.remove(0);
-			ArrayList<ArrayList<String>> t2 = visit(ctx.andExpr());
 			if(t2 == null){
 				return null;
 			}
-			ArrayList<String> t2_info = t2.get(0);
-			t2.remove(0);
-			ArrayList<String> t2_type = t2.get(0);
-			t2.remove(0);
-			if(sameColumns(t1_info, t2_info) && sameColumns(t1_type, t2_type)){
-				if(t1.size() > t2.size()){
-					for(ArrayList<String> row : t2){
-						if(!t1.contains(row)){
-							t1.add(row);
-						}
-					}
-				result.add(t1_info);
-				result.add(t1_type);
-				result.addAll(t1);
-				} else {
-					for(ArrayList<String> row : t1){
-						if(!t2.contains(row)){
-							t2.add(row);
-						}
-					}
-				result.add(t2_info);
-				result.add(t2_type);
-				result.addAll(t2);
-				}
+			if(notExpression%2 != 0){
+				return makeAnd(t1, t2);
 			} else {
-				//PRODUCTO CARTESIANO
-				System.out.println("Producto cartesiano OR");
-				t1_info.addAll(t2_info);
-				t1_type.addAll(t2_type);
-				result.add(t1_info);
-				result.add(t1_type);
-				if(t1.size() > 0 && t2.size() > 0){
-					for(ArrayList<String> row : t1){
-						for(ArrayList<String> row2 : t2){
-							ArrayList<String> temp = new ArrayList<String>();
-							temp.addAll(row);
-							temp.addAll(row2);
-							result.add(temp);
-						}
-					}
-				} else if(t1.size() > 0){
-					result.addAll(t1);
-				} else if(t2.size() > 0){
-					result.addAll(t2);
-				}
+				return makeOr(t1, t2);
 			}
-			return result;
 		}
+	}
+	
+	public ArrayList<ArrayList<String>> makeOr(ArrayList<ArrayList<String>> t1, ArrayList<ArrayList<String>> t2){
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		ArrayList<String> t1_info = t1.get(0);
+		t1.remove(0);
+		ArrayList<String> t1_type = t1.get(0);
+		t1.remove(0);
+		ArrayList<String> t2_info = t2.get(0);
+		t2.remove(0);
+		ArrayList<String> t2_type = t2.get(0);
+		t2.remove(0);
+		if(sameColumns(t1_info, t2_info)){
+			if(t1.size() > t2.size()){
+				for(ArrayList<String> row : t2){
+					if(!t1.contains(row)){
+						t1.add(row);
+					}
+				}
+			result.add(t1_info);
+			result.add(t1_type);
+			result.addAll(t1);
+			} else {
+				for(ArrayList<String> row : t1){
+					if(!t2.contains(row)){
+						t2.add(row);
+					}
+				}
+			result.add(t2_info);
+			result.add(t2_type);
+			result.addAll(t2);
+			}
+		} else {
+			//PRODUCTO CARTESIANO
+			System.out.println("Producto cartesiano OR");
+			t1_info.addAll(t2_info);
+			t1_type.addAll(t2_type);
+			result.add(t1_info);
+			result.add(t1_type);
+			if(t1.size() > 0 && t2.size() > 0){
+				for(ArrayList<String> row : t1){
+					for(ArrayList<String> row2 : t2){
+						ArrayList<String> temp = new ArrayList<String>();
+						temp.addAll(row);
+						temp.addAll(row2);
+						result.add(temp);
+					}
+				}
+			} else if(t1.size() > 0){
+				result.addAll(t1);
+			} else if(t2.size() > 0){
+				result.addAll(t2);
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -659,30 +670,44 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			return visitChildren(ctx);
 		} else {
 			ArrayList<ArrayList<String>> t1 = visit(ctx.andExpr());
-			if(t1 == null || t1.size() == 0){
+			if(t1 == null){
 				return null;
 			}
 			ArrayList<ArrayList<String>> t2 = visit(ctx.factor());
-			if(t2 == null || t1.size() == 0){
+			if(t2 == null){
 				return null;
 			}
-			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
-			if(t1.size() > t2.size()){
-				for(ArrayList<String> row : t1){
-					if(t2.contains(row)){
-						result.add(row);
-					}
-				}
+			if(notExpression%2 != 0){
+				return makeOr(t1, t2);
 			} else {
-				for(ArrayList<String> row : t2){
-					if(t1.contains(row)){
-						result.add(row);
-					}
-				}
+				return makeAnd(t1, t2);
 			}
-			return result;
 		}
 		
+	}
+	
+	public ArrayList<ArrayList<String>> makeAnd(ArrayList<ArrayList<String>> t1, ArrayList<ArrayList<String>> t2){
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		result.add(t1.get(0)); //names
+		result.add(t1.get(1)); //types
+		t1.remove(0);
+		t1.remove(0);
+		t2.remove(0);
+		t2.remove(0);
+		if(t1.size() > t2.size()){
+			for(ArrayList<String> row : t1){
+				if(t2.contains(row)){
+					result.add(row);
+				}
+			}
+		} else {
+			for(ArrayList<String> row : t2){
+				if(t1.contains(row)){
+					result.add(row);
+				}
+			}
+		}
+		return result;
 	}
 	
 	@Override
@@ -693,7 +718,15 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		if(ctx.getChildCount() == 1){
 			return visitChildren(ctx);
 		} else {
-			return null;
+			if(ctx.getChild(1).getChildCount() == 1){
+				notCompareExpr = true;
+				return visitChildren(ctx);
+			} else {
+				notExpression += 1;
+				ArrayList<ArrayList<String>> temp = visitChildren(ctx);
+				notExpression -= 1;
+				return temp;
+			}
 		}
 	}
 	
@@ -732,6 +765,17 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		Integer index2 = 0;
 		String type2 = "";
 		String rel_op = ctx.rel_op().getText();
+		
+		//NOT 
+		if(notCompareExpr && notExpression%2 != 0){
+			notCompareExpr = false;
+		} else if (notExpression%2 != 0){
+			rel_op = notCompareRel(rel_op);
+		} else if (notCompareExpr){
+			rel_op = notCompareRel(rel_op);
+			notCompareExpr = false;
+		}
+		
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		
 		if(ctx.term(0).literal() == null){
@@ -863,6 +907,25 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			System.out.println("ERROR, ambas son literales");
 			return null;
 		}
+	}
+	
+	public String notCompareRel(String rel_op){
+		String new_rel_op = "";
+		switch (rel_op){
+		case "<":
+			return ">=";
+		case ">":
+			return "<=";
+		case "<=":
+			return ">";
+		case ">=":
+			return "<";
+		case "<>":
+			return "=";
+		case "=":
+			return "<>";
+		}
+		return new_rel_op;
 	}
 	
 	public boolean relation(String op, String item1, String item2, String type1, String type2){
