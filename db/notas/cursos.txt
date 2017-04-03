@@ -1,0 +1,4 @@
+DB,Rochi,90.0;
+AS,Orochi,90.0;
+Ras,Jiraya,90.0;
+Lala,Naruto,20.0;
