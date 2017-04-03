@@ -41,7 +41,7 @@ public class DBmanagerDML {
 	} 
 	
 	/**
-	 * Insert INTO
+	 * Insert INTO con columNames
 	**/
 	public String insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
 	{
@@ -235,29 +235,41 @@ public class DBmanagerDML {
 		
 		/*
 		 * 
-		 * Reviso que FOREING KEY exista  (ya sea la referencia o el registro)
+		 * Reviso que FOREING KEY exista  (el registro)
 		 * 
 		 */
-		/*
 		
-		int cont=0;
+		ArrayList<String> fkLocal = new ArrayList<String>();
+		ArrayList<String> fkRef = new ArrayList<String>();
+		
+		int cont = 0, index = 0;
 		for(ArrayList<String> fkActual:FKs)
 		{
 			for(int i=2;i<fkActual.size();i++)
 			{
-				while(!fkActual.get(i).equals("}"))
+				if(!fkActual.get(i).equals("}"))
 				{
 					for(int j=0; i<columnsAndTypes.length;i++)
 					{
 						String[] typeAndName = columnsAndTypes[i].split(":");
 						if(!typeAndName[0].equals(fkActual.get(i)))
 						{
-							
+							cont +=1;
 						}
 					}
-					
+				}
+				else
+				{
+					index=i;
+					break;
 				}
 			}
+			for(int i=index+1;i<fkActual.size();i++)
+			{
+				
+			}
+			
+			
 		}
 		
 		ArrayList<String> colLocales = new ArrayList<String>();
@@ -278,7 +290,7 @@ public class DBmanagerDML {
 		}
 		
 		System.out.println("FK "+pkValues+" EN COLUMNA " + pkColumns );
-		*/
+	
 		
 		
 		/*
@@ -352,6 +364,55 @@ public class DBmanagerDML {
 
 		return "";
 		
+	}
+	
+	/**
+	 * Insert INTO sin columNames. Se agregan los values en el orden predeterminado
+	**/
+	public String insertInto(String tableName, ArrayList<String> colValues) throws IOException
+	{
+		File table = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
+		/*
+		 * 
+		 * Reviso que la tabla exista o que si tengamos una base de datos en uso
+		 * 
+		 */
+		if (actualDatabase.equals("")){
+			return "No Database in Use";
+		}
+		else if(!table.isFile())
+		{
+			return "Table "+ tableName +  " no existe en " + actualDatabase;
+		}
+		
+		/*
+		 * 
+		 * Reviso las columnas en las que voy a insertar. Valido el tipo de dato. Valido si viene vacio
+		 * y agrego un NULL. 
+		 * 
+		 */
+		
+		BufferedWriter  output = new BufferedWriter(new FileWriter(table,true));
+		String newRegistry = "";
+		int no=0,rowsInMetadata=0;
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"), Charset.forName("UTF-8")));
+	
+		String[] columnsAndTypes= br.readLine().split(",");
+		
+		while ((newRegistry = br.readLine()) != null) {
+			rowsInMetadata+=1;
+		}
+
+		br.close();
+		newRegistry = "";
+
+		for(int i=0; i<columnsAndTypes.length;i++)
+		{
+			String[] typeAndName = columnsAndTypes[i].split(":");
+			no=0;
+		}
+	
 	}
 	
 	/**

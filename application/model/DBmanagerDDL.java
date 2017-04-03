@@ -347,7 +347,7 @@ public class DBmanagerDDL {
 	/**
 	 * rename table (on) in database in (on) use
 	**/
-	public boolean alterTableRename(String oldTableName, String newTableName){
+	public String  alterTableRename(String oldTableName, String newTableName){
 		
 		File toBeChanged = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+oldTableName+".txt");
 		File changed = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+newTableName+".txt");
@@ -362,13 +362,14 @@ public class DBmanagerDDL {
 			{
 			}
 			actualDatabase = changed.getName();
-			return true;
+			return "";
 		}
 		else{
-			System.out.println("TABLE " + toBeChanged.getName() + " DOES NOT EXISTS");
-			return false;
+			return "Table " + toBeChanged.getName() + " does not exists";
 		}
 	}
+	
+
 	
 	/**
 	 * Kill an existing table on database in use
