@@ -6,6 +6,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
@@ -43,6 +44,8 @@
                               <TextArea fx:id="queryLabel" layoutX="11.0" layoutY="45.0" prefHeight="294.0" prefWidth="554.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="45.0" />
                               <Text layoutX="14.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SQL Query:" />
                               <Button fx:id="runButton" layoutX="366.0" layoutY="262.0" mnemonicParsing="false" onAction="#handleText" text="Run" />
+                              <Text layoutX="205.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Database : " />
+                              <TextField fx:id="currentDatabase" layoutX="303.0" layoutY="17.0" prefHeight="25.0" prefWidth="136.0" />
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
