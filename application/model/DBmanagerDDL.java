@@ -173,7 +173,8 @@ public class DBmanagerDDL {
 	/**
 	 * Create table in existing database  
 	**/
-	public String createTable(String tableName, ArrayList<String> colNames, ArrayList<String> colTypes){
+	public String createTable(String tableName, ArrayList<String> colNames, ArrayList<String> colTypes,ArrayList<KeyPFC> constraints){
+		System.out.println(constraints);
 		if (actualDatabase.equals("")){
 			return "NO DATABASE IN USE";
 		}
@@ -198,9 +199,58 @@ public class DBmanagerDDL {
 		        output.newLine();
 		        output.write("PK");
 		        output.newLine();
+		        
+		        temp = "";
+		        for(KeyPFC k : constraints)
+		        {
+		        	if(k.type.equals("pk"))
+		        	{
+		        		temp+=k.id+",";
+		        		for(String columna: k.columns_list_1)
+		        		{
+		        			temp+=columna+",";
+		        		}
+		        		output.write(temp.substring(0, temp.length()-1));
+		        		output.newLine();
+		        		temp = "";
+		        	}
+		        }
 		        output.write("FK");
 		        output.newLine();
+		        temp="";
+		        for(KeyPFC k : constraints)
+		        {
+		        	if(k.type.equals("fk"))
+		        	{
+		        		temp+=k.id+",{,";
+		        		for(String columna: k.columns_list_1)
+		        		{
+		        			temp+=columna+",";
+		        		}
+		        		temp+="},"+k.id_references+",{,";
+		        		for(String columna: k.columns_list_2)
+		        		{
+		        			temp+=columna+",";
+		        		}
+		        		temp+="}";
+		        		output.write(temp);
+		        		output.newLine();
+		        		temp = "";
+		        	}
+		        }
 		        output.write("CHECK");
+		        output.newLine();
+		        temp = "";
+		        for(KeyPFC k : constraints)
+		        {
+		        	if(k.type.equals("ch"))
+		        	{
+		        		temp+=k.exp;
+		        		output.write(temp);
+		        		output.newLine();
+		        		temp = "";
+		        	}
+		        }
 		        output.close();
 		        try(BufferedWriter  output2 = new BufferedWriter(new FileWriter(newTable)))
 			    {

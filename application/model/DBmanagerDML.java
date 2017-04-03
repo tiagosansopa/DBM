@@ -87,6 +87,7 @@ public class DBmanagerDML {
 			no=0;
 			for(int j=0;j<colNames.size();j++)
 			{	
+				System.out.println(colNames.get(j) + " = " + colNames.get(j).equals(typeAndName[0]));
 				if(colNames.get(j).equals(typeAndName[0]))
 				{
 					System.out.println(colNames.get(j) + " " + typeAndName[0] + colNames.get(j).equals(typeAndName[0]));
@@ -136,6 +137,7 @@ public class DBmanagerDML {
 			}
 			
 		}
+		System.out.println(newRegistry);
 		
 		/*
 		 * 
@@ -236,6 +238,24 @@ public class DBmanagerDML {
 		 * Reviso que FOREING KEY exista  (ya sea la referencia o el registro)
 		 * 
 		 */
+		ArrayList<String> colLocales = new ArrayList<String>();
+		ArrayList<String> colExternas = new ArrayList<String>();
+		for(int i=0; i<columnsAndTypes.length;i++)
+		{
+			String[] nameAndType = columnsAndTypes[i].split(":");
+			for(int s=1;s<FK.size();s++)
+			{
+				if(nameAndType[0].equals(PK.get(s)))
+				{
+					String[] newRegSplit = newRegistry.split(",");
+					pkValues.add(newRegSplit[i]);
+					pkColumns.add(i);
+				}
+			}
+		}
+		
+		System.out.println("PK "+pkValues+" EN COLUMNA " + pkColumns );
+		
 		
 		
 		/*
@@ -263,7 +283,7 @@ public class DBmanagerDML {
 			regCount+=1;
 		}
 		System.out.println("TotalRegs " + regCount);
-		System.out.println("newRegistry");
+		System.out.println("newRegistry es "+ newRegistry+ " este");
 		
 		if(regCount==0)
 		{

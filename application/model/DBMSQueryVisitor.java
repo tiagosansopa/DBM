@@ -210,7 +210,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				 keys_list.add(key);
 			}
 		}
-		ddl.createTable(table_id, columns_list, types_list);
+		ddl.createTable(table_id, columns_list, types_list,keys_list);
 		return null;
 	}
 
