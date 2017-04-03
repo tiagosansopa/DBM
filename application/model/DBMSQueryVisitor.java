@@ -431,12 +431,25 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		return null;
 	}
 	
+	public ArrayList<String> tableToIndex(ArrayList<ArrayList<String>> table){
+		ArrayList<String> index = new ArrayList<String>();
+		table.remove(0);
+		table.remove(0);
+		for(ArrayList<String> row : table){
+			index.add(row.get(0));
+		}
+		return index;
+	}
+	
 	//UPDATE
 	@Override
 	public ArrayList<ArrayList<String>> visitUpdate_value(DBMSParser.Update_valueContext ctx){
 		//update ID set ID EQ literal comma_id_eq_literal_k  where_exp END_SQL
 		System.out.println("visitUpdate_value");
 		String id = ctx.getChild(1).getText();
+		tables_list = new ArrayList<String>();
+		tables_list.add(id);
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		ArrayList<String> id_list = new ArrayList<String>();
 		ArrayList<String> literal_list = new ArrayList<String>();
 		id_list.add(ctx.getChild(3).getText());
@@ -453,12 +466,15 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			}
 		}
 		if(ctx.where_exp() != null){
-			System.out.println(ctx.where_exp().getText());
+			System.out.println("WHERE EXPRESSION");
+			result = visit(ctx.where_exp().exp());
+			if(result == null){
+				return null;
+			}
+			System.out.println(tableToIndex(result));
 		}
-		
 		return null;
 	}
-	
 	
 	//DELETE
 	@Override
@@ -466,14 +482,17 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		//delete from ID where_exp END_SQL
 		System.out.println("visitDelete_value");
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		tables_list = new ArrayList<String>();
 		String id = ctx.getChild(2).getText();
+		tables_list.add(id);
 		System.out.println(id);
 		if(ctx.where_exp() != null){
 			System.out.println("WHERE EXPRESSION");
 			result = visit(ctx.where_exp().exp());
 			if(result == null){
-				//AUN ASI TENEMOS QUE TRABAJAR AMBAS TABLAS :(
+				return null;
 			}
+			System.out.println(tableToIndex(result));
 		}
 		return null;
 	}
