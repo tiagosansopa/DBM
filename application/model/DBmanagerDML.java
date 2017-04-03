@@ -240,6 +240,7 @@ public class DBmanagerDML {
 		 */
 		ArrayList<String> colLocales = new ArrayList<String>();
 		ArrayList<String> colExternas = new ArrayList<String>();
+		
 		for(int i=0; i<columnsAndTypes.length;i++)
 		{
 			String[] nameAndType = columnsAndTypes[i].split(":");
@@ -312,7 +313,7 @@ public class DBmanagerDML {
 		{
 			if(newRegistry.contains("R:"))
 			{
-				rows.add("R:"+regCount);
+				rows.add("R:"+(regCount+1));
 			}
 			else{
 				rows.add(newRegistry);
