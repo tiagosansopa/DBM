@@ -511,7 +511,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		if(ctx.where_exp() != null){
 			System.out.println("WHERE EXPRESSION");
 			result = visit(ctx.where_exp().exp());
-			if(result == null){
+			if(result == null || result.size() == 0){
 				//AUN ASI TENEMOS QUE TRABAJAR AMBAS TABLAS :(
 				
 			}
@@ -589,7 +589,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		} else {
 			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 			ArrayList<ArrayList<String>> t1 = visit(ctx.expression());
-			if(t1 == null){
+			if(t1 == null || t1.size() == 0){
 				return null;
 			}
 			ArrayList<String> t1_info = t1.get(0);
@@ -597,7 +597,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			ArrayList<String> t1_type = t1.get(0);
 			t1.remove(0);
 			ArrayList<ArrayList<String>> t2 = visit(ctx.andExpr());
-			if(t2 == null){
+			if(t2 == null || t2.size() == 0){
 				return null;
 			}
 			ArrayList<String> t2_info = t2.get(0);
@@ -633,7 +633,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				for(ArrayList<String> row : t1){
 					for(ArrayList<String> row2 : t2){
 						ArrayList<String> temp = new ArrayList<String>();
-						temp = row;
+						temp.addAll(row);
 						temp.addAll(row2);
 						result.add(temp);
  					}
@@ -652,11 +652,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			return visitChildren(ctx);
 		} else {
 			ArrayList<ArrayList<String>> t1 = visit(ctx.andExpr());
-			if(t1 == null){
+			if(t1 == null || t1.size() == 0){
 				return null;
 			}
 			ArrayList<ArrayList<String>> t2 = visit(ctx.factor());
-			if(t2 == null){
+			if(t2 == null || t1.size() == 0){
 				return null;
 			}
 			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
@@ -801,39 +801,28 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		
 		if(literal1.equals("") && literal2.equals("")){
 			System.out.println("Ambas son columnas.. producto cruz");
-			if(sameColumns(table1_info.get(0), table2_info.get(0)) && sameColumns(table1_info.get(1), table2_info.get(1))){
-				if(table1.size() > table2.size()){
-					for(ArrayList<String> row : table2){
-						if(!table1.contains(row)){
-							table1.add(row);
-						}
-					}
-				result.add(table1_info.get(0));
-				result.add(table1_info.get(1));
-				result.addAll(table1);
-				} else {
-					for(ArrayList<String> row : table1){
-						if(!table2.contains(row)){
-							table2.add(row);
-						}
-					}
-				result.add(table2_info.get(0));
-				result.add(table2_info.get(1));
-				result.addAll(table2);
+			//PRODUCTO CARTESIANO
+			ArrayList<ArrayList<String>> temp_result = new ArrayList<ArrayList<String>>();
+			Integer new_index = table1_info.get(0).size();
+			table1_info.get(0).addAll(table2_info.get(0));
+			table1_info.get(1).addAll(table2_info.get(1));
+			result.add(table1_info.get(0));
+			result.add(table1_info.get(1));
+			for(ArrayList<String> row : table1){
+				for(ArrayList<String> row2 : table2){
+					ArrayList<String> temp = new ArrayList<String>();
+					System.out.println(temp);
+					temp.addAll(row);
+					System.out.println(temp);
+					temp.addAll(row2);
+					System.out.println(temp);
+					temp_result.add(temp);
+					System.out.println(temp_result);
 				}
-			} else {
-				//PRODUCTO CARTESIANO
-				table1_info.get(0).addAll(table2_info.get(0));
-				table1_info.get(1).addAll(table2_info.get(1));
-				result.add(table1_info.get(0));
-				result.add(table1_info.get(1));
-				for(ArrayList<String> row : table1){
-					for(ArrayList<String> row2 : table2){
-						ArrayList<String> temp = new ArrayList<String>();
-						temp = row;
-						temp.addAll(row2);
-						result.add(temp);
- 					}
+			}
+			for(ArrayList<String> row : temp_result){
+				if(relation(rel_op, row.get(index1), row.get(index2+new_index), type1, type2)){
+					result.add(row);
 				}
 			}
 			return result;
