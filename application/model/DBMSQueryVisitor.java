@@ -326,11 +326,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			ctx.ID().getText();
 		}
 		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
-			ConstraintAtContext constraint = ctx.constraintAt(0);
+			ConstraintAtContext constraint = ctx.constraintAt();
 			keys_list.add(makeListKeyPFC(constraint));
 		}
 		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
-			ConstraintAtContext constraint = ctx.constraintAt(0);
+			ConstraintAtContext constraint = ctx.constraintAt();
 			keys_list.add(makeListKeyPFC(constraint));
 			Integer constraints_number = ctx.comma_constraint_constraintAt_k().getChildCount()/3;
 			if(constraints_number > 0){

@@ -32,25 +32,25 @@ KL
 
 intx
     :   'INT'
-    |	'Int'
-    |	'int' 
+    |   'Int'
+    |   'int' 
     ;
 
 floatx
     :   'FLOAT'
-    |	'Float'
-    |	'float'
+    |   'Float'
+    |   'float'
     ;
 
 datex
-    :	'DATE'
-    |	'Date'
+    :   'DATE'
+    |   'Date'
     |   'date'
     ;
 charx    
     :   'CHAR'
-    |	'Char'
-    |	'char'
+    |   'Char'
+    |   'char'
     ;
 
 and
@@ -402,8 +402,8 @@ comma_id_eq_literal_k
     ;
     
 comma_action_k
-	:	(COMMA action)*
-	;
+    :   (COMMA action)*
+    ;
 
 //DONE
 create_database 
@@ -431,14 +431,14 @@ use_database
     ;
 
 comma_id_type_k
-	:	( COMMA ID type )*
-	;
-	
+    :   ( COMMA ID type )*
+    ;
+    
 comma_constraint_constraintAt_k
-	:	( COMMA constraint constraintAt )*
-	;
+    :   ( COMMA constraint constraintAt )*
+    ;
 
-//DONE	
+//DONE  
 create_table
     :   create table ID LPAREN ID type comma_id_type_k comma_constraint_constraintAt_k  RPAREN END_SQL
     ;
@@ -483,7 +483,7 @@ show_columns
     ;
 
 action
-    :   add column ID type (constraint constraintAt ( COMMA constraint constraintAt )* )?                
+    :   add column ID type (constraint constraintAt comma_constraint_constraintAt_k )?                
     |   add constraint constraintAt
     |   drop column ID
     |   drop constraint ID
@@ -498,8 +498,8 @@ sql_dml
     ;
 
 some_order
-	:	( LPAREN ID comma_id_k  RPAREN )?
-	;
+    :   ( LPAREN ID comma_id_k  RPAREN )?
+    ;
 
 //DONE
 insert_value
@@ -520,21 +520,21 @@ select_value
     ;
 
 where_exp
-	:	(where exp)?
-	;
+    :   (where exp)?
+    ;
 
 order_by
-	:	(order by ID (asc | desc) comma_id_ad_k)?
-	;
+    :   (order by ID (asc | desc) comma_id_ad_k)?
+    ;
 
 comma_id_ad_k
-	:	( COMMA ID ( asc | desc ) )*
-	;
-	
+    :   ( COMMA ID ( asc | desc ) )*
+    ;
+    
 select_k_id
-	:	KL
-	|	ID comma_id_k
-	;
+    :   KL
+    |   ID comma_id_k
+    ;
 
 literal
     :   NUM
@@ -585,15 +585,15 @@ factor
     ;
 
 primaryExpr
-	: compareExpr
-	| LPAREN expression RPAREN
-	;
-	
+    : compareExpr
+    | LPAREN expression RPAREN
+    ;
+    
 compareExpr
-	:	term rel_op term
-	;
+    :   term rel_op term
+    ;
 
 term
-	:	ID
-	|	literal
-	;
+    :   ID
+    |   literal
+    ;
