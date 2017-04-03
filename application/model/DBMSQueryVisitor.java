@@ -17,12 +17,16 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public DBmanagerDML dml;
 	public ArrayList<String> tables_list;
 	public ArrayList<String> columns_list;
+	public boolean notExpression;
+	public boolean notCompareExpr;
 	
 	public DBMSQueryVisitor (DBmanagerDDL ddl, DBmanagerDML dml){
 		System.out.println("DBMSVisitor");
 		this.ddl = ddl;
 		this.dml = dml;
 		//Hello Santiago Koch
+		notExpression = false;
+		notCompareExpr = false;
 	}
 	
 	@Override 
@@ -513,7 +517,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			result = visit(ctx.where_exp().exp());
 			if(result == null || result.size() == 0){
 				//AUN ASI TENEMOS QUE TRABAJAR AMBAS TABLAS :(
-				
+				return null;
 			}
 		}
 		if(ctx.order_by().getChildCount() > 0){
@@ -604,7 +608,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			t2.remove(0);
 			ArrayList<String> t2_type = t2.get(0);
 			t2.remove(0);
-			if(sameColumns(t1_info, t2_info) && sameColumns(t1_type, t2_type)){
+			if(sameColumns(t1_info, t2_info)){
 				if(t1.size() > t2.size()){
 					for(ArrayList<String> row : t2){
 						if(!t1.contains(row)){
@@ -693,7 +697,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		if(ctx.getChildCount() == 1){
 			return visitChildren(ctx);
 		} else {
-			return null;
+			if(ctx.getChild(1).getChildCount() == 1){
+				notCompareExpr = true;
+			} else {
+				notExpression = true;
+			}
+			return visitChildren(ctx);
 		}
 	}
 	
@@ -732,6 +741,10 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		Integer index2 = 0;
 		String type2 = "";
 		String rel_op = ctx.rel_op().getText();
+		if(notCompareExpr){
+			rel_op = notCompareRel(rel_op);
+			notCompareExpr = false;
+		}
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		
 		if(ctx.term(0).literal() == null){
@@ -863,6 +876,25 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			System.out.println("ERROR, ambas son literales");
 			return null;
 		}
+	}
+	
+	public String notCompareRel(String rel_op){
+		String new_rel_op = "";
+		switch (rel_op){
+		case "<":
+			return ">=";
+		case ">":
+			return "<=";
+		case "<=":
+			return ">";
+		case ">=":
+			return "<";
+		case "<>":
+			return "=";
+		case "=":
+			return "<>";
+		}
+		return new_rel_op;
 	}
 	
 	public boolean relation(String op, String item1, String item2, String type1, String type2){
