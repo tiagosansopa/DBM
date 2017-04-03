@@ -140,7 +140,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			handleSemanticError(ddl.useDatabase(id));
 		}
 		handleSemanticError("Using databse: "+id);
-		//handleSemanticError(dml.useDatabase(id));
+		handleSemanticError(dml.useDatabase(id));
 		return null;
 	}
 	
