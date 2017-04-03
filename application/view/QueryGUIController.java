@@ -70,6 +70,8 @@ public class QueryGUIController {
 	private DBmanagerDML dml;
 	private List<String> errors;
 	private Path path = Paths.get(System.getProperty("user.dir").replace("application.view", "application.model")+File.separator+"ErrorLog_Syntax.log");
+	private String details="";
+	String fileLocation= (System.getProperty("user.dir")+File.separator+"db");
 	
 	public QueryGUIController(){
 		ddl = new DBmanagerDDL();
@@ -188,7 +190,6 @@ public class QueryGUIController {
             qVisitor.setController(this);
             ArrayList<ArrayList<String>> table = qVisitor.visit(tree);
             outputArea.appendText(qVisitor.errors.toString());
-    		String fileLocation= (System.getProperty("user.dir")+File.separator+"db");
     		displayTreeView(fileLocation);
     		currentDatabase.setText(ddl.getActualDatabase());
     		if(table != null){
@@ -198,13 +199,18 @@ public class QueryGUIController {
 	}
 	
 	public boolean handleDelete(){
-		boolean delete = this.mainApp.showPersonEditDialog();
+		boolean delete = this.mainApp.showPersonEditDialog(this.details);
 		return delete;
+	}
+	public void setDetails(String details){
+		this.details = details;
 	}
 	
 	public  void setMainApp(main app){
 		this.mainApp = app;
 		outputArea.setWrapText(true);
+		displayTreeView(fileLocation);
+		currentDatabase.setText(ddl.getActualDatabase());
 		
 	}
 	

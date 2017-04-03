@@ -70,7 +70,7 @@ public class main extends Application {
         }
     }
 
-    public boolean showPersonEditDialog() {
+    public boolean showPersonEditDialog(String details) {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
@@ -87,6 +87,7 @@ public class main extends Application {
 
             // Set the person into the controller.
             DialogController controller = loader.getController();
+            controller.setDetailsForLabel(details);
             controller.setDialogStage(dialogStage);
             //controller.setPerson(person);
 

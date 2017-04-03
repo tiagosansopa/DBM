@@ -75,6 +75,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		String create = ddl.createDatabase(id);
 		if(!create.equals("")){
 			handleSemanticError(create);
+			return null;
 		}
 		handleSemanticError("Succesfully created database: "+id);
 		return null; //errors
@@ -91,6 +92,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		String alter = ddl.alterDatabase(id_number_1, id_number_2);
 		if(!alter.equals("")){
 			handleSemanticError(alter);
+			return null;
 		}
 		handleSemanticError("Succesfully altered database with new name: "
 							+id_number_2);
@@ -103,16 +105,25 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		//drop database ID END_SQL
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
+		int registers = 0;
 		System.out.println(id);//FUNCTION SANTIAGO
+		control.setDetails("Database: "+id+" with "+registers+" registers");
 		boolean shouldWeDelete = control.handleDelete();
 		String drop = "";
 		System.out.println(shouldWeDelete);
 		if(shouldWeDelete == true){
 			drop = ddl.killDatabase(id);
 		}
-		drop = "Not deleted";
-		if(!drop.equals("")){
+		else{
+			drop = "Not deleted";
+		}
+		if (drop.equals("Not deleted")){
+			handleSemanticError("Did not delete database: "+id);
+			return null;
+		}
+		else if(!drop.equals("")){
 			handleSemanticError(drop);
+			return null;
 		}
 		handleSemanticError("Succesfully deleted database: "+id);
 		return null;
@@ -138,6 +149,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		String using = ddl.useDatabase(id);
 		if(!using.equals("")){
 			handleSemanticError(ddl.useDatabase(id));
+			return null;
 		}
 		handleSemanticError("Using databse: "+id);
 		handleSemanticError(dml.useDatabase(id));
@@ -245,6 +257,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		String cTable = ddl.createTable(table_id, columns_list, types_list,keys_list);
 		if (!cTable.equals("")){
 			handleSemanticError(cTable);
+			return null;
 		}
 		handleSemanticError("Succesfully created Table: "+table_id);
 		return null;
