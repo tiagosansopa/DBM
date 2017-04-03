@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import application.main;
 import application.model.DBMSParser.ConstraintAtContext;
 import application.model.DBmanagerDDL;
 import application.model.DBmanagerDML;
+import application.view.QueryGUIController;
 
 public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<String>>> {
 	public StringBuffer errors = new StringBuffer("\n Execution \n");
@@ -19,6 +21,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public ArrayList<String> columns_list;
 	public Integer notExpression;
 	public boolean notCompareExpr;
+	QueryGUIController control = null;
 	
 	public DBMSQueryVisitor (DBmanagerDDL ddl, DBmanagerDML dml){
 		System.out.println("DBMSVisitor");
@@ -69,7 +72,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitCreate_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id); //Santiago function
-		handleSemanticError(ddl.createDatabase(id));
+		String create = ddl.createDatabase(id);
+		if(!create.equals("")){
+			handleSemanticError(create);
+		}
+		handleSemanticError("Succesfully created database: "+id);
 		return null; //errors
 	}
 	
@@ -81,7 +88,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		String id_number_1 = ctx.getChild(2).getText(); //arg 1
 		String id_number_2 = ctx.getChild(5).getText(); //arg 2
 		System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
-		handleSemanticError(ddl.alterDatabase(id_number_1, id_number_2));
+		String alter = ddl.alterDatabase(id_number_1, id_number_2);
+		if(!alter.equals("")){
+			handleSemanticError(alter);
+		}
+		handleSemanticError("Succesfully altered database with new name: "
+							+id_number_2);
 		return null; //Errors :)
 	}
 	
@@ -92,7 +104,17 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);//FUNCTION SANTIAGO
-		handleSemanticError(ddl.killDatabase(id));
+		boolean shouldWeDelete = control.handleDelete();
+		String drop = "";
+		System.out.println(shouldWeDelete);
+		if(shouldWeDelete == true){
+			drop = ddl.killDatabase(id);
+		}
+		drop = "Not deleted";
+		if(!drop.equals("")){
+			handleSemanticError(drop);
+		}
+		handleSemanticError("Succesfully deleted database: "+id);
 		return null;
 	}
 	
@@ -113,8 +135,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitUse_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
-		handleSemanticError(ddl.useDatabase(id));
-		handleSemanticError(dml.useDatabase(id));
+		String using = ddl.useDatabase(id);
+		if(!using.equals("")){
+			handleSemanticError(ddl.useDatabase(id));
+		}
+		handleSemanticError("Using databse: "+id);
+		//handleSemanticError(dml.useDatabase(id));
 		return null;
 	}
 	
@@ -216,9 +242,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				 keys_list.add(key);
 			}
 		}
-
-		handleSemanticError(ddl.createTable(table_id, columns_list, types_list,keys_list));
-
+		String cTable = ddl.createTable(table_id, columns_list, types_list,keys_list);
+		if (!cTable.equals("")){
+			handleSemanticError(cTable);
+		}
+		handleSemanticError("Succesfully created Table: "+table_id);
 		return null;
 	}
 
@@ -424,7 +452,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		}
 		System.out.println(literal_list);
 		try {
-			handleSemanticError(dml.insertInto(id, order_list, literal_list));
+			String insertT = dml.insertInto(id, order_list, literal_list);
+			if(!insertT.equals("")){
+				handleSemanticError(insertT);
+			}
+			handleSemanticError("Succesfully inserted values");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -1124,5 +1156,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public void handleSemanticError(String message){
 		errors.append("["+n+"]: "+message+"\n \n");
 		n++;
+	}
+	public void setController (QueryGUIController control){
+		this.control = control;
 	}
 }

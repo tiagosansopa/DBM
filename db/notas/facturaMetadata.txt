@@ -1,0 +1,5 @@
+id:int,nombre:char(20),nit:char(10),total:float,comprado_en:date
+R:0
+PK
+FK
+CHECK
