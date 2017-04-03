@@ -1,15 +1,18 @@
 package application.model;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException; 
+import java.io.IOException;
+import java.io.InputStreamReader; 
 
 public class DBmanagerDDL {
 
@@ -176,7 +179,7 @@ public class DBmanagerDDL {
 	public String createTable(String tableName, ArrayList<String> colNames, ArrayList<String> colTypes,ArrayList<KeyPFC> constraints){
 		System.out.println(constraints);
 		if (actualDatabase.equals("")){
-			return "NO DATABASE IN USE";
+			return "No Database in use";
 		}
 		else
 		{
@@ -219,9 +222,66 @@ public class DBmanagerDDL {
 		        output.newLine();
 		        temp="";
 		        for(KeyPFC k : constraints)
-		        {
+		        {	
 		        	if(k.type.equals("fk"))
 		        	{
+		        		File referencedTable = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+k.id_references+"Metadata.txt");
+		        		if(!referencedTable.exists())
+		        		{
+		        			newTablemeta.delete();
+		        			return "No Table Named "+k.id_references;
+		        		}
+		        		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+k.id_references+"Metadata.txt"), Charset.forName("UTF-8")));
+		        		String[] typesAndColumns= br.readLine().split(",");
+		        		int columnDoesNotExists = 0;
+		        		
+		        		for(String s:k.columns_list_2)
+	        			{
+		        			columnDoesNotExists = 0;
+		        			for(int i=0; i<typesAndColumns.length;i++)
+		        			{
+		        				String[] name= typesAndColumns[i].split(":");
+		        				if(s.equals(name))
+		        				{
+		        					System.out.println("Columna referenciada " + s + " = " + name );
+		        					columnDoesNotExists = 0;
+		        				}
+		        				else
+		        				{
+		        					columnDoesNotExists+=1;
+		        				}
+		        			}
+		        			if(columnDoesNotExists==(typesAndColumns.length-1))
+		        			{
+		        				br.close();
+		        				newTablemeta.delete();
+		        				return "Columna referenciada " + s + " No existe en tabla " + k.id_references;
+		        			}
+		        		}
+		        		
+		        		for(String s:k.columns_list_1)
+	        			{
+		        			columnDoesNotExists = 0;
+		        			for(int i=0; i<colNames.size();i++)
+		        			{
+		        				if(s.equals(colNames.get(i)))
+		        				{
+		        					System.out.println("Columna referenciada " + s + " = " + colNames.get(i) );
+		        					columnDoesNotExists = 0;
+		        				}
+		        				else
+		        				{
+		        					columnDoesNotExists+=1;
+		        				}
+		        			}
+		        			if(columnDoesNotExists==(colNames.size()-1))
+		        			{
+		        				newTablemeta.delete();
+		        				br.close();
+		        				return "Columna referenciada " + s + " No existe en tabla a crear";
+		        			}
+		        		}
+		        		
 		        		temp+=k.id+",{,";
 		        		for(String columna: k.columns_list_1)
 		        		{

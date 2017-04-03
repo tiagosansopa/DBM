@@ -52,11 +52,11 @@ public class DBmanagerDML {
 		 * 
 		 */
 		if (actualDatabase.equals("")){
-			return "NO DATABASE IN USE";
+			return "No Database in Use";
 		}
 		else if(!table.isFile())
 		{
-			return "TABLE DOES NOT EXISTS";
+			return "Table "+ tableName +  " no existe en " + actualDatabase;
 		}
 		
 		/*
@@ -97,7 +97,7 @@ public class DBmanagerDML {
 							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							return colTypes.get(j)+" NO es INT";
+							return colTypes.get(j)+" NO cumple correcto INT";
 						}
 					}
 					else if(typeAndName[1].toUpperCase().contains("CHAR")){
@@ -113,7 +113,7 @@ public class DBmanagerDML {
 							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							return colTypes.get(j)+" NO es DATE";
+							return colTypes.get(j)+" NO cumple correcto DATE";
 						}
 					}
 					else if(typeAndName[1].toUpperCase().contains("FLOAT")){
@@ -121,7 +121,7 @@ public class DBmanagerDML {
 							newRegistry +=colTypes.get(j)+",";
 						}
 						else{
-							return colTypes.get(j)+" NO es FLOAT";
+							return colTypes.get(j)+" NO cumple correcto FLOAT";
 						}
 					}
 				}
@@ -226,7 +226,7 @@ public class DBmanagerDML {
 			if(repeated==pkColumns.size())
 			{
 				//System.out.println("Primary key en registro " + n + " Se repitio");
-				return "Primary key en registro " + n + " Se repitio";
+				return "Primary key ya existe en el registro " + n ;
 			}
 			else{
 				repeated=0;	
@@ -238,6 +238,28 @@ public class DBmanagerDML {
 		 * Reviso que FOREING KEY exista  (ya sea la referencia o el registro)
 		 * 
 		 */
+		/*
+		
+		int cont=0;
+		for(ArrayList<String> fkActual:FKs)
+		{
+			for(int i=2;i<fkActual.size();i++)
+			{
+				while(!fkActual.get(i).equals("}"))
+				{
+					for(int j=0; i<columnsAndTypes.length;i++)
+					{
+						String[] typeAndName = columnsAndTypes[i].split(":");
+						if(!typeAndName[0].equals(fkActual.get(i)))
+						{
+							
+						}
+					}
+					
+				}
+			}
+		}
+		
 		ArrayList<String> colLocales = new ArrayList<String>();
 		ArrayList<String> colExternas = new ArrayList<String>();
 		
@@ -255,8 +277,8 @@ public class DBmanagerDML {
 			}
 		}
 		
-		System.out.println("PK "+pkValues+" EN COLUMNA " + pkColumns );
-		
+		System.out.println("FK "+pkValues+" EN COLUMNA " + pkColumns );
+		*/
 		
 		
 		/*
@@ -455,6 +477,8 @@ public class DBmanagerDML {
 		String line;
 		while ((line = reader.readLine()) != null) 
 		{
+			System.out.println(line);
+			line = line.substring(0, line.length()-1);
 			System.out.println(line);
 			String[] columns = line.split(",");
 			
