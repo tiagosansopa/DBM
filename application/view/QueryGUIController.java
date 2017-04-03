@@ -108,7 +108,8 @@ public class QueryGUIController {
 		}
 		dataTable.getItems().setAll(csvData);
 	}
-
+	
+	
 	public void displayTreeView(String inputDirectoryLocation) {
 	    // Creates the root item.
 	    CheckBoxTreeItem<String> rootItem = new CheckBoxTreeItem<String>(inputDirectoryLocation);
@@ -184,6 +185,7 @@ public class QueryGUIController {
         } catch ( IOException e ) {
             outputArea.setText(" No Syntactic Errors \n ");
             DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
+            qVisitor.setController(this);
             ArrayList<ArrayList<String>> table = qVisitor.visit(tree);
             outputArea.appendText(qVisitor.errors.toString());
     		String fileLocation= (System.getProperty("user.dir")+File.separator+"db");
@@ -193,6 +195,11 @@ public class QueryGUIController {
     			displayTable(table);
     		}
         }
+	}
+	
+	public boolean handleDelete(){
+		boolean delete = this.mainApp.showPersonEditDialog();
+		return delete;
 	}
 	
 	public  void setMainApp(main app){

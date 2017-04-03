@@ -2,12 +2,15 @@ package application;
 
 import java.io.IOException;
 
+import application.view.DialogController;
 import application.view.QueryGUIController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class main extends Application {
@@ -67,6 +70,35 @@ public class main extends Application {
         }
     }
 
+    public boolean showPersonEditDialog() {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(main.class.getResource("view/alertDeleteDatabase.fxml"));
+            GridPane page = (GridPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Person");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the person into the controller.
+            DialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            //controller.setPerson(person);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.delete;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     
     /// Returns the main stage.
     /// @return
