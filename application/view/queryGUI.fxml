@@ -28,7 +28,7 @@
                         <TableView fx:id="dataTable" prefHeight="248.0" prefWidth="270.0">
                           <columns>
                             <TableColumn prefWidth="75.0" />
-                            <TableColumn prefWidth="75.0" />
+                            <TableColumn prefWidth="75.0" text="C2" />
                           </columns>
                         </TableView>
                      </children>
