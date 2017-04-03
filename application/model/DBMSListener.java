@@ -8,6 +8,46 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface DBMSListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link DBMSParser#intx}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntx(DBMSParser.IntxContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#intx}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntx(DBMSParser.IntxContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#floatx}.
+	 * @param ctx the parse tree
+	 */
+	void enterFloatx(DBMSParser.FloatxContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#floatx}.
+	 * @param ctx the parse tree
+	 */
+	void exitFloatx(DBMSParser.FloatxContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#datex}.
+	 * @param ctx the parse tree
+	 */
+	void enterDatex(DBMSParser.DatexContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#datex}.
+	 * @param ctx the parse tree
+	 */
+	void exitDatex(DBMSParser.DatexContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DBMSParser#charx}.
+	 * @param ctx the parse tree
+	 */
+	void enterCharx(DBMSParser.CharxContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DBMSParser#charx}.
+	 * @param ctx the parse tree
+	 */
+	void exitCharx(DBMSParser.CharxContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DBMSParser#and}.
 	 * @param ctx the parse tree
 	 */

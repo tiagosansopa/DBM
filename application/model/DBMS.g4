@@ -30,24 +30,24 @@ KL
     :   '*'
     ;
 
-int
+intx
     :   'INT'
     |	'Int'
     |	'int' 
     ;
 
-float
+floatx
     :   'FLOAT'
     |	'Float'
     |	'float'
     ;
 
-date
+datex
     :	'DATE'
     |	'Date'
     |   'date'
     ;
-char    
+charx    
     :   'CHAR'
     |	'Char'
     |	'char'
@@ -456,10 +456,10 @@ foreignKey: ID foreign key LPAREN ID comma_id_k RPAREN references ID LPAREN ID c
 checks: ID check LPAREN exp RPAREN ;
 
 type
-    :   int
-    |   float
-    |   date
-    |   char LPAREN NUM RPAREN
+    :   intx
+    |   floatx
+    |   datex
+    |   charx LPAREN NUM RPAREN
     ;
 
 alter_table
