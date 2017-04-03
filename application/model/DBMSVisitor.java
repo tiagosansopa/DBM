@@ -11,6 +11,30 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface DBMSVisitor<T> extends ParseTreeVisitor<T> {
 	/**
+	 * Visit a parse tree produced by {@link DBMSParser#intx}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntx(DBMSParser.IntxContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#floatx}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFloatx(DBMSParser.FloatxContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#datex}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDatex(DBMSParser.DatexContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DBMSParser#charx}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCharx(DBMSParser.CharxContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DBMSParser#and}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -10,7 +10,8 @@ import application.model.DBmanagerDDL;
 import application.model.DBmanagerDML;
 
 public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<String>>> {
-	public StringBuffer errors = new StringBuffer("\n Semantic Errors: \n");
+	public StringBuffer errors = new StringBuffer("\n Execution \n");
+	//public StringBuffer outputText = new StringBuffer("");
 	public Integer n = 0;
 	public DBmanagerDDL ddl;
 	public DBmanagerDML dml;
@@ -64,7 +65,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitCreate_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id); //Santiago function
-		ddl.createDatabase(id);
+		handleSemanticError(ddl.createDatabase(id));
 		return null; //errors
 	}
 	
@@ -76,7 +77,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		String id_number_1 = ctx.getChild(2).getText(); //arg 1
 		String id_number_2 = ctx.getChild(5).getText(); //arg 2
 		System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
-		ddl.alterDatabase(id_number_1, id_number_2);
+		handleSemanticError(ddl.alterDatabase(id_number_1, id_number_2));
 		return null; //Errors :)
 	}
 	
@@ -87,7 +88,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);//FUNCTION SANTIAGO
-		ddl.killDatabase(id);
+		handleSemanticError(ddl.killDatabase(id));
 		return null;
 	}
 	
@@ -108,8 +109,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		System.out.println("visitUse_database");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
-		ddl.useDatabase(id);
-		dml.useDatabase(id);
+		handleSemanticError(ddl.useDatabase(id));
+		handleSemanticError(dml.useDatabase(id));
 		return null;
 	}
 	
@@ -196,6 +197,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 							 String key_column_i = constraintAt.foreignKey().comma_id_k(1).ID(j).getText();
 							 key.columns_list_2.add(key_column_i);
 							 System.out.println(key_column_i);
+	
 						 }
 					 }
 				 } else if(constraintAt.checks() != null) {
@@ -210,7 +212,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				 keys_list.add(key);
 			}
 		}
-		ddl.createTable(table_id, columns_list, types_list,keys_list);
+
+		handleSemanticError(ddl.createTable(table_id, columns_list, types_list,keys_list));
+
 		return null;
 	}
 
@@ -219,13 +223,125 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	public ArrayList<ArrayList<String>> visitAlter_table(DBMSParser.Alter_tableContext ctx){
 		//alter table ID rename to ID END_SQL
 	    //|   alter table ID action comma_action_k END_SQL
+		
+		/*
+		 * rename te mando: idViejo y idNuevo
+		 * addColumn: id string, un ArrayList de PKC 
+		 * ADD Constraint: ArrayList de PKC
+		 * Drop column: nombre de la columna. String
+		 * Drop de la constraint: nombre de la constraint. String
+		 * 
+		 */
 		System.out.println("visitAlter_table");
 		if(ctx.getChildCount()==7){
 			String id_number_1 = ctx.getChild(2).getText();
-			String id_number_2 = ctx.getChild(4).getText();
+			String id_number_2 = ctx.getChild(5).getText();
 			System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
+			ddl.alterTableRename(id_number_1,id_number_2);
 		} else {
 			//action
+			visit(ctx.action());
+		}
+		return null;
+	}
+	public KeyPFC makeListKeyPFC(ConstraintAtContext constraintAt){
+		KeyPFC key = new KeyPFC();
+		if(constraintAt.primaryKey() != null){
+			 System.out.println("PK");
+			 //ID primary key LPAREN ID comma_id_k RPAREN ;
+			 String id = constraintAt.primaryKey().getChild(0).getText();
+			 System.out.println(id);
+			 key.id = id;
+			 key.type = "pk";
+			 String key_column_1 = constraintAt.primaryKey().getChild(4).getText();
+			 key.columns_list_1.add(key_column_1);
+			 System.out.println(key_column_1);
+			 Integer columns_constraint_number = constraintAt.primaryKey().comma_id_k().getChildCount()/2;
+			 if(columns_constraint_number > 0){
+				 for(Integer j = 0; j < columns_constraint_number; j++){
+					 String key_column_i = constraintAt.primaryKey().comma_id_k().ID(j).getText();
+					 key.columns_list_1.add(key_column_i);
+					 System.out.println(key_column_i);
+				 }
+			 }
+		 } else if(constraintAt.foreignKey() != null){
+			 System.out.println("FK");
+			 //ID foreign key LPAREN ID comma_id_k RPAREN references ID LPAREN ID comma_id_k RPAREN;
+			 String id = constraintAt.foreignKey().getChild(0).getText();
+			 System.out.println(id);
+			 key.id = id;
+			 key.type = "fk";
+			 String id_references = constraintAt.foreignKey().getChild(8).getText();
+			 key.id_references = id_references;
+			 String key_column_1 = constraintAt.foreignKey().getChild(4).getText();
+			 key.columns_list_1.add(key_column_1);
+			 System.out.println(key_column_1);
+			 Integer columns_constraint_number = constraintAt.foreignKey().comma_id_k(0).getChildCount()/2;
+			 if(columns_constraint_number > 0){
+				 for(Integer j = 0; j < columns_constraint_number; j++){
+					 String key_column_i = constraintAt.foreignKey().comma_id_k(0).ID(j).getText();
+					 key.columns_list_1.add(key_column_i);
+					 System.out.println(key_column_i);
+				 }
+			 }
+			 String key_column_2 = constraintAt.foreignKey().getChild(10).getText();
+			 key.columns_list_2.add(key_column_2);
+			 System.out.println(key_column_2);
+			 columns_constraint_number = constraintAt.foreignKey().comma_id_k(1).getChildCount()/2;
+			 if(columns_constraint_number > 0){
+				 for(Integer j = 0; j < columns_constraint_number; j++){
+					 String key_column_i = constraintAt.foreignKey().comma_id_k(1).ID(j).getText();
+					 key.columns_list_2.add(key_column_i);
+					 System.out.println(key_column_i);
+
+				 }
+			 }
+		 } else if(constraintAt.checks() != null) {
+			 System.out.println("CH");
+			 //ID check LPAREN exp RPAREN
+			 String id = constraintAt.checks().getChild(0).getText();
+			 System.out.println(id);
+			 key.id = id;
+			 key.type = "ch";
+			 key.exp = constraintAt.checks().exp().getText();
+		 }
+		return key;
+	}
+	
+	public ArrayList<ArrayList<String>> visitAction(DBMSParser.ActionContext ctx){
+		String addOrDrop = ctx.getChild(0).getText().toLowerCase();
+		String constraintOrColumn = ctx.getChild(1).getText().toLowerCase();
+		ArrayList<KeyPFC> keys_list = new ArrayList<KeyPFC>();
+		if(addOrDrop.equals("drop") && constraintOrColumn.equals("constraint")){
+			// Llamar a la funcion de Santiago borrar constraint
+			
+			System.out.println("Constraint a borrar: "
+					+ ctx.ID().getText()
+					);
+			ctx.ID().getText();
+		}
+		else if (addOrDrop.equals("drop") && constraintOrColumn.equals("column")){
+			// LLamar a la funcion de Santiago borrar columna
+			System.out.println("Columna a borrar: "
+					+ ctx.ID().getText()
+					);
+			ctx.ID().getText();
+		}
+		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
+			ConstraintAtContext constraint = ctx.constraintAt();
+			keys_list.add(makeListKeyPFC(constraint));
+		}
+		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
+			ConstraintAtContext constraint = ctx.constraintAt();
+			keys_list.add(makeListKeyPFC(constraint));
+			Integer constraints_number = ctx.comma_constraint_constraintAt_k().getChildCount()/3;
+			if(constraints_number > 0){
+				for(Integer i = 0; i < constraints_number; i++){
+					 ConstraintAtContext constraintAt = ctx.comma_constraint_constraintAt_k().constraintAt(i);
+					 keys_list.add(makeListKeyPFC(constraintAt));
+				}
+			}
+			
 		}
 		return null;
 	}
@@ -304,7 +420,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		}
 		System.out.println(literal_list);
 		try {
-			System.out.println(dml.insertInto(id, order_list, literal_list));
+			handleSemanticError(dml.insertInto(id, order_list, literal_list));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
