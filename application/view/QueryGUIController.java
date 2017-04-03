@@ -50,6 +50,9 @@ public class QueryGUIController {
 	@FXML 
 	private TextArea queryLabel;
 	
+	@FXML
+	private TextField currentDatabase;
+	
 	@FXML 
 	private TextArea outputArea;
 	
@@ -160,8 +163,8 @@ public class QueryGUIController {
 		DBMSLexer lexer = new DBMSLexer(input);
 		lexer.removeErrorListeners();
         lexer.addErrorListener(miErrorListener);
-        
-		TokenStream tokens = new CommonTokenStream(lexer);
+		
+        TokenStream tokens = new CommonTokenStream(lexer);
 		DBMSParser parser = new DBMSParser(tokens);
 		parser.removeErrorListeners();
         parser.addErrorListener(miErrorListener);
@@ -182,8 +185,10 @@ public class QueryGUIController {
             outputArea.setText(" No Syntactic Errors \n ");
             DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
             ArrayList<ArrayList<String>> table = qVisitor.visit(tree);
+            outputArea.appendText(qVisitor.errors.toString());
     		String fileLocation= (System.getProperty("user.dir")+File.separator+"db");
     		displayTreeView(fileLocation);
+    		currentDatabase.setText(ddl.getActualDatabase());
     		if(table != null){
     			displayTable(table);
     		}
@@ -193,6 +198,7 @@ public class QueryGUIController {
 	public  void setMainApp(main app){
 		this.mainApp = app;
 		outputArea.setWrapText(true);
+		
 	}
 	
 }
