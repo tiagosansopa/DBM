@@ -589,7 +589,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		} else {
 			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 			ArrayList<ArrayList<String>> t1 = visit(ctx.expression());
-			if(t1 == null || t1.size() == 0){
+			if(t1 == null){
 				return null;
 			}
 			ArrayList<String> t1_info = t1.get(0);
@@ -597,7 +597,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			ArrayList<String> t1_type = t1.get(0);
 			t1.remove(0);
 			ArrayList<ArrayList<String>> t2 = visit(ctx.andExpr());
-			if(t2 == null || t2.size() == 0){
+			if(t2 == null){
 				return null;
 			}
 			ArrayList<String> t2_info = t2.get(0);
@@ -626,17 +626,24 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 				}
 			} else {
 				//PRODUCTO CARTESIANO
+				System.out.println("Producto cartesiano OR");
 				t1_info.addAll(t2_info);
 				t1_type.addAll(t2_type);
 				result.add(t1_info);
 				result.add(t1_type);
-				for(ArrayList<String> row : t1){
-					for(ArrayList<String> row2 : t2){
-						ArrayList<String> temp = new ArrayList<String>();
-						temp.addAll(row);
-						temp.addAll(row2);
-						result.add(temp);
- 					}
+				if(t1.size() > 0 && t2.size() > 0){
+					for(ArrayList<String> row : t1){
+						for(ArrayList<String> row2 : t2){
+							ArrayList<String> temp = new ArrayList<String>();
+							temp.addAll(row);
+							temp.addAll(row2);
+							result.add(temp);
+						}
+					}
+				} else if(t1.size() > 0){
+					result.addAll(t1);
+				} else if(t2.size() > 0){
+					result.addAll(t2);
 				}
 			}
 			return result;
