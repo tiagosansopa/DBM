@@ -660,7 +660,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		}
 		return result;
 	}
-
+	
 	@Override
 	public ArrayList<ArrayList<String>> visitAndExpr(DBMSParser.AndExprContext ctx){
 		/*andExpr
@@ -688,26 +688,29 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 	
 	public ArrayList<ArrayList<String>> makeAnd(ArrayList<ArrayList<String>> t1, ArrayList<ArrayList<String>> t2){
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
-		result.add(t1.get(0)); //names
-		result.add(t1.get(1)); //types
-		t1.remove(0);
-		t1.remove(0);
-		t2.remove(0);
-		t2.remove(0);
-		if(t1.size() > t2.size()){
-			for(ArrayList<String> row : t1){
-				if(t2.contains(row)){
-					result.add(row);
+		if(sameColumns(t1.get(0), t2.get(0))){
+			result.add(t1.get(0)); //names
+			result.add(t1.get(1)); //types
+			t1.remove(0);
+			t1.remove(0);
+			t2.remove(0);
+			t2.remove(0);
+			if(t1.size() > t2.size()){
+				for(ArrayList<String> row : t1){
+					if(t2.contains(row)){
+						result.add(row);
+					}
+				}
+			} else {
+				for(ArrayList<String> row : t2){
+					if(t1.contains(row)){
+						result.add(row);
+					}
 				}
 			}
-		} else {
-			for(ArrayList<String> row : t2){
-				if(t1.contains(row)){
-					result.add(row);
-				}
-			}
+			return result;
 		}
-		return result;
+		return null;
 	}
 	
 	@Override
@@ -811,6 +814,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		} else {
 			literal1 = ctx.term(0).literal().getText();
 			type1 = type(literal1);
+			if(type1.length() > 3){
+				if(type1.substring(0, 4).equals("char")){
+					literal1 = literal1.substring(1, literal1.length()-1);
+					type1 = type(literal1);
+				}
+			}
 			System.out.println("Tipo de columna "+type1);
 		}
 		
@@ -847,6 +856,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		} else {
 			literal2 = ctx.term(1).literal().getText();
 			type2 = type(literal2);
+			if(type2.length() > 3){
+				if(type2.substring(0, 4).equals("char")){
+					literal2 = literal2.substring(1, literal2.length()-1);
+					type1 = type(literal2);
+				}
+			}
 			System.out.println("Tipo de columna "+type2);
 		}
 		
@@ -881,6 +896,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			//Tabla 2 tiene contenido
 			System.out.println("Tabla 0 tiene contenido");
 			result.addAll(table1_info);
+			System.out.println(literal2);
 			for(ArrayList<String> row : table1){
 				System.out.println(row);
 				if(relation(rel_op, row.get(index1), literal2, type1, type2)){
@@ -888,7 +904,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					result.add(row);
 				}
 			}
-			System.out.println("Return table 1");
+			System.out.println("Return table 0");
 			return result;
 		} else if(literal2.equals("")){
 			//Tabla 1 tiene contenido
@@ -901,7 +917,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					result.add(row);
 				}
 			}
-			System.out.println("Return table 2");
+			System.out.println("Return table 1");
 			return result;
 		} else {
 			System.out.println("ERROR, ambas son literales");
@@ -1089,6 +1105,40 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					return Float.parseFloat(item1) == Float.parseFloat(item2);
 				case "<>" :
 					return Float.parseFloat(item1) != Float.parseFloat(item2);
+			}
+		} else if (type1.length() > 3 && type2.length() > 3 && type1.substring(0, 4).equals("char") && type2.substring(0, 4).equals("char")){
+			System.out.println("CHAR");
+			switch(op) {
+				case "<":
+					boolean result = false; 
+					int cmp = item1.compareTo(item2);
+					if (cmp < 0)
+						result = true;
+					return result;
+				case ">":
+					result = false; 
+					cmp = item1.compareTo(item2);
+					if (cmp > 0)
+						result = true;
+					return result;
+				case "<=":
+					result = false; 
+					cmp = item1.compareTo(item2);
+					if (cmp <= 0)
+						result = true;
+					return result;
+				case ">=":
+					result = false; 
+					cmp = item1.compareTo(item2);
+					if (cmp >= 0)
+						result = true;
+					return result;
+				case "=" :
+					return item1.equals(item2);
+				case "<>" :
+					return !item1.equals(item2);
+				default	:
+					return false;
 			}
 		}
 		return false;
