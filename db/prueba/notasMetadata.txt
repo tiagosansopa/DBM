@@ -1,6 +1,0 @@
-id:int,nombre:char(3),nac:date,promedio:float
-R:2
-PK
-pk,id
-FK
-CHECK

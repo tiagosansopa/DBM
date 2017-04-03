@@ -416,32 +416,34 @@ public class DBmanagerDML {
 	 */
 	public boolean validateDate(String date){
 		String[] dateSplit = date.split("-");
-		
-		if(dateSplit[1].equals("02")&&dateSplit[2].equals("30")){
-			return false;
+		if(dateSplit.length == 2){
+			if(dateSplit[1].equals("02")&&dateSplit[2].equals("30")){
+				return false;
+			}
+			if(dateSplit[1].equals("02")&&dateSplit[2].equals("31")){
+				return false;
+			}
+			if (dateSplit[0].length()!=4||dateSplit[1].length()!=2||dateSplit[2].length()!=2)
+			{
+				return false;
+			}
+			if (Integer.parseInt(dateSplit[1])<1 || Integer.parseInt(dateSplit[1])>12)
+			{
+				return false;
+			}
+			if (Integer.parseInt(dateSplit[2])<1 || Integer.parseInt(dateSplit[2])>31)
+			{
+				return false;
+			}
+			if (Integer.parseInt(dateSplit[0])<1000 || Integer.parseInt(dateSplit[0])>3000)
+			{
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
-		if(dateSplit[1].equals("02")&&dateSplit[2].equals("31")){
-			return false;
-		}
-		if (dateSplit[0].length()!=4||dateSplit[1].length()!=2||dateSplit[2].length()!=2)
-		{
-			return false;
-		}
-		if (Integer.parseInt(dateSplit[1])<1 || Integer.parseInt(dateSplit[1])>12)
-		{
-			return false;
-		}
-		if (Integer.parseInt(dateSplit[2])<1 || Integer.parseInt(dateSplit[2])>31)
-		{
-			return false;
-		}
-		if (Integer.parseInt(dateSplit[0])<1000 || Integer.parseInt(dateSplit[0])>3000)
-		{
-			return false;
-		}
-		else{
-			return true;
-		}
+		return false;
 	}
 	
 	/*
