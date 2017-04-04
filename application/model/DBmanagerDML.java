@@ -842,6 +842,8 @@ public class DBmanagerDML {
 	 * UPDATE
 	**/
 	public void update(String tableName, ArrayList<ArrayList<String>> tableX, ArrayList<String> idList, ArrayList<String> literalList){
+		try 
+		{
 		//conseguir indices a cambiar
 		ArrayList<String> list_to_update = new ArrayList<String>();
 		ArrayList<ArrayList<String>> temp_table = new ArrayList<ArrayList<String>>();
@@ -855,6 +857,82 @@ public class DBmanagerDML {
 		System.out.println(list_to_update);
 		System.out.println(idList);
 		System.out.println(literalList);
+		
+		ArrayList<Integer> colindex = new ArrayList<Integer>();
+		
+		String line = "";
+		BufferedReader file2 = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+		line = file2.readLine();
+		line = line.substring(0, line.length()-1);
+		String [] columns = line.split(",");
+		
+		for(int i=0;i<columns.length;i++)
+		{
+			String [] nameandtype = columns[i].split(":");
+			for(String lit:idList)
+			{
+				if(lit.equals(nameandtype[0]))
+				{
+					colindex.add(i);
+				}
+			}
+		}
+		
+		ArrayList<String> rows = new ArrayList<String>();
+		line = "";
+		int cont =0;
+		boolean update = false;
+		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		
+		while ((line = file.readLine())!=null) 
+		{
+			for(String number:list_to_update)
+			{
+				if(Integer.parseInt(number)==cont)
+				{
+					update=true;
+				}
+			}
+			
+			if(!update)
+			{
+				rows.add(line);
+			}
+			else
+			{
+				line = line.substring(0,line.length()-1);
+				String[] regtoupdate = line.split(",");
+				line="";
+				for(int j=0;j<regtoupdate.length;j++)
+				{
+					for(Integer p:colindex)
+					{
+						if(p==j)
+						{
+							line+=literalList.get(p);
+							break;
+						}
+					}
+					line+=regtoupdate[j];	
+				}
+				line=line.substring(0,line.length()-1)+";";
+				rows.add(line);
+				update=false;
+			}
+			
+			cont+=1;
+		}
+		BufferedWriter  file3 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		for(int i=0;i<rows.size();i++)
+		{
+			file3.write(rows.get(i));
+			file3.newLine();
+		}
+		file3.close();
+		}catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

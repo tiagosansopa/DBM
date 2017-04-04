@@ -167,8 +167,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			handleSemanticError(ddl.useDatabase(id));
 			return null;
 		}
-		handleSemanticError("Using databse: "+id);
-		handleSemanticError(dml.useDatabase(id));
+		handleSemanticError("Using database: "+id);
+		dml.useDatabase(id);
+		//handleSemanticError(dml.useDatabase(id));
 		return null;
 	}
 	
@@ -1070,21 +1071,41 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		
 		if(term1_type.equals("") && term2_type.equals("")){
 			//PRODUCTO CRUZ
+			
+			if(resultX.get(0).contains(term1) && resultX.get(0).contains(term2)){
+				Integer index_current_column1 = resultX.get(0).indexOf(term1);
+				String current_column_type1 = resultX.get(1).get(index_current_column1);
+				String current_column_value1 = rowX.get(index_current_column1);
+				
+				Integer index_current_column2 = resultX.get(0).indexOf(term2);
+				String current_column_type2 = resultX.get(1).get(index_current_column2);
+				String current_column_value2 = rowX.get(index_current_column2);
+				
+				
+				if(relation(rel_op, current_column_value1, current_column_value2, current_column_type1, current_column_type2)){
+					return rowX;
+				}
+			}
+			
 		} else if(term1_type.equals("")){
 			//System.out.println(term1);
-			Integer index_current_column = resultX.get(0).indexOf(term1);
-			String current_column_type = resultX.get(1).get(index_current_column);
-			String current_column_value = rowX.get(index_current_column);
-			if(relation(rel_op, current_column_value, term2, current_column_type, term2_type)){
-				return rowX;
+			if(resultX.get(0).contains(term1)){
+				Integer index_current_column = resultX.get(0).indexOf(term1);
+				String current_column_type = resultX.get(1).get(index_current_column);
+				String current_column_value = rowX.get(index_current_column);
+				if(relation(rel_op, current_column_value, term2, current_column_type, term2_type)){
+					return rowX;
+				}
 			}
 		} else if(term2_type.equals("")){
 			//System.out.println(term2);
-			Integer index_current_column = resultX.get(1).indexOf(term2);
-			String current_column_type = resultX.get(0).get(index_current_column);
-			String current_column_value = rowX.get(index_current_column);
-			if(relation(rel_op, term1, current_column_value, term1_type, current_column_type)){
-				return rowX;
+			if(resultX.get(0).contains(term1)){
+				Integer index_current_column = resultX.get(1).indexOf(term2);
+				String current_column_type = resultX.get(0).get(index_current_column);
+				String current_column_value = rowX.get(index_current_column);
+				if(relation(rel_op, term1, current_column_value, term1_type, current_column_type)){
+					return rowX;
+				}
 			}
 		}
 		return null;
