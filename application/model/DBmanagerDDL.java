@@ -369,169 +369,8 @@ public class DBmanagerDDL {
 		}
 	}
 	
-	/**
-	 * Kill an existing table on database in use
-	**/
-	public boolean killTable(String tableName)
-	{
-		if (actualDatabase.equals("")){
-			System.out.println("NO DATABASE IN USE");
-			return false;
-		}
-		File toBeKilled = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
+	
 
-		if (toBeKilled.exists()) 
-		{
-			return true;
-		}
-		else{
-			System.out.println("TABLE " + toBeKilled.getName() + " DOES NOT EXISTS");
-			return false;
-		}
-	}
-	
-	/**
-	 * Show all TABLES in actual database
-	**/
-	public void showTables()
-	{
-		if (actualDatabase.equals(""))
-		{
-			System.out.println("NO DATABASE IN USE");
-		}
-		else
-		{
-			Path currentRelativePath = Paths.get("");
-			String s = currentRelativePath.toAbsolutePath().toString()+File.separator+actualDatabase;
-			System.out.println("Actual Path for Database is : " + s);
-			File[] files = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase).listFiles();
-			
-			for (File file : files) 
-			{
-				if (file.isFile()) 
-				{
-					System.out.println(file.getName().substring(0, file.getName().length()-4));
-				}
-			}
-			
-		}
-		
-	}
-	
-	/**
-	 * Show COLUMNS and CONSTRAINS from TABLE
-	 * @throws IOException 
-	**/
-	public void showColumns(String tableName) throws IOException{
-		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
-		File table = new File(dir);
-		if (actualDatabase.equals(""))
-		{
-			System.out.println("NO DATABASE IN USE");
-		}
-		else if(!table.isFile())
-		{
-			System.out.println("TABLE DOES NOT EXISTS");
-		}
-		else
-		{
-			BufferedReader br = new BufferedReader (new FileReader (dir));
-			String line;
-
-			while( (line = br.readLine() ) != null)
-			{
-			    System.out.println(line);
-			}
-			
-		}
-	}
-	
-	public String  alterDropColumn(String tableName, String columnToDrop) throws IOException{
-		
-		BufferedReader  reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
-
-		String line = reader.readLine();
-		String[] columns  =line.substring(0, line.length()-1).split(",");
-		int indiceDeColumna = 0;
-		
-		for(int i=0; i<columns.length;i++)
-		{
-			String[] data  = columns[i].split(":");
-			
-			if(data[1].equals(columnToDrop))
-			{
-				indiceDeColumna=i;
-			}
-		}
-		
-		ArrayList<String> rows = new ArrayList<String>();
-		
-		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
-		while ((line = file.readLine())!=null) 
-		{
-			line = line.substring(0,line.length()-1);
-			String[] regs = line.split(",");
-			line ="";
-			for(int i=0; i<columns.length;i++)
-			{
-				if(!(i==indiceDeColumna))
-				{
-					line+=regs[i]+",";
-				}
-			}
-			rows.add(line.substring(0,line.length()-1));
-		}
-		
-		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
-		for(int i=0;i<rows.size();i++)
-		{
-			file2.write(rows.get(i));
-			file2.newLine();
-		}
-		file2.close();
-	
-		return "";
-	}
-	
-	public String  alterDropConstraint(String tableName, String constraintToDrop) throws IOException{
-		/*
-		ArrayList<String> rows = new ArrayList<String>();
-		
-		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
-		String line = "";
-		while ((line = file.readLine())!=null) 
-		{
-			line = line.substring(0,line.length()-1);
-			String[] regs = line.split(",");
-			line ="";
-			for(int i=0; i<columns.length;i++)
-			{
-				if(!(i==indiceDeColumna))
-				{
-					line+=regs[i]+",";
-				}
-			}
-			rows.add(line.substring(0,line.length()-1));
-		}
-		
-		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
-		for(int i=0;i<rows.size();i++)
-		{
-			file2.write(rows.get(i));
-			file2.newLine();
-		}
-		file2.close();
-	*/
-	
-		return "";
-	}
-	
-	public String  alterAddConstraint(String tableName, ArrayList<KeyPFC> constraints) throws IOException{
-			
-		
-		return "";
-	}
-	
 	/**
 	* Alter table appends a column.
 	 * @throws IOException 
@@ -591,20 +430,22 @@ public class DBmanagerDDL {
 				}
 				else if(primarykey)
 				{
-					if(newprimarykey)
+					if(newprimarykey && !constraints.isEmpty())
 					{
 						for(KeyPFC k : constraints)
 				        {
-				        	if(k.type.equals("pk"))
-				        	{
-				        		temp+=k.id+",";
-				        		for(String columna: k.columns_list_1)
-				        		{
-				        			temp+=columna+",";
-				        		}
-				        		rows.add(temp.substring(0, temp.length()-1));
-				        		temp = "";
-				        	}
+							if(k != null){
+					        	if(k.type.equals("pk"))
+					        	{
+					        		temp+=k.id+",";
+					        		for(String columna: k.columns_list_1)
+					        		{
+					        			temp+=columna+",";
+					        		}
+					        		rows.add(temp.substring(0, temp.length()-1));
+					        		temp = "";
+					        	}
+							}
 				        }
 						newprimarykey=false;
 					}
@@ -735,4 +576,164 @@ public class DBmanagerDDL {
 			
 			return "";
 		}
+		
+		
+		public String  alterAddConstraint(String tableName, ArrayList<KeyPFC> constraints) throws IOException{
+				
+			
+			return "";
+		}
+		
+		public String  alterDropColumn(String tableName, String columnToDrop) throws IOException{
+			
+			BufferedReader  reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+	
+			String line = reader.readLine();
+			String[] columns  =line.substring(0, line.length()-1).split(",");
+			int indiceDeColumna = 0;
+			
+			for(int i=0; i<columns.length;i++)
+			{
+				String[] data  = columns[i].split(":");
+				
+				if(data[1].equals(columnToDrop))
+				{
+					indiceDeColumna=i;
+				}
+			}
+			
+			ArrayList<String> rows = new ArrayList<String>();
+			
+			BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+			while ((line = file.readLine())!=null) 
+			{
+				line = line.substring(0,line.length()-1);
+				String[] regs = line.split(",");
+				line ="";
+				for(int i=0; i<columns.length;i++)
+				{
+					if(!(i==indiceDeColumna))
+					{
+						line+=regs[i]+",";
+					}
+				}
+				rows.add(line.substring(0,line.length()-1));
+			}
+			
+			BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+			for(int i=0;i<rows.size();i++)
+			{
+				file2.write(rows.get(i));
+				file2.newLine();
+			}
+			file2.close();
+		
+			return "";
+		}
+	
+		public String  alterDropConstraint(String tableName, String constraintToDrop) throws IOException{
+			
+			ArrayList<String> rows = new ArrayList<String>();
+			
+			BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+			String line = "";
+			while ((line = file.readLine())!=null) 
+			{
+				String[] regs = line.split(",");
+				line ="";
+				if(!regs[0].equals(constraintToDrop))
+				{
+					rows.add(line);
+				}
+			}
+			
+			BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+			for(int i=0;i<rows.size();i++)
+			{
+				file2.write(rows.get(i));
+				file2.newLine();
+			}
+			file2.close();
+		
+		
+		return "";
+	}
+	
+	
+	/**
+	 * Kill an existing table on database in use
+	**/
+	public boolean killTable(String tableName)
+	{
+		if (actualDatabase.equals("")){
+			System.out.println("NO DATABASE IN USE");
+			return false;
+		}
+		File toBeKilled = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
+
+		if (toBeKilled.exists()) 
+		{
+			return true;
+		}
+		else{
+			System.out.println("TABLE " + toBeKilled.getName() + " DOES NOT EXISTS");
+			return false;
+		}
+	}
+	
+	/**
+	 * Show all TABLES in actual database
+	**/
+	public void showTables()
+	{
+		if (actualDatabase.equals(""))
+		{
+			System.out.println("NO DATABASE IN USE");
+		}
+		else
+		{
+			Path currentRelativePath = Paths.get("");
+			String s = currentRelativePath.toAbsolutePath().toString()+File.separator+actualDatabase;
+			System.out.println("Actual Path for Database is : " + s);
+			File[] files = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase).listFiles();
+			
+			for (File file : files) 
+			{
+				if (file.isFile()) 
+				{
+					System.out.println(file.getName().substring(0, file.getName().length()-4));
+				}
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * Show COLUMNS and CONSTRAINS from TABLE
+	 * @throws IOException 
+	**/
+	public void showColumns(String tableName) throws IOException{
+		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
+		File table = new File(dir);
+		if (actualDatabase.equals(""))
+		{
+			System.out.println("NO DATABASE IN USE");
+		}
+		else if(!table.isFile())
+		{
+			System.out.println("TABLE DOES NOT EXISTS");
+		}
+		else
+		{
+			BufferedReader br = new BufferedReader (new FileReader (dir));
+			String line;
+
+			while( (line = br.readLine() ) != null)
+			{
+			    System.out.println(line);
+			}
+			
+		}
+	}
 }
