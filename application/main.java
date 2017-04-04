@@ -85,11 +85,10 @@ public class main extends Application {
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
 
-            // Set the person into the controller.
+            // set dialog stage 
             DialogController controller = loader.getController();
             controller.setDetailsForLabel(details);
             controller.setDialogStage(dialogStage);
-            //controller.setPerson(person);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
