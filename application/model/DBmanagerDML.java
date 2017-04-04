@@ -627,17 +627,19 @@ public class DBmanagerDML {
 		 * 
 		 */
 
-		ArrayList<String> fklocalColumnNames = new ArrayList<String>();
-		ArrayList<String> fkrefColumnNames = new ArrayList<String>();
-		ArrayList<Integer> fklocalColumnNumber = new ArrayList<Integer>();
-		ArrayList<Integer> fkrefColumnNumber = new ArrayList<Integer>();
-		ArrayList<String> fklocalColumnValue = new ArrayList<String>();
-		
-		int indexkey = 0;
-		String tablerefname = "";
+		System.out.println(FKs);
 		
 		for(ArrayList<String> key : FKs)
 		{
+			ArrayList<String> fklocalColumnNames = new ArrayList<String>();
+			ArrayList<String> fkrefColumnNames = new ArrayList<String>();
+			ArrayList<Integer> fklocalColumnNumber = new ArrayList<Integer>();
+			ArrayList<Integer> fkrefColumnNumber = new ArrayList<Integer>();
+			ArrayList<String> fklocalColumnValue = new ArrayList<String>();
+			
+			int indexkey = 0;
+			String tablerefname = "";
+			
 			//Obtengo las columnas del constraint escrito en el archivo
 			for(int i=2;i<key.size();i++)
 			{
@@ -656,15 +658,16 @@ public class DBmanagerDML {
 			{
 				if(!key.get(i).equals("}"))
 				{
-					fkrefColumnNames.add(key.get(i));
+					if(!key.get(i).equals("{"))
+					{	
+						fkrefColumnNames.add(key.get(i));
+					}
 				}
 				else if(key.get(i).equals("}"))
 				{
 					break;
 				}
 			}
-			
-			System.out.println("Columnas locales "+fklocalColumnNames+ " referencian "+ fkrefColumnNames + " en tabla "+ tablerefname);
 			
 			//buscar los indices a los que corresponden
 			
@@ -677,11 +680,12 @@ public class DBmanagerDML {
 			for(int i=0; i<nombreytipo1.length;i++)
 			{
 				String[] nameAndType = nombreytipo1[i].split(":");
-				for(int s=1;s<fklocalColumnNames.size();s++)
+				for(int s=0;s<fklocalColumnNames.size();s++)
 				{
+					System.out.println("nombre locales "+nameAndType[0]+" nombre almacenado "+fklocalColumnNames.get(s)+nameAndType[0].equals(fklocalColumnNames.get(s))+i); 
 					if(nameAndType[0].equals(fklocalColumnNames.get(s)))
 					{
-						fklocalColumnNumber.add(s);
+						fklocalColumnNumber.add(i);
 					}
 				}
 			}
@@ -689,20 +693,25 @@ public class DBmanagerDML {
 			for(int i=0; i<nombreytipo2.length;i++)
 			{
 				String[] nameAndType = nombreytipo2[i].split(":");
-				for(int s=1;s<fkrefColumnNames.size();s++)
+				for(int s=0;s<fkrefColumnNames.size();s++)
 				{
 					if(nameAndType[0].equals(fkrefColumnNames.get(s)))
 					{
-						fkrefColumnNumber.add(s);
+						fkrefColumnNumber.add(i);
 					}
 				}
 			}
+			
 			String[] newRegSplit = newRegistry.split(",");
 			
 			for(Integer n :fklocalColumnNumber)
 			{
 				fklocalColumnValue.add(newRegSplit[n]);
 			}
+			
+			System.out.println("Columnas locales "+fklocalColumnNames+ " en columnas "+fklocalColumnNumber+ " con valores "+fklocalColumnValue+ " referencian "+ fkrefColumnNames + " en columnas" + fkrefColumnNumber+ " en tabla "+ tablerefname);
+			
+			
 			
 			//Cargo la tabla completa a revisar
 			
@@ -733,6 +742,7 @@ public class DBmanagerDML {
 			{
 				for(Integer n:fkrefColumnNumber)
 				{
+					System.out.println("REGISTRO REF "+  registro.get(n)+ " REGISTRO LOCAL " + fklocalColumnValue.get(numFK));
 					if(registro.get(n).equals(fklocalColumnValue.get(numFK)))
 					{
 						System.out.println("FK local con valor "+fklocalColumnValue.get(numFK)+ " existe = " +registro.get(n));
@@ -740,6 +750,7 @@ public class DBmanagerDML {
 					}
 					numFK+=1;
 				}
+				numFK=0;
 			}
 			
 			if(siexiste==false)
