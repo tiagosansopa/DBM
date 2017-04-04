@@ -138,7 +138,8 @@ public class DBmanagerDML {
 			}
 			
 		}
-		System.out.println(newRegistry);
+		newRegistry+=";";
+		System.out.println();
 		
 		/*
 		 * 
@@ -529,6 +530,7 @@ public class DBmanagerDML {
 		
 		System.out.println(newRegistry);
 		
+		newRegistry+=";"; 
 		/*
 		 * 
 		 * Guardar los Constraints
