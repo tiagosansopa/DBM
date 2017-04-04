@@ -591,7 +591,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				}
 			}
 		}
-		return order_by_id_list;
+		//ORDENAR resultX
+		return null;
 	}
 	
 	public ArrayList<ArrayList<String>> removeIndex(ArrayList<ArrayList<String>> table){
