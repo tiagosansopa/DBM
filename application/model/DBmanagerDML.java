@@ -896,7 +896,7 @@ public class DBmanagerDML {
 			
 			if(!update)
 			{
-				rows.add(line);
+				rows.add(line+";");
 			}
 			else
 			{
@@ -909,11 +909,11 @@ public class DBmanagerDML {
 					{
 						if(p==j)
 						{
-							line+=literalList.get(p);
+							line+=literalList.get(p)+",";
 							break;
 						}
 					}
-					line+=regtoupdate[j];	
+					line+=regtoupdate[j]+",";	
 				}
 				line=line.substring(0,line.length()-1)+";";
 				rows.add(line);
