@@ -429,26 +429,27 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			String columnName = id+":"+type;
 			ConstraintAtContext constraint = ctx.constraintAt();
 			keys_list.add(makeListKeyPFC(constraint));
-			Integer constraints_number = ctx.comma_constraint_constraintAt_k().getChildCount()/3;
-			if(constraints_number > 0){
-				for(Integer i = 0; i < constraints_number; i++){
-					 ConstraintAtContext constraintAt = ctx.comma_constraint_constraintAt_k().constraintAt(i);
-					 keys_list.add(makeListKeyPFC(constraintAt));
+			if(ctx.comma_constraint_constraintAt_k() != null){
+				Integer constraints_number = ctx.comma_constraint_constraintAt_k().getChildCount()/3;
+				if(constraints_number > 0){
+					for(Integer i = 0; i < constraints_number; i++){
+						 ConstraintAtContext constraintAt = ctx.comma_constraint_constraintAt_k().constraintAt(i);
+						 keys_list.add(makeListKeyPFC(constraintAt));
+					}
 				}
+				String alt = "";
+				try {
+					alt = ddl.alterAddColumn(table_action, columnName, keys_list);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(!alt.equals("")){
+					handleSemanticError(alt);
+					return null;
+				}
+				handleSemanticError("Succesfully add column in Table: "+table_action);
 			}
-			String alt = "";
-			try {
-				alt = ddl.alterAddColumn(table_action, columnName, keys_list);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(!alt.equals("")){
-				handleSemanticError(alt);
-				return null;
-			}
-			handleSemanticError("Succesfully add column in Table: "+table_action);
-			
 		}
 		return null;
 	}
