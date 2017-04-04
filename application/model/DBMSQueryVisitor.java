@@ -3,6 +3,9 @@ package application.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import application.main;
@@ -376,7 +379,10 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			ConstraintAtContext constraint = ctx.constraintAt();
 			keys_list.add(makeListKeyPFC(constraint));
 		}
-		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
+		else if (addOrDrop.equals("add") && constraintOrColumn.equals("column")){
+			String id = ctx.ID().getText();
+			String type = ctx.type().getText();
+			String columnName = id+":"+type;
 			ConstraintAtContext constraint = ctx.constraintAt();
 			keys_list.add(makeListKeyPFC(constraint));
 			Integer constraints_number = ctx.comma_constraint_constraintAt_k().getChildCount()/3;
@@ -533,6 +539,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		tables_list = new ArrayList<String>();
 		ArrayList<String> order_by_id_list = new ArrayList<String>();
 		ArrayList<Integer> order_by_ad_list = new ArrayList<Integer>();
+		boolean orderBy = false;
 		if(ctx.select_k_id().KL() != null){
 			columns_list.add("*");
 			System.out.println("*");
@@ -567,6 +574,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 		if(ctx.order_by().getChildCount() > 0){
 			//(order by ID (asc | desc) comma_id_ad_k)?
 			System.out.println("ORDER BY");
+			orderBy = true;
 			order_by_id_list.add(ctx.order_by().ID().getText());
 			if(ctx.order_by().asc() != null){
 				order_by_ad_list.add(1);
@@ -590,9 +598,46 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 					System.out.println(order_by_ad_list.get(i+1));
 				}
 			}
+			
+			executeOrderBy(order_by_id_list,order_by_ad_list);
+			System.out.println(order_by_id_list);
+			System.out.println(order_by_ad_list);
 		}
 		if(columns_list.get(0).equals("*")){
-			return result;
+			ArrayList<ArrayList<String>> temp =  new ArrayList<ArrayList<String>>();;
+			System.out.println(result.toString());
+			temp.addAll(result);
+			if (orderBy==true){
+				for (int i = 0; i<order_by_id_list.size();i++){
+					List<List<String>> list = new ArrayList<List<String>>();
+					int indexToOrderBy = result.get(0).indexOf(order_by_id_list.get(i));
+					int ascOrDesc = order_by_ad_list.get(i);
+					String type = result.get(1).get(indexToOrderBy);
+					if (type.equals("int")){
+						System.out.println(indexToOrderBy);
+						temp.remove(0);
+						temp.remove(0);
+						list.addAll(temp);
+						System.out.println(list.toString());
+						Collections.sort(list, new Comparator<List<String>> () {
+						    @Override
+						    public int compare(List<String> a, List<String> b) {
+						        return a.get(indexToOrderBy ).compareTo(b.get(indexToOrderBy ));
+						    }
+						});
+						if(ascOrDesc==0){
+							Collections.reverse(list);
+						}
+						temp.removeAll(temp);
+						temp.addAll((Collection<? extends ArrayList<String>>) list);
+						System.out.println(temp.toString());
+						temp.add(0, result.get(1));
+						temp.add(0,result.get(0));
+						System.out.println(temp.toString());
+					}
+				}
+			}
+			return temp;
 		} else {
 			ArrayList<ArrayList<String>> temp_result = new ArrayList<ArrayList<String>>();
 			ArrayList<String> current_columns_list = result.get(0);
@@ -604,11 +649,16 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			for(ArrayList<String> row : result){
 				temp_result.add(rowByColumns(row, current_columns_list));
 			}
-			System.out.println(temp_result.toString());
+			
+			//System.out.println(temp_result.toString());
 			return temp_result;
 		}
 	}
 	
+	private void executeOrderBy(ArrayList<String> order_by_id_list, ArrayList<Integer> order_by_ad_list) {
+		
+	}
+
 	ArrayList<String> rowByColumns(ArrayList<String> row, ArrayList<String> current_columns_list){
 		ArrayList<String> row_result = new ArrayList<String>();
 		for(String column_name : columns_list){
