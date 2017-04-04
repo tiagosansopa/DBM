@@ -1,5 +1,4 @@
-id_prueba2:int,float2:float,string2:char(50)
-R:4
+id_prueba2:int,float2:float,string2:char(50,float5:float;
 PK
 pk_id_prueba2,id_prueba2
 FK

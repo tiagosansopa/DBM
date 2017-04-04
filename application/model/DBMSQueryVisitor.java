@@ -314,8 +314,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	}
 	public KeyPFC makeListKeyPFC(ConstraintAtContext constraintAt){
 		KeyPFC key = new KeyPFC();
+		System.out.println(constraintAt.getChild(0).getChildCount());
 		if(constraintAt != null){
-			if(constraintAt.getChildCount() == 7){
+			if(constraintAt.getChild(0).getChildCount() >= 6 && constraintAt.getChild(0).getChildCount() <= 11){
 				 System.out.println("PK");
 				 //ID primary key LPAREN ID comma_id_k RPAREN ;
 				 String id = constraintAt.primaryKey().getChild(0).getText();
@@ -333,7 +334,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 						 System.out.println(key_column_i);
 					 }
 				 }
-			 } else if(constraintAt.getChildCount() == 13){
+			 } else if(constraintAt.getChild(0).getChildCount() >= 11 && constraintAt.getChild(0).getChildCount()<= 13 ){
 				 System.out.println("FK");
 				 //ID foreign key LPAREN ID comma_id_k RPAREN references ID LPAREN ID comma_id_k RPAREN;
 				 String id = constraintAt.foreignKey().getChild(0).getText();
@@ -393,6 +394,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			// Llamar a la funcion de Santiago borrar constraint
 			String constraint = ctx.getChild(2).getText();
 			String alt = "";
+			System.out.println("Nombre Tabla: "+table_action);
+			System.out.println("Column: "+constraint);
 			try{
 				alt = ddl.alterDropConstraint(table_action, constraint);
 			} catch (IOException e){
@@ -403,6 +406,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			// LLamar a la funcion de Santiago borrar columna
 			String column = ctx.getChild(2).getText();
 			String alt = "";
+			System.out.println("Nombre Tabla: "+table_action);
+			System.out.println("Column: "+column);
 			try {
 				alt = ddl.alterDropColumn(table_action, column);
 			} catch (IOException e) {
