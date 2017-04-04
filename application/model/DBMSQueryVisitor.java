@@ -1324,10 +1324,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		}
 		System.out.println(tables);
 	}
-	public void handleDatabases(){
-		ArrayList<String> names = dml.storeDatabases();
-		System.out.println(names);
-	}
+
 	
 	public void setController (QueryGUIController control){
 		this.control = control;
