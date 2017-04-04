@@ -383,7 +383,7 @@ public class DBmanagerDDL {
 			BufferedReader  reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
 
 			String[] columns  = reader.readLine().split(",");
-		
+			
 			for(int i=0; i<columns.length;i++)
 			{
 				String[] data  = columns[i].split(":");
@@ -393,7 +393,183 @@ public class DBmanagerDDL {
 					return "Columna " + nombreytipo[0]+ " ya existe ";
 				}
 			}
-				
+			String linea = "";
+			ArrayList<String> rows = new ArrayList<String>();
+			
+			BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+			while ((linea = file.readLine())!=null) 
+			{
+				rows.add((linea.substring(0, linea.length()-1))+ ",NULL;");
+			}
+			BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+			for(int i=0;i<rows.size();i++)
+			{
+				file2.write(rows.get(i));
+				file2.newLine();
+			}
+			file2.close();
+			
+			rows = new ArrayList<String>();	
+			file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+			boolean primerafila = true,primarykey = false,foreignkey=false,check=false;
+			boolean newprimarykey =true, newforeingkey = true, newcheck = true;
+			String temp="";
+			while ((linea = file.readLine())!=null) 
+			{
+				if(primerafila)
+				{
+					rows.add((linea.substring(0, linea.length()-1))+ ","+columnName+";");
+					primerafila=false;
+				}
+				else if(linea.contains("PK"))
+				{
+					primarykey=true;
+					rows.add(linea);
+				}
+				else if(primarykey)
+				{
+					if(newprimarykey)
+					{
+						for(KeyPFC k : constraints)
+				        {
+				        	if(k.type.equals("pk"))
+				        	{
+				        		temp+=k.id+",";
+				        		for(String columna: k.columns_list_1)
+				        		{
+				        			temp+=columna+",";
+				        		}
+				        		rows.add(temp.substring(0, temp.length()-1));
+				        		temp = "";
+				        	}
+				        }
+						newprimarykey=false;
+					}
+					rows.add(linea);
+				}
+				else if(linea.contains("FK"))
+				{
+					primarykey=false;
+					foreignkey=true;
+					rows.add(linea);
+				}
+				else if(foreignkey)
+				{
+					if(newforeingkey)
+					{
+					temp="";
+			        for(KeyPFC k : constraints)
+			        {	
+			        	if(k.type.equals("fk"))
+			        	{
+			        		File referencedTable = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+k.id_references+"Metadata.txt");
+			        		if(!referencedTable.exists())
+			        		{
+			        			return "No Table Named "+k.id_references;
+			        		}
+			        		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+k.id_references+"Metadata.txt"), Charset.forName("UTF-8")));
+			        		String[] typesAndColumns= br.readLine().split(",");
+			        		BufferedReader br2 = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"), Charset.forName("UTF-8")));
+			        		String[] typesAndColumns2= br.readLine().split(",");
+			        		int columnDoesNotExists = 0;
+			        		
+			        		for(String s:k.columns_list_2)
+		        			{
+			        			columnDoesNotExists = 0;
+			        			for(int i=0; i<typesAndColumns.length;i++)
+			        			{
+			        				String[] name= typesAndColumns[i].split(":");
+			        				if(s.equals(name))
+			        				{
+			        					System.out.println("Columna referenciada " + s + " = " + name );
+			        					columnDoesNotExists = 0;
+			        				}
+			        				else
+			        				{
+			        					columnDoesNotExists+=1;
+			        				}
+			        			}
+			        			if(columnDoesNotExists==(typesAndColumns.length-1))
+			        			{
+			        				br.close();
+			        				return "Columna referenciada " + s + " No existe en tabla " + k.id_references;
+			        			}
+			        		}
+			        		
+			        		for(String s:k.columns_list_1)
+		        			{
+			        			columnDoesNotExists = 0;
+			        			for(int i=0; i<typesAndColumns2.length;i++)
+			        			{
+			        				if(typesAndColumns2[i].contains(s))
+			        				{
+			        					System.out.println("Columna referenciada " + s + " = " + typesAndColumns2[i] );
+			        					columnDoesNotExists = 0;
+			        				}
+			        				else
+			        				{
+			        					columnDoesNotExists+=1;
+			        				}
+			        			}
+			        			if(columnDoesNotExists==(typesAndColumns2.length-1))
+			        			{
+			        				br.close();
+			        				return "Columna referenciada " + s + " No existe en tabla";
+			        			}
+			        		}
+			        		
+			        		temp+=k.id+",{,";
+			        		for(String columna: k.columns_list_1)
+			        		{
+			        			temp+=columna+",";
+			        		}
+			        		temp+="},"+k.id_references+",{,";
+			        		for(String columna: k.columns_list_2)
+			        		{
+			        			temp+=columna+",";
+			        		}
+			        		temp+="}";
+			        		rows.add(temp);	        		
+			        		temp = "";
+			        	}
+			        }
+			        newforeingkey=false;  
+					}
+					rows.add(linea);
+				}
+				else if(linea.contains("CH"))
+				{
+					foreignkey=false;
+					check=true;
+				}
+				else if(check)
+				{
+					if(newcheck)
+					{
+					temp = "";
+			        for(KeyPFC k : constraints)
+			        {
+			        	if(k.type.equals("ch"))
+			        	{
+			        		temp+=k.exp;
+			        		rows.add(temp);
+			        		temp = "";
+			        	}
+			        }
+			        newcheck=false;
+					}
+					rows.add(linea);
+				}
+			}
+			file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+			for(int i=0;i<rows.size();i++)
+			{
+				file2.write(rows.get(i));
+				file2.newLine();
+			}
+			file2.close();
+			
+			
 			return "";
 		}
 	

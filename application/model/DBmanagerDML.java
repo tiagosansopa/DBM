@@ -947,10 +947,11 @@ public class DBmanagerDML {
 		reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
 
 		String line;
+		int index = 0;
 		while ((line = reader.readLine()) != null) 
 		{
 			System.out.println(line);
-			line = line.substring(0, line.length()-1);
+			line = index+","+line.substring(0, line.length()-1);
 			System.out.println(line);
 			String[] columns = line.split(",");
 			
@@ -960,6 +961,7 @@ public class DBmanagerDML {
 			}
 			table.add(registry);
 			registry = new ArrayList<String>();
+			index+=1;
 		}	
 		reader.close();
 		return table;
