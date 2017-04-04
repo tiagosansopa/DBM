@@ -84,36 +84,40 @@ public class QueryGUIController {
 	
 	public void displayTable(ArrayList<ArrayList<String>> rows){
 		csvData.clear();
-		ArrayList<String> columnNames = rows.get(0);
-		rows.remove(0);
-		rows.remove(0);
-		ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
-		for (int i = 0;i<rows.size();i++){
-			ArrayList<String> row = rows.get(i);
-			csvData.add(FXCollections.observableArrayList(row));
-		}
-		for (int i = 0; i<columnNames.size();i++){
-			final int index = i;
-			//System.out.println(index);
-			TableColumn<ObservableList<String>,String> columna = new TableColumn<>(columnNames.get(i));
+		if(!rows.isEmpty()){
+			ArrayList<String> columnNames = rows.get(0);
+			rows.remove(0);
+			rows.remove(0);
+			ArrayList<TableColumn> columns = new ArrayList<TableColumn>();
+			for (int i = 0;i<rows.size();i++){
+				ArrayList<String> row = rows.get(i);
+				csvData.add(FXCollections.observableArrayList(row));
+			}
+			for (int i = 0; i<columnNames.size();i++){
+				final int index = i;
+				//System.out.println(index);
+				TableColumn<ObservableList<String>,String> columna = new TableColumn<>(columnNames.get(i));
+				
+				columna.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>, String>, ObservableValue<String>>() 
+				{
+		            @Override
+		            public ObservableValue<String> call(CellDataFeatures<ObservableList<String>, String> p) {
+		                return new SimpleStringProperty((p.getValue().get(index)));
+		            }
+		         });
+				//System.out.println(index);
+				//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
+				columns.add(columna);
 			
-			columna.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>, String>, ObservableValue<String>>() 
-			{
-                @Override
-                public ObservableValue<String> call(CellDataFeatures<ObservableList<String>, String> p) {
-                    return new SimpleStringProperty((p.getValue().get(index)));
-                }
-             });
-			//System.out.println(index);
-			//columna.setCellValueFactory(cellData -> new SimpleObjectProperty<String>("he"));
-			columns.add(columna);
-		
+			}
+			dataTable.getColumns().clear();
+			for (int j = 0;j<columns.size();j++){
+				dataTable.getColumns().add(columns.get(j));
+			}
+			dataTable.getItems().setAll(csvData);
+		} else {
+			dataTable.getColumns().clear();
 		}
-		dataTable.getColumns().clear();
-		for (int j = 0;j<columns.size();j++){
-			dataTable.getColumns().add(columns.get(j));
-		}
-		dataTable.getItems().setAll(csvData);
 	}
 	
 	
@@ -221,9 +225,9 @@ public class QueryGUIController {
 	public  void setMainApp(main app){
 		this.mainApp = app;
 		outputArea.setWrapText(true);
+		dataTable.getColumns().clear();
 		displayTreeView(fileLocation);
 		currentDatabase.setText(ddl.getActualDatabase());
-		
 	}
 	
 }
