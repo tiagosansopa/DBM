@@ -375,7 +375,11 @@ public class DBmanagerDML {
 		
 		String exp = "columna > 1";
 		
-		for(ArrayList<String> rowX : resultX){
+		ArrayList<ArrayList<String>> tableX = new ArrayList<ArrayList<String>>();
+		tableX.addAll(resultX);
+		tableX.remove(0);
+		tableX.remove(0);
+		for(ArrayList<String> rowX : tableX){
 			ANTLRInputStream input = new ANTLRInputStream(exp);
 			ExpressionLexer lexer = new ExpressionLexer(input);
 			TokenStream tokens = new CommonTokenStream(lexer);
