@@ -192,6 +192,7 @@ public class QueryGUIController {
             outputArea.appendText(qVisitor.errors.toString());
     		displayTreeView(fileLocation);
     		currentDatabase.setText(ddl.getActualDatabase());
+    		System.out.println(table);
     		if(table != null){
     			displayTable(table);
     		}

@@ -604,6 +604,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<ArrayList<Strin
 			for(ArrayList<String> row : result){
 				temp_result.add(rowByColumns(row, current_columns_list));
 			}
+			System.out.println(temp_result.toString());
 			return temp_result;
 		}
 	}
