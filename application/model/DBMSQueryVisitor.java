@@ -746,7 +746,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		String term1_type = "";
 		if(ctx.term(0).ID() == null){
 			term1_type = type(term1);
-			if(term1_type.substring(0, 4).equals("char")){
+			if(term1_type.length() > 3 && term1_type.substring(0, 4).equals("char")){
 				term1 = term1.substring(1, term1.length()-1);
 				term1_type = type(term1);
 			}
@@ -756,7 +756,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		String term2_type = "";
 		if(ctx.term(1).ID() == null){
 			term2_type = type(term2);
-			if(term2_type.substring(0, 4).equals("char")){
+			if(term2_type.length() > 3 && term2_type.substring(0, 4).equals("char")){
 				term2 = term2.substring(1, term2.length()-1);
 				term2_type = type(term2);
 			}
@@ -781,6 +781,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		if(term1_type.equals("") && term2_type.equals("")){
 			//PRODUCTO CRUZ
 		} else if(term1_type.equals("")){
+			//System.out.println(term1);
 			Integer index_current_column = resultX.get(0).indexOf(term1);
 			String current_column_type = resultX.get(1).get(index_current_column);
 			String current_column_value = rowX.get(index_current_column);
@@ -788,7 +789,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				return rowX;
 			}
 		} else if(term2_type.equals("")){
-			System.out.println(term2);
+			//System.out.println(term2);
 			Integer index_current_column = resultX.get(1).indexOf(term2);
 			String current_column_type = resultX.get(0).get(index_current_column);
 			String current_column_value = rowX.get(index_current_column);
