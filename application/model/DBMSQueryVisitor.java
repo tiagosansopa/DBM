@@ -780,8 +780,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		}
 		ArrayList<ArrayList<String>> temp =  new ArrayList<ArrayList<String>>();;
 		System.out.println(resultX.toString());
-		/*temp.addAll(resultX);
 		if (orderBy==true){
+			temp.addAll(resultX);
 			for (int i = 0; i<order_by_id_list.size();i++){
 				List<List<String>> list = new ArrayList<List<String>>();
 				int indexToOrderBy = resultX.get(0).indexOf(order_by_id_list.get(i));
@@ -832,9 +832,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 					System.out.println(temp.toString());
 				}
 			}
+			resultX.clear();
+			resultX.addAll(temp);
 		}
-		resultX.clear();
-		resultX.addAll(temp);*/
 		//ORDENAR resultX
 		return null;
 	}
