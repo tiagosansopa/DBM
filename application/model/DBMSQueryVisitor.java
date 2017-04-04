@@ -419,6 +419,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			if(constraint != null){
 				keys_list.add(makeListKeyPFC(constraint));
 				String alt = "";
+				System.out.println(keys_list);
 				try {
 					alt = ddl.alterAddConstraint(table_action, keys_list);
 				} catch (IOException e) {
@@ -447,6 +448,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 					}
 				}
 			}
+			System.out.println(keys_list);
 			String alt = "";
 			try {
 				alt = ddl.alterAddColumn(table_action, columnName, keys_list);
@@ -563,6 +565,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				String insertT = dml.insertInto(id, order_list, literal_list);
 				if(!insertT.equals("")){
 					handleSemanticError(insertT);
+					return null;
 				}
 				handleSemanticError("Succesfully inserted values");
 			} catch (IOException e) {
@@ -573,6 +576,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				String insertT = dml.insertInto(id, literal_list);
 				if(!insertT.equals("")){
 					handleSemanticError(insertT);
+					return null;
 				}
 				handleSemanticError("Succesfully inserted values");
 			} catch (IOException e) {

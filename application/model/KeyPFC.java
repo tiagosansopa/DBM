@@ -23,6 +23,11 @@ public class KeyPFC {
 	}
 	
 	public String toString(){
-		return type + id + columns_list_1 + columns_list_2 + id_references + exp;
+		return "Tipo: "+type+"\n"
+				+"Identifier: "+ id+"\n" 
+				+"Columna 1:  "+ columns_list_1 +"\n"
+				+"Columna 2:  "+ columns_list_2 +"\n"
+				+"Referencia: "+ id_references  +"\n" 
+				+"Expression: "+exp+"\n";
 	}
 }
