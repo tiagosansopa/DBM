@@ -494,7 +494,15 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				e.printStackTrace();
 			}
 		} else {
-			
+			try {
+				String insertT = dml.insertInto(id, literal_list);
+				if(!insertT.equals("")){
+					handleSemanticError(insertT);
+				}
+				handleSemanticError("Succesfully inserted values");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
