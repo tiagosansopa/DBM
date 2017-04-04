@@ -15,6 +15,11 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+
 public class DBmanagerDML {
 	
 	String actualDatabase = "";
@@ -43,7 +48,7 @@ public class DBmanagerDML {
 	/**
 	 * Insert INTO con columNames
 	**/
-	public String insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes) throws IOException
+	public String insertInto(String tableName,ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<ArrayList<String>> resultX) throws IOException
 	{
 		File table = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
 		/*
@@ -368,8 +373,20 @@ public class DBmanagerDML {
 		 */
 		
 		
+		String exp = "columna > 1";
 		
-		
+		for(ArrayList<String> rowX : resultX){
+			ANTLRInputStream input = new ANTLRInputStream(exp);
+			ExpressionLexer lexer = new ExpressionLexer(input);
+			TokenStream tokens = new CommonTokenStream(lexer);
+			ExpressionParser parser = new ExpressionParser(tokens);
+			ParseTree tree = parser.exp();
+			CheckExpression expVisitor = new CheckExpression(resultX, rowX);
+			expVisitor.visit(tree);
+			if(expVisitor.pass){
+					System.out.println(rowX);		
+			}
+		}
 		
 		/*
 		 * 
