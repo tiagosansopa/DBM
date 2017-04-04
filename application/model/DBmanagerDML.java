@@ -734,15 +734,37 @@ public class DBmanagerDML {
 	/**
 	 * UPDATE
 	**/
-	public void update(){
-		
+	public void update(String tableName, ArrayList<ArrayList<String>> tableX, ArrayList<String> idList, ArrayList<String> literalList){
+		//conseguir indices a cambiar
+		ArrayList<String> list_to_update = new ArrayList<String>();
+		ArrayList<ArrayList<String>> temp_table = new ArrayList<ArrayList<String>>();
+		temp_table = tableX;
+		temp_table.remove(0); //remove names
+		temp_table.remove(0); //remove types
+		for(ArrayList<String> row : temp_table){
+			list_to_update.add(row.get(0));
+		}
+		System.out.println(tableName);
+		System.out.println(list_to_update);
+		System.out.println(idList);
+		System.out.println(literalList);
 	}
 
 	/**
 	 * DELETE
 	**/
-	public void delete(){
-
+	public void delete(String tableName, ArrayList<ArrayList<String>> tableX){
+		System.out.println("DELETE ");
+		ArrayList<String> list_to_erase = new ArrayList<String>();
+		ArrayList<ArrayList<String>> temp_table = new ArrayList<ArrayList<String>>();
+		temp_table = tableX;
+		temp_table.remove(0); //remove names
+		temp_table.remove(0); //remove types
+		for(ArrayList<String> row : temp_table){
+			list_to_erase.add(row.get(0));
+		}
+		System.out.println(tableName);
+		System.out.println(list_to_erase);
 	}
 	
 	/**

@@ -569,11 +569,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		literal_list.add(ctx.getChild(5).getText());
 		System.out.println(literal_list.get(0));
 		if(ctx.comma_id_eq_literal_k() != null){
-			Integer total_number_id_literal = ctx.comma_id_eq_literal_k().getChildCount()/3;
+			Integer total_number_id_literal = ctx.comma_id_eq_literal_k().getChildCount()/4;
 			for(Integer i = 0; i < total_number_id_literal; i++){
-				id_list.add(ctx.comma_id_eq_literal_k().getChild(i*3).getText());
+				id_list.add(ctx.comma_id_eq_literal_k().getChild((i*4)+1).getText());
 				System.out.println(id_list.get(i+1));
-				literal_list.add(ctx.comma_id_eq_literal_k().getChild((i*3)+2).getText());
+				literal_list.add(ctx.comma_id_eq_literal_k().getChild((i*4)+3).getText());
 				System.out.println(literal_list.get(i+1));
 			}
 		}
@@ -598,6 +598,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		for(String table_name : tables_list){
 			try {
 				ArrayList<ArrayList<String>> info = dml.tableTypesAndNames(table_name);
+				resultX.get(0).add("INDEX");
+				resultX.get(1).add("int");
 				resultX.get(0).addAll(info.get(0)); 
 				resultX.get(1).addAll(info.get(1)); 
 			} catch (IOException e) {
@@ -610,6 +612,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 
 		System.out.println(id_list);
 		System.out.println(literal_list);
+		
+		dml.update(id, resultX, id_list, literal_list);
 		
 		return null;
 	}
@@ -649,6 +653,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		for(String table_name : tables_list){
 			try {
 				ArrayList<ArrayList<String>> info = dml.tableTypesAndNames(table_name);
+				resultX.get(0).add("INDEX");
+				resultX.get(1).add("int");
 				resultX.get(0).addAll(info.get(0)); 
 				resultX.get(1).addAll(info.get(1)); 
 			} catch (IOException e) {
@@ -658,6 +664,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		}
 		
 		makeX(null, 0);
+		
+		dml.delete(id, resultX);
 		
 		return null;
 	}
@@ -772,7 +780,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		}
 		ArrayList<ArrayList<String>> temp =  new ArrayList<ArrayList<String>>();;
 		System.out.println(resultX.toString());
-		temp.addAll(resultX);
+		/*temp.addAll(resultX);
 		if (orderBy==true){
 			for (int i = 0; i<order_by_id_list.size();i++){
 				List<List<String>> list = new ArrayList<List<String>>();
@@ -826,7 +834,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			}
 		}
 		resultX.clear();
-		resultX.addAll(temp);
+		resultX.addAll(temp);*/
 		//ORDENAR resultX
 		return null;
 	}

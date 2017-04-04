@@ -194,7 +194,7 @@ public class QueryGUIController {
     		displayTreeView(fileLocation);
     		currentDatabase.setText(ddl.getActualDatabase());
     		System.out.println(table);
-    		if(table != null){
+    		if(table != null && table.size() > 2){
     			displayTable(table);
     		}
         }
