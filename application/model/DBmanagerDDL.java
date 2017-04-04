@@ -369,6 +369,34 @@ public class DBmanagerDDL {
 		}
 	}
 	
+	/**
+	* Alter table appends a column.
+	 * @throws IOException 
+	**/
+		public String  alterAddColumn(String tableName,String columnName, ArrayList<KeyPFC> constraints) throws IOException{
+			
+			String[] nombreytipo = columnName.split(",");
+			
+			File table = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt");
+			File tableMetadata = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt");
+
+			BufferedReader  reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt")));
+
+			String[] columns  = reader.readLine().split(",");
+		
+			for(int i=0; i<columns.length;i++)
+			{
+				String[] data  = columns[i].split(":");
+				
+				if(data[1].equals(nombreytipo[0]))
+				{
+					return "Columna " + nombreytipo[0]+ " ya existe ";
+				}
+			}
+				
+			return "";
+		}
+	
 
 	
 	/**
