@@ -1,6 +1,0 @@
-id_universidad:char(50),direccion:char(50)
-R:2
-PK
-pk_id,id_universidad
-FK
-CHECK

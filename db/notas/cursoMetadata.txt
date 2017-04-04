@@ -1,6 +1,0 @@
-id_curso:char(50),maestro:char(50),promedio:float
-R:2
-PK
-pk_id,id_curso
-FK
-CHECK
