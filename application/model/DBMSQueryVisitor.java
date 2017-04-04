@@ -647,6 +647,63 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			System.out.println(order_by_id_list);
 			System.out.println(order_by_ad_list);
 		}
+		ArrayList<ArrayList<String>> temp =  new ArrayList<ArrayList<String>>();;
+		System.out.println(resultX.toString());
+		temp.addAll(resultX);
+		if (orderBy==true){
+			for (int i = 0; i<order_by_id_list.size();i++){
+				List<List<String>> list = new ArrayList<List<String>>();
+				int indexToOrderBy = resultX.get(0).indexOf(order_by_id_list.get(i));
+				int ascOrDesc = order_by_ad_list.get(i);
+				String type = resultX.get(1).get(indexToOrderBy);
+				if (type.equals("int")|| type.equals("float")){
+					System.out.println(indexToOrderBy);
+					temp.remove(0);
+					temp.remove(0);
+					list.addAll(temp);
+					System.out.println(list.toString());
+					Collections.sort(list, new Comparator<List<String>> () {
+					    @Override
+					    public int compare(List<String> a, List<String> b) {
+					        return a.get(indexToOrderBy ).compareTo(b.get(indexToOrderBy ));
+					    }
+					});
+					if(ascOrDesc==0){
+						Collections.reverse(list);
+					}
+					temp.removeAll(temp);
+					temp.addAll((Collection<? extends ArrayList<String>>) list);
+					System.out.println(temp.toString());
+					temp.add(0, resultX.get(1));
+					temp.add(0,resultX.get(0));
+					System.out.println(temp.toString());
+				}
+				if (type.contains("char")){
+					System.out.println(indexToOrderBy);
+					temp.remove(0);
+					temp.remove(0);
+					list.addAll(temp);
+					System.out.println(list.toString());
+					Collections.sort(list, new Comparator<List<String>> () {
+					    @Override
+					    public int compare(List<String> a, List<String> b) {
+					        return a.get(indexToOrderBy ).compareTo(b.get(indexToOrderBy ));
+					    }
+					});
+					if(ascOrDesc==0){
+						Collections.reverse(list);
+					}
+					temp.removeAll(temp);
+					temp.addAll((Collection<? extends ArrayList<String>>) list);
+					System.out.println(temp.toString());
+					temp.add(0, resultX.get(1));
+					temp.add(0,resultX.get(0));
+					System.out.println(temp.toString());
+				}
+			}
+		}
+		resultX.clear();
+		resultX.addAll(temp);
 		//ORDENAR resultX
 		return null;
 	}
