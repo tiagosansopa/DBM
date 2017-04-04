@@ -551,12 +551,19 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public ArrayList<String> visitUpdate_value(DBMSParser.Update_valueContext ctx){
 		//update ID set ID EQ literal comma_id_eq_literal_k  where_exp END_SQL
 		System.out.println("visitUpdate_value");
+		
+		resultX = new ArrayList<ArrayList<String>>();
+		resultX.add(new ArrayList<String>());
+		resultX.add(new ArrayList<String>());
+		tableX = new ArrayList<ArrayList<ArrayList<String>>>();
+		
 		String id = ctx.getChild(1).getText();
 		tables_list = new ArrayList<String>();
 		tables_list.add(id);
-		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		
 		ArrayList<String> id_list = new ArrayList<String>();
 		ArrayList<String> literal_list = new ArrayList<String>();
+		
 		id_list.add(ctx.getChild(3).getText());
 		System.out.println(id_list.get(0));
 		literal_list.add(ctx.getChild(5).getText());
@@ -570,9 +577,40 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				System.out.println(literal_list.get(i+1));
 			}
 		}
+		
+		
 		if(ctx.where_exp() != null){
 			System.out.println("WHERE EXPRESSION");
+			expX = ctx.where_exp().exp();
 		}
+		
+		//Load tables
+		for(String table_name : tables_list){
+			try {
+				tableX.add(dml.tableToArraylist(table_name));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//Load info tables
+		for(String table_name : tables_list){
+			try {
+				ArrayList<ArrayList<String>> info = dml.tableTypesAndNames(table_name);
+				resultX.get(0).addAll(info.get(0)); 
+				resultX.get(1).addAll(info.get(1)); 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		makeX(null, 0);
+
+		System.out.println(id_list);
+		System.out.println(literal_list);
+		
 		return null;
 	}
 	
@@ -581,14 +619,46 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public ArrayList<String> visitDelete_value(DBMSParser.Delete_valueContext ctx){
 		//delete from ID where_exp END_SQL
 		System.out.println("visitDelete_value");
-		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		
+		resultX = new ArrayList<ArrayList<String>>();
+		resultX.add(new ArrayList<String>());
+		resultX.add(new ArrayList<String>());
+		tableX = new ArrayList<ArrayList<ArrayList<String>>>();
+		
 		tables_list = new ArrayList<String>();
 		String id = ctx.getChild(2).getText();
 		tables_list.add(id);
 		System.out.println(id);
+		
 		if(ctx.where_exp() != null){
 			System.out.println("WHERE EXPRESSION");
+			expX = ctx.where_exp().exp();
 		}
+		
+		//Load tables
+		for(String table_name : tables_list){
+			try {
+				tableX.add(dml.tableToArraylist(table_name));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//Load info tables
+		for(String table_name : tables_list){
+			try {
+				ArrayList<ArrayList<String>> info = dml.tableTypesAndNames(table_name);
+				resultX.get(0).addAll(info.get(0)); 
+				resultX.get(1).addAll(info.get(1)); 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		makeX(null, 0);
+		
 		return null;
 	}
 	
