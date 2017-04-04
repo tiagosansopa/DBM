@@ -416,33 +416,40 @@ public class DBmanagerDML {
 	 */
 	public boolean validateDate(String date){
 		String[] dateSplit = date.split("-");
-		if(dateSplit.length == 2){
+		if(dateSplit.length == 3){
 			if(dateSplit[1].equals("02")&&dateSplit[2].equals("30")){
+				System.out.println(dateSplit);
 				return false;
 			}
 			if(dateSplit[1].equals("02")&&dateSplit[2].equals("31")){
+				System.out.println(dateSplit);
 				return false;
 			}
 			if (dateSplit[0].length()!=4||dateSplit[1].length()!=2||dateSplit[2].length()!=2)
 			{
+				System.out.println(dateSplit + " no del tamano");
 				return false;
 			}
 			if (Integer.parseInt(dateSplit[1])<1 || Integer.parseInt(dateSplit[1])>12)
 			{
+				System.out.println(dateSplit);
 				return false;
 			}
 			if (Integer.parseInt(dateSplit[2])<1 || Integer.parseInt(dateSplit[2])>31)
 			{
+				System.out.println(dateSplit);
 				return false;
 			}
 			if (Integer.parseInt(dateSplit[0])<1000 || Integer.parseInt(dateSplit[0])>3000)
 			{
+				System.out.println(dateSplit);
 				return false;
 			}
 			else{
 				return true;
 			}
 		}
+		System.out.println(dateSplit +" tamano "+  dateSplit.length);
 		return false;
 	}
 	
