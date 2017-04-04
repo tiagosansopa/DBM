@@ -310,65 +310,67 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	}
 	public KeyPFC makeListKeyPFC(ConstraintAtContext constraintAt){
 		KeyPFC key = new KeyPFC();
-		if(constraintAt.primaryKey() != null){
-			 System.out.println("PK");
-			 //ID primary key LPAREN ID comma_id_k RPAREN ;
-			 String id = constraintAt.primaryKey().getChild(0).getText();
-			 System.out.println(id);
-			 key.id = id;
-			 key.type = "pk";
-			 String key_column_1 = constraintAt.primaryKey().getChild(4).getText();
-			 key.columns_list_1.add(key_column_1);
-			 System.out.println(key_column_1);
-			 Integer columns_constraint_number = constraintAt.primaryKey().comma_id_k().getChildCount()/2;
-			 if(columns_constraint_number > 0){
-				 for(Integer j = 0; j < columns_constraint_number; j++){
-					 String key_column_i = constraintAt.primaryKey().comma_id_k().ID(j).getText();
-					 key.columns_list_1.add(key_column_i);
-					 System.out.println(key_column_i);
+		if(constraintAt != null){
+			if(constraintAt.getChildCount() == 7){
+				 System.out.println("PK");
+				 //ID primary key LPAREN ID comma_id_k RPAREN ;
+				 String id = constraintAt.primaryKey().getChild(0).getText();
+				 System.out.println(id);
+				 key.id = id;
+				 key.type = "pk";
+				 String key_column_1 = constraintAt.primaryKey().getChild(4).getText();
+				 key.columns_list_1.add(key_column_1);
+				 System.out.println(key_column_1);
+				 Integer columns_constraint_number = constraintAt.primaryKey().comma_id_k().getChildCount()/2;
+				 if(columns_constraint_number > 0){
+					 for(Integer j = 0; j < columns_constraint_number; j++){
+						 String key_column_i = constraintAt.primaryKey().comma_id_k().ID(j).getText();
+						 key.columns_list_1.add(key_column_i);
+						 System.out.println(key_column_i);
+					 }
 				 }
-			 }
-		 } else if(constraintAt.foreignKey() != null){
-			 System.out.println("FK");
-			 //ID foreign key LPAREN ID comma_id_k RPAREN references ID LPAREN ID comma_id_k RPAREN;
-			 String id = constraintAt.foreignKey().getChild(0).getText();
-			 System.out.println(id);
-			 key.id = id;
-			 key.type = "fk";
-			 String id_references = constraintAt.foreignKey().getChild(8).getText();
-			 key.id_references = id_references;
-			 String key_column_1 = constraintAt.foreignKey().getChild(4).getText();
-			 key.columns_list_1.add(key_column_1);
-			 System.out.println(key_column_1);
-			 Integer columns_constraint_number = constraintAt.foreignKey().comma_id_k(0).getChildCount()/2;
-			 if(columns_constraint_number > 0){
-				 for(Integer j = 0; j < columns_constraint_number; j++){
-					 String key_column_i = constraintAt.foreignKey().comma_id_k(0).ID(j).getText();
-					 key.columns_list_1.add(key_column_i);
-					 System.out.println(key_column_i);
+			 } else if(constraintAt.getChildCount() == 13){
+				 System.out.println("FK");
+				 //ID foreign key LPAREN ID comma_id_k RPAREN references ID LPAREN ID comma_id_k RPAREN;
+				 String id = constraintAt.foreignKey().getChild(0).getText();
+				 System.out.println(id);
+				 key.id = id;
+				 key.type = "fk";
+				 String id_references = constraintAt.foreignKey().getChild(8).getText();
+				 key.id_references = id_references;
+				 String key_column_1 = constraintAt.foreignKey().getChild(4).getText();
+				 key.columns_list_1.add(key_column_1);
+				 System.out.println(key_column_1);
+				 Integer columns_constraint_number = constraintAt.foreignKey().comma_id_k(0).getChildCount()/2;
+				 if(columns_constraint_number > 0){
+					 for(Integer j = 0; j < columns_constraint_number; j++){
+						 String key_column_i = constraintAt.foreignKey().comma_id_k(0).ID(j).getText();
+						 key.columns_list_1.add(key_column_i);
+						 System.out.println(key_column_i);
+					 }
 				 }
-			 }
-			 String key_column_2 = constraintAt.foreignKey().getChild(10).getText();
-			 key.columns_list_2.add(key_column_2);
-			 System.out.println(key_column_2);
-			 columns_constraint_number = constraintAt.foreignKey().comma_id_k(1).getChildCount()/2;
-			 if(columns_constraint_number > 0){
-				 for(Integer j = 0; j < columns_constraint_number; j++){
-					 String key_column_i = constraintAt.foreignKey().comma_id_k(1).ID(j).getText();
-					 key.columns_list_2.add(key_column_i);
-					 System.out.println(key_column_i);
-
+				 String key_column_2 = constraintAt.foreignKey().getChild(10).getText();
+				 key.columns_list_2.add(key_column_2);
+				 System.out.println(key_column_2);
+				 columns_constraint_number = constraintAt.foreignKey().comma_id_k(1).getChildCount()/2;
+				 if(columns_constraint_number > 0){
+					 for(Integer j = 0; j < columns_constraint_number; j++){
+						 String key_column_i = constraintAt.foreignKey().comma_id_k(1).ID(j).getText();
+						 key.columns_list_2.add(key_column_i);
+						 System.out.println(key_column_i);
+	
+					 }
 				 }
+			 } else {
+				 System.out.println("CH");
+				 //ID check LPAREN exp RPAREN
+				 String id = constraintAt.checks().getChild(0).getText();
+				 System.out.println(id);
+				 key.id = id;
+				 key.type = "ch";
+				 key.exp = constraintAt.checks().exp().getText();
 			 }
-		 } else if(constraintAt.checks() != null) {
-			 System.out.println("CH");
-			 //ID check LPAREN exp RPAREN
-			 String id = constraintAt.checks().getChild(0).getText();
-			 System.out.println(id);
-			 key.id = id;
-			 key.type = "ch";
-			 key.exp = constraintAt.checks().exp().getText();
-		 }
+		}
 		return key;
 	}
 	
@@ -406,18 +408,21 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			handleSemanticError("Succesfully drop column" + column + " in Table: "+table_action);
 		} else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
 			ConstraintAtContext constraint = ctx.constraintAt();
-			keys_list.add(makeListKeyPFC(constraint));
-			String alt = "";
-			try {
-				alt = ddl.alterAddConstraint(table_action, keys_list);
-			} catch (IOException e) {
-				e.printStackTrace();
+			if(constraint != null){
+				keys_list.add(makeListKeyPFC(constraint));
+				String alt = "";
+				try {
+					alt = ddl.alterAddConstraint(table_action, keys_list);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if(!alt.equals("")){
+					handleSemanticError(alt);
+					return null;
+				}
+				handleSemanticError("Succesfully add constraint in Table: "+table_action);
 			}
-			if(!alt.equals("")){
-				handleSemanticError(alt);
-				return null;
-			}
-			handleSemanticError("Succesfully add constraint in Table: "+table_action);
+			handleSemanticError("Constraint NULL");
 		} else if (addOrDrop.equals("add") && constraintOrColumn.equals("column")){
 			String id = ctx.ID().getText();
 			String type = ctx.type().getText();
