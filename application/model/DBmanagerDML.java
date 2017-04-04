@@ -857,26 +857,66 @@ public class DBmanagerDML {
 
 	/**
 	 * DELETE
+	 * @throws IOException 
 	**/
 	public void delete(String tableName, ArrayList<ArrayList<String>> tableX){
+		try 
+		{
 		System.out.println("DELETE ");
 		ArrayList<String> list_to_erase = new ArrayList<String>();
 		ArrayList<ArrayList<String>> temp_table = new ArrayList<ArrayList<String>>();
 		temp_table = tableX;
 		temp_table.remove(0); //remove names
 		temp_table.remove(0); //remove types
-		for(ArrayList<String> row : temp_table){
+		for(ArrayList<String> row : temp_table)
+		{
 			list_to_erase.add(row.get(0));
 		}
 		System.out.println(tableName);
 		System.out.println(list_to_erase);
-	}
-	
-	/**
-	 * SELECT
-	**/
-	public void select(){
 		
+		
+		ArrayList<String> rows = new ArrayList<String>();
+		String line ="",reg="";
+		int n=0;
+		boolean borrar=false;
+		BufferedReader file;
+		
+		file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		
+		while ((line = file.readLine())!=null) 
+		{
+			for(String number:list_to_erase)
+			{
+				if(number==Integer.toString(n))
+				{
+					borrar=true;
+				}
+			}
+			
+			if(!borrar)
+			{
+				rows.add(line);
+			}
+			else
+			{
+				borrar=false;
+			}
+			
+			n+=1;
+		}
+		BufferedWriter  file2 = new BufferedWriter(new FileWriter(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
+		for(int i=0;i<rows.size();i++)
+		{
+			file2.write(rows.get(i));
+			file2.newLine();
+		}
+		file2.close();
+		file.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void setActualDatabase(String actualDatabase) {

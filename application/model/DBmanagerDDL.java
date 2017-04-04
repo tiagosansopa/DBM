@@ -207,7 +207,7 @@ public class DBmanagerDDL {
 		        	temp +=s+":"+colTypes.get(temp2)+",";
 		        	temp2++;
 		        }
-		        output.write(temp.substring(0, temp.length()-1));
+		        output.write(temp.substring(0, temp.length()-1)+";");
 		        output.newLine();
 		        output.write("R:0");
 		        output.newLine();
