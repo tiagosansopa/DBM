@@ -1,0 +1,5 @@
+empleado_id:int,sucursal_id:int,asignado_en:date
+R:0
+PK
+pk_us,empleado_id,sucursal_id
+FK

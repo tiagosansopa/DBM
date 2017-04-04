@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 public class DBmanagerDDL {
 
 	
-
+	public DBmanagerDML dML;
 	String actualDatabase = "";
 	
 	public DBmanagerDDL() 
@@ -727,26 +727,23 @@ public class DBmanagerDDL {
 	 * Show COLUMNS and CONSTRAINS from TABLE
 	 * @throws IOException 
 	**/
-	public void showColumns(String tableName) throws IOException{
-		String dir = System.getProperty("user.dir")+File.separator+actualDatabase+File.separator+tableName+".txt";
+	public String showColumns(String tableName) throws IOException{
+		String dir = System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt";
+		System.out.println(dir);
 		File table = new File(dir);
+		System.out.println(table.getName());
+		System.out.println(table.exists());
 		if (actualDatabase.equals(""))
 		{
-			System.out.println("NO DATABASE IN USE");
+			return ("NO DATABASE IN USE");
 		}
-		else if(!table.isFile())
+		else if(!table.exists())
 		{
-			System.out.println("TABLE DOES NOT EXISTS");
+			return ("TABLE DOES NOT EXISTS");
 		}
 		else
 		{
-			BufferedReader br = new BufferedReader (new FileReader (dir));
-			String line;
-
-			while( (line = br.readLine() ) != null)
-			{
-			    System.out.println(line);
-			}
+			return "";
 			
 		}
 	}

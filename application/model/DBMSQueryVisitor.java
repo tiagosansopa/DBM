@@ -39,6 +39,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public DBMSQueryVisitor (DBmanagerDDL ddl, DBmanagerDML dml){
 		System.out.println("DBMSVisitor");
 		this.ddl = ddl;
+		//ddl.dML = dml;
 		this.dml = dml;
 		//Hello Santiago Koch
 		notExpression = 0;
@@ -486,14 +487,34 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	@Override
 	public ArrayList<String> visitShow_columns(DBMSParser.Show_columnsContext ctx){
 		//show columns from ID END_SQL
+		resultX = new ArrayList<ArrayList<String>>();
+		resultX.add(new ArrayList<String>());
+		resultX.add(new ArrayList<String>());
+		
 		System.out.println("visitShow_columns");
 		String id = ctx.getChild(3).getText();
+		String message = "";
 		System.out.println(id);
 		try{
-			ddl.showColumns(id);
+			message = ddl.showColumns(id);
 		} catch(IOException ex) {
 	        ex.printStackTrace();
 	    }
+		if (message.equals("")){
+			//Load info tables
+			try {
+				ArrayList<ArrayList<String>> info = dml.tableTypesAndNames(id);
+				resultX.get(0).addAll(info.get(0)); //REMOVE INDEX
+				resultX.get(1).addAll(info.get(1)); //REMOVE INDEX
+				resultX.addAll(removeIndex(dml.tableToArraylist(ctx.ID().getText())));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			handleSemanticError(message);
+		}
+		
 		return null;
 	}
 	

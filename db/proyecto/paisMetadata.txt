@@ -1,0 +1,6 @@
+id:int,pais:char(20)
+R:0
+PK
+pk_sucursal,id_pais
+FK
+CHECK
