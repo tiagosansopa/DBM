@@ -890,7 +890,7 @@ public class DBmanagerDML {
 		{
 			for(String number:list_to_erase)
 			{
-				if(number==Integer.toString(n))
+				if(n==Integer.parseInt(number))
 				{
 					borrar=true;
 				}

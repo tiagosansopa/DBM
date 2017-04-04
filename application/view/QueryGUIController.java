@@ -201,6 +201,8 @@ public class QueryGUIController {
     		System.out.println(table);
     		if(table != null && table.size() > 2){
     			displayTable(table);
+    		}else{
+    			displayTable(new ArrayList<ArrayList<String>>());
     		}
         }
 	}
