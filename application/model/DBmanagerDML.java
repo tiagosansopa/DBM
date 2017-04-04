@@ -881,6 +881,7 @@ public class DBmanagerDML {
 		ArrayList<String> rows = new ArrayList<String>();
 		line = "";
 		int cont =0;
+		boolean toup = true;
 		boolean update = false;
 		BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
 		
@@ -896,7 +897,7 @@ public class DBmanagerDML {
 			
 			if(!update)
 			{
-				rows.add(line+";");
+				rows.add(line);
 			}
 			else
 			{
@@ -910,13 +911,18 @@ public class DBmanagerDML {
 						if(p==j)
 						{
 							line+=literalList.get(p)+",";
-							break;
+							toup=false;
 						}
 					}
-					line+=regtoupdate[j]+",";	
+					if(toup)
+					{
+						line+=regtoupdate[j]+",";	
+					}
+					toup=true;
 				}
-				line=line.substring(0,line.length()-1)+";";
-				rows.add(line);
+				line=line.substring(0,line.length()-1);
+				rows.add(line+";");
+				line="";
 				update=false;
 			}
 			
