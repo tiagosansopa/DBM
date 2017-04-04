@@ -3,7 +3,9 @@ package application.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import application.main;
@@ -84,6 +86,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		String create = ddl.createDatabase(id);
 		if(!create.equals("")){
 			handleSemanticError(create);
+			return null;
 		}
 		handleSemanticError("Succesfully created database: "+id);
 		return null; //errors
@@ -100,6 +103,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		String alter = ddl.alterDatabase(id_number_1, id_number_2);
 		if(!alter.equals("")){
 			handleSemanticError(alter);
+			return null;
 		}
 		handleSemanticError("Succesfully altered database with new name: "
 							+id_number_2);
@@ -112,16 +116,25 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		//drop database ID END_SQL
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
+		int registers = 0;
 		System.out.println(id);//FUNCTION SANTIAGO
+		control.setDetails("Database: "+id+" with "+registers+" registers");
 		boolean shouldWeDelete = control.handleDelete();
 		String drop = "";
 		System.out.println(shouldWeDelete);
 		if(shouldWeDelete == true){
 			drop = ddl.killDatabase(id);
 		}
-		drop = "Not deleted";
-		if(!drop.equals("")){
+		else{
+			drop = "Not deleted";
+		}
+		if (drop.equals("Not deleted")){
+			handleSemanticError("Did not delete database: "+id);
+			return null;
+		}
+		else if(!drop.equals("")){
 			handleSemanticError(drop);
+			return null;
 		}
 		handleSemanticError("Succesfully deleted database: "+id);
 		return null;
@@ -147,6 +160,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		String using = ddl.useDatabase(id);
 		if(!using.equals("")){
 			handleSemanticError(ddl.useDatabase(id));
+			return null;
 		}
 		handleSemanticError("Using databse: "+id);
 		handleSemanticError(dml.useDatabase(id));
@@ -254,6 +268,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		String cTable = ddl.createTable(table_id, columns_list, types_list,keys_list);
 		if (!cTable.equals("")){
 			handleSemanticError(cTable);
+			return null;
 		}
 		handleSemanticError("Succesfully created Table: "+table_id);
 		return null;
@@ -372,7 +387,10 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			ConstraintAtContext constraint = ctx.constraintAt();
 			keys_list.add(makeListKeyPFC(constraint));
 		}
-		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
+		else if (addOrDrop.equals("add") && constraintOrColumn.equals("column")){
+			String id = ctx.ID().getText();
+			String type = ctx.type().getText();
+			String columnName = id+":"+type;
 			ConstraintAtContext constraint = ctx.constraintAt();
 			keys_list.add(makeListKeyPFC(constraint));
 			Integer constraints_number = ctx.comma_constraint_constraintAt_k().getChildCount()/3;
@@ -538,8 +556,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		
 		ArrayList<String> order_by_id_list = new ArrayList<String>();
 		ArrayList<Integer> order_by_ad_list = new ArrayList<Integer>();
-		
 		// * OR multiple columns
+		boolean orderBy = false;
 		if(ctx.select_k_id().KL() != null){
 			columns_list.add("*");
 			System.out.println("*");
@@ -600,6 +618,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		if(ctx.order_by().getChildCount() > 0){
 			//(order by ID (asc | desc) comma_id_ad_k)?
 			System.out.println("ORDER BY");
+			orderBy = true;
 			order_by_id_list.add(ctx.order_by().ID().getText());
 			if(ctx.order_by().asc() != null){
 				order_by_ad_list.add(1);
@@ -623,6 +642,10 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 					System.out.println(order_by_ad_list.get(i+1));
 				}
 			}
+			
+			executeOrderBy(order_by_id_list,order_by_ad_list);
+			System.out.println(order_by_id_list);
+			System.out.println(order_by_ad_list);
 		}
 		//ORDENAR resultX
 		return null;
@@ -649,6 +672,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				current_rowX.addAll(row);
 				makeX(current_rowX, current_table_index+1);
 			}
+
 		} else {
 			if(expX != null){
 				if(isExp(current_row)){
@@ -668,6 +692,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		}
 		return false;
 	}
+	
+	private void executeOrderBy(ArrayList<String> order_by_id_list, ArrayList<Integer> order_by_ad_list) {
+		
+	}
+
 	
 	public ArrayList<String> makeOr(ArrayList<String> row1, ArrayList<String> row2){
 		if(row1 == null && row2 == null){
