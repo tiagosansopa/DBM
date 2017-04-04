@@ -1,5 +1,5 @@
 id:int,nombre:char(50),cumple:date,universidad:char(50),curso:char(50)
-R:5
+R:6
 PK
 pk_id,id
 FK
