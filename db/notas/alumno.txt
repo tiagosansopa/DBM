@@ -1,5 +1,5 @@
-1,sosa,DB,UVG;
-2,koch,DB,UVG;
-3,uim,DB,UVG;
-4,luli,DB,UVG;
-5,maria,DB,UVG;
+1,sosa,1994-10-08,UVG,DB;
+2,koch,1995-11-08,UVG,DB;
+3,uim,1995-09-03,UVG,DB;
+4,luli,1994-09-08,UVG,DB;
+5,maria,1993-04-02,UVG,DB;

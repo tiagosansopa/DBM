@@ -1,5 +1,5 @@
 id_universidad:char(50),direccion:char(50)
-R:0
+R:1
 PK
 pk_id,id_universidad
 FK
