@@ -347,26 +347,37 @@ public class DBmanagerDDL {
 	/**
 	 * rename table (on) in database in (on) use
 	**/
-	public boolean alterTableRename(String oldTableName, String newTableName){
+	/**
+	 * rename table (on) in database in (on) use
+	**/
+	public String  alterTableRename(String oldTableName, String newTableName){
 		
 		File toBeChanged = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+oldTableName+".txt");
 		File changed = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+newTableName+".txt");
 		
+		File toBeChangedMeta = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+oldTableName+"Metadata.txt");
+		File changedMeta = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+newTableName+"Metadata.txt");
+		
 		if (toBeChanged.exists()) 
 		{
-			try
-			{
+			try {
 				toBeChanged.renameTo(changed);
-			} 
-			catch(SecurityException se)
-			{
+			} catch(SecurityException se){
+			
 			}
+			
+			if(toBeChangedMeta.exists()){
+				try{
+					toBeChangedMeta.renameTo(changedMeta);
+				} catch(SecurityException se){
+					
+				}
+			}
+			
 			actualDatabase = changed.getName();
-			return true;
-		}
-		else{
-			System.out.println("TABLE " + toBeChanged.getName() + " DOES NOT EXISTS");
-			return false;
+			return "";
+		} else {
+			return "Table " + toBeChanged.getName() + " does not exists";
 		}
 	}
 	

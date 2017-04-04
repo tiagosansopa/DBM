@@ -293,7 +293,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			String id_number_1 = ctx.getChild(2).getText();
 			String id_number_2 = ctx.getChild(5).getText();
 			System.out.println("Bueno, id numero 1 es "+id_number_1+" y id numero 2 es "+id_number_2);
-			ddl.alterTableRename(id_number_1,id_number_2);
+			String alt = ddl.alterTableRename(id_number_1,id_number_2);
+			if(!alt.equals("")){
+				handleSemanticError(alt);
+				return null;
+			}
+			handleSemanticError("Succesfully rename Table: "+id_number_1+" to "+ id_number_2);
 		} else {
 			//action
 			visit(ctx.action());
@@ -478,14 +483,18 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			}
 		}
 		System.out.println(literal_list);
-		try {
-			String insertT = dml.insertInto(id, order_list, literal_list);
-			if(!insertT.equals("")){
-				handleSemanticError(insertT);
+		if(!order_list.isEmpty()){
+			try {
+				String insertT = dml.insertInto(id, order_list, literal_list);
+				if(!insertT.equals("")){
+					handleSemanticError(insertT);
+				}
+				handleSemanticError("Succesfully inserted values");
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			handleSemanticError("Succesfully inserted values");
-		} catch (IOException e) {
-			e.printStackTrace();
+		} else {
+			
 		}
 		return null;
 	}
@@ -597,8 +606,6 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		for(String table_name : tables_list){
 			try {
 				ArrayList<ArrayList<String>> info = dml.tableTypesAndNames(table_name);
-				info.get(0).remove(0);
-				info.get(1).remove(0);
 				resultX.get(0).addAll(info.get(0)); //REMOVE INDEX
 				resultX.get(1).addAll(info.get(1)); //REMOVE INDEX
 			} catch (IOException e) {
