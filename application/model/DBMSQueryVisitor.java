@@ -18,6 +18,7 @@ import application.model.DBMSParser.ExpContext;
 
 public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public StringBuffer errors = new StringBuffer("\n Execution \n");
+	public StringBuffer tables = new StringBuffer(" \n TABLES\n ");
 	//public StringBuffer outputText = new StringBuffer("");
 	public Integer n = 0;
 	public String table_action;
@@ -148,7 +149,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public ArrayList<String> visitShow_database(DBMSParser.Show_databaseContext ctx){
 		//show databases END_SQL
 		System.out.println("visitShow_database");
-		ddl.showDatabases();
+		handleSemanticError(ddl.showDatabases());
+		
 		return null;
 	}
 	
@@ -462,8 +464,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	@Override
 	public ArrayList<String> visitShow_tables(DBMSParser.Show_tablesContext ctx){
 		//show tables END_SQL
-		System.out.println("visitShow_tables");
-		ddl.showTables();
+		handleTables();
+		//control.setOutput(tables);
+		handleSemanticError(tables.toString());
 		return null;
 	}
 	
@@ -1287,6 +1290,34 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		errors.append("["+n+"]: "+message+"\n \n");
 		n++;
 	}
+	public void handleTables(){
+		ArrayList<String> names = dml.storeNames();
+		for (String nameOfTable: names){
+			tableX = new ArrayList<ArrayList<ArrayList<String>>>();
+			try {
+				tableX.add(removeIndex(dml.tableToArraylist(nameOfTable)));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			tables.append(
+					"Table Name: "
+					+ nameOfTable+"\n");
+			for (ArrayList<ArrayList<String>> table: tableX){
+				for (ArrayList<String> row: table){
+					tables.append(row+"\n");
+					
+				}
+			}
+			tables.append("\n");
+		}
+		System.out.println(tables);
+	}
+	public void handleDatabases(){
+		ArrayList<String> names = dml.storeDatabases();
+		System.out.println(names);
+	}
+	
 	public void setController (QueryGUIController control){
 		this.control = control;
 	}

@@ -146,18 +146,23 @@ public class DBmanagerDDL {
 	/**
 	 * Show all existing databases  
 	**/
-	public void showDatabases(){
-	
+	public String showDatabases(){
+		String name ="Databases: \n";
 		System.out.println("Actual Path for Databases is : " + System.getProperty("user.dir")+File.separator+"db"+File.separator);
 		File[] files = new File(System.getProperty("user.dir")+File.separator+"db").listFiles();
-		
+		System.out.print(files[0].getName());
+		int contador = 0;  
 		for (File file : files) 
 		{
+			contador++;
+			System.out.println(file.getName());
 			if (file.isDirectory()) 
 			{
-				System.out.println(file.getName());
+				
+				name = name+"\t["+contador+"] "+(file.getName()+"\n");
 			}
 		}
+		return name;
 	}
 	
 	/*

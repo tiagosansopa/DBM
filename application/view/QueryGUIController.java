@@ -61,6 +61,7 @@ public class QueryGUIController {
 	
 	@FXML
 	private TableView<ObservableList<String>> dataTable = new TableView<ObservableList<String>>();
+	private ArrayList<String> tables_id = new ArrayList<String>();
 	
 	private main mainApp;
 	
@@ -77,6 +78,10 @@ public class QueryGUIController {
 		ddl = new DBmanagerDDL();
 		dml = new DBmanagerDML();
 	}
+	public void showTables(){
+		
+	}
+	
 	public void displayTable(ArrayList<ArrayList<String>> rows){
 		csvData.clear();
 		ArrayList<String> columnNames = rows.get(0);
@@ -206,6 +211,9 @@ public class QueryGUIController {
 	}
 	public void setDetails(String details){
 		this.details = details;
+	}
+	public void setOutput(StringBuffer tables){
+		outputArea.appendText(tables.toString());
 	}
 	
 	public  void setMainApp(main app){

@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class DBmanagerDML {
 	
@@ -971,6 +973,23 @@ public class DBmanagerDML {
 			System.out.println(actualDatabase + " is not an Float");
 			return false;
 		}
+	}
+	public ArrayList<String> storeNames(){
+		//BufferedReader reader = null;
+		File dir = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator);
+		ArrayList<String> nameTables = new ArrayList<String>();
+		List<String> list = Arrays.asList(dir.list(
+		   new FilenameFilter() {
+		      @Override public boolean accept(File dir, String name) {
+		         return (name.endsWith(".txt")&&(!name.contains("Metadata")));
+		      }
+		   }
+		));
+		for(String names: list){
+			String currentName = names.replace(".txt", "");
+			nameTables.add(currentName);
+		}
+		return nameTables;
 	}
 	
 	/**
