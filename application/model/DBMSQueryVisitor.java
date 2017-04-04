@@ -370,8 +370,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				 key.type = "ch";
 				 key.exp = constraintAt.checks().exp().getText();
 			 }
+			return key;
 		}
-		return key;
+		return null;
 	}
 	
 	public ArrayList<String> visitAction(DBMSParser.ActionContext ctx){
@@ -384,6 +385,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		String constraintOrColumn = ctx.getChild(1).getText().toLowerCase();
 		ArrayList<KeyPFC> keys_list = new ArrayList<KeyPFC>();
 		if(addOrDrop.equals("drop") && constraintOrColumn.equals("constraint")){
+			System.out.println("DROP CONSTRAINT");
 			// Llamar a la funcion de Santiago borrar constraint
 			String constraint = ctx.getChild(2).getText();
 			String alt = "";
@@ -393,6 +395,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				e.printStackTrace();
 			}
 		} else if (addOrDrop.equals("drop") && constraintOrColumn.equals("column")){
+			System.out.println("DROP COLUMN");
 			// LLamar a la funcion de Santiago borrar columna
 			String column = ctx.getChild(2).getText();
 			String alt = "";
@@ -407,6 +410,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			}
 			handleSemanticError("Succesfully drop column" + column + " in Table: "+table_action);
 		} else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
+			System.out.println("ADD CONSTRAINT");
 			ConstraintAtContext constraint = ctx.constraintAt();
 			if(constraint != null){
 				keys_list.add(makeListKeyPFC(constraint));
@@ -424,6 +428,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			}
 			handleSemanticError("Constraint NULL");
 		} else if (addOrDrop.equals("add") && constraintOrColumn.equals("column")){
+			System.out.println("ADD COLUMN");
 			String id = ctx.ID().getText();
 			String type = ctx.type().getText();
 			String columnName = id+":"+type;
@@ -437,19 +442,19 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 						 keys_list.add(makeListKeyPFC(constraintAt));
 					}
 				}
-				String alt = "";
-				try {
-					alt = ddl.alterAddColumn(table_action, columnName, keys_list);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if(!alt.equals("")){
-					handleSemanticError(alt);
-					return null;
-				}
-				handleSemanticError("Succesfully add column in Table: "+table_action);
 			}
+			String alt = "";
+			try {
+				alt = ddl.alterAddColumn(table_action, columnName, keys_list);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(!alt.equals("")){
+				handleSemanticError(alt);
+				return null;
+			}
+			handleSemanticError("Succesfully add column in Table: "+table_action);
 		}
 		return null;
 	}

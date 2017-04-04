@@ -425,20 +425,22 @@ public class DBmanagerDDL {
 				}
 				else if(primarykey)
 				{
-					if(newprimarykey)
+					if(newprimarykey && !constraints.isEmpty())
 					{
 						for(KeyPFC k : constraints)
 				        {
-				        	if(k.type.equals("pk"))
-				        	{
-				        		temp+=k.id+",";
-				        		for(String columna: k.columns_list_1)
-				        		{
-				        			temp+=columna+",";
-				        		}
-				        		rows.add(temp.substring(0, temp.length()-1));
-				        		temp = "";
-				        	}
+							if(k != null){
+					        	if(k.type.equals("pk"))
+					        	{
+					        		temp+=k.id+",";
+					        		for(String columna: k.columns_list_1)
+					        		{
+					        			temp+=columna+",";
+					        		}
+					        		rows.add(temp.substring(0, temp.length()-1));
+					        		temp = "";
+					        	}
+							}
 				        }
 						newprimarykey=false;
 					}
