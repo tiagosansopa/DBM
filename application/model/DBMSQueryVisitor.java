@@ -468,6 +468,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		System.out.println("visitDrop_table");
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
+		ddl.dropTable(id);
 		return null;
 	}
 	

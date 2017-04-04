@@ -31,6 +31,20 @@ public class DBmanagerDDL {
 		return actualDatabase;
 	}
 	
+	public String dropTable(String nameTable){
+		File theDir = new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+nameTable+".txt");
+		File theDirMeta= new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+nameTable+"Metadata.txt");;
+		if(theDir.exists()){
+			theDir.delete();
+			if(theDirMeta.exists()){
+				theDirMeta.delete();
+			}
+			return "";
+		} else {
+			return "Table " + nameTable + " DOESNT EXIST";
+		}
+	}
+	
 	
 	/**
 	 * Create Database given name
