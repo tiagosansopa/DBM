@@ -20,6 +20,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public StringBuffer errors = new StringBuffer("\n Execution \n");
 	//public StringBuffer outputText = new StringBuffer("");
 	public Integer n = 0;
+	public String table_action;
 	public DBmanagerDDL ddl;
 	public DBmanagerDML dml;
 	public Integer notExpression;
@@ -41,6 +42,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		//Hello Santiago Koch
 		notExpression = 0;
 		notCompareExpr = false;
+		table_action = "";
 	}
 	
 	@Override 
@@ -301,6 +303,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			handleSemanticError("Succesfully rename Table: "+id_number_1+" to "+ id_number_2);
 		} else {
 			//action
+			table_action = ctx.getChild(2).getText();
 			visit(ctx.action());
 		}
 		return null;
@@ -370,29 +373,52 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	}
 	
 	public ArrayList<String> visitAction(DBMSParser.ActionContext ctx){
+		/*action
+    	:   add column ID type (constraint constraintAt comma_constraint_constraintAt_k )?                
+    	|   add constraint constraintAt
+    	|   drop column ID
+    	|   drop constraint ID*/
 		String addOrDrop = ctx.getChild(0).getText().toLowerCase();
 		String constraintOrColumn = ctx.getChild(1).getText().toLowerCase();
 		ArrayList<KeyPFC> keys_list = new ArrayList<KeyPFC>();
 		if(addOrDrop.equals("drop") && constraintOrColumn.equals("constraint")){
 			// Llamar a la funcion de Santiago borrar constraint
-			
-			System.out.println("Constraint a borrar: "
-					+ ctx.ID().getText()
-					);
-			ctx.ID().getText();
-		}
-		else if (addOrDrop.equals("drop") && constraintOrColumn.equals("column")){
+			String constraint = ctx.getChild(2).getText();
+			String alt = "";
+			try{
+				alt = ddl.alterDropConstraint(table_action, constraint);
+			} catch (IOException e){
+				e.printStackTrace();
+			}
+		} else if (addOrDrop.equals("drop") && constraintOrColumn.equals("column")){
 			// LLamar a la funcion de Santiago borrar columna
-			System.out.println("Columna a borrar: "
-					+ ctx.ID().getText()
-					);
-			ctx.ID().getText();
-		}
-		else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
+			String column = ctx.getChild(2).getText();
+			String alt = "";
+			try {
+				alt = ddl.alterDropColumn(table_action, column);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(!alt.equals("")){
+				handleSemanticError(alt);
+				return null;
+			}
+			handleSemanticError("Succesfully drop column" + column + " in Table: "+table_action);
+		} else if (addOrDrop.equals("add") && constraintOrColumn.equals("constraint")){
 			ConstraintAtContext constraint = ctx.constraintAt();
 			keys_list.add(makeListKeyPFC(constraint));
-		}
-		else if (addOrDrop.equals("add") && constraintOrColumn.equals("column")){
+			String alt = "";
+			try {
+				alt = ddl.alterAddConstraint(table_action, keys_list);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(!alt.equals("")){
+				handleSemanticError(alt);
+				return null;
+			}
+			handleSemanticError("Succesfully add constraint in Table: "+table_action);
+		} else if (addOrDrop.equals("add") && constraintOrColumn.equals("column")){
 			String id = ctx.ID().getText();
 			String type = ctx.type().getText();
 			String columnName = id+":"+type;
@@ -405,6 +431,18 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 					 keys_list.add(makeListKeyPFC(constraintAt));
 				}
 			}
+			String alt = "";
+			try {
+				alt = ddl.alterAddColumn(table_action, columnName, keys_list);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(!alt.equals("")){
+				handleSemanticError(alt);
+				return null;
+			}
+			handleSemanticError("Succesfully add column in Table: "+table_action);
 			
 		}
 		return null;
