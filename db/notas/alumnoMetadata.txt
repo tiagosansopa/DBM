@@ -1,9 +1,0 @@
-id:int,nombre:char(50),universidad:char(50),curso:char(50)
-R:6
-PK
-pk_id,id
-FK
-fk_universidad,{,universidad,},universidades,{,id_universidad,}
-fk_curso,{,curso,},cursos,{,id_curso,}
-CHECK
-id<30

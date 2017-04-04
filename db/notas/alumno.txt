@@ -1,5 +1,0 @@
-1,sosa,DB,UVG;
-2,koch,DB,UVG;
-3,uim,DB,UVG;
-4,luli,DB,UVG;
-5,maria,DB,UVG;

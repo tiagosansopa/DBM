@@ -186,7 +186,8 @@ public class QueryGUIController {
             outputArea.setText(" No Syntactic Errors \n ");
             DBMSQueryVisitor qVisitor = new DBMSQueryVisitor(ddl, dml);
             qVisitor.setController(this);
-            ArrayList<ArrayList<String>> table = qVisitor.visit(tree);
+            qVisitor.visit(tree);
+            ArrayList<ArrayList<String>> table = qVisitor.resultX;
             outputArea.appendText(qVisitor.errors.toString());
     		String fileLocation= (System.getProperty("user.dir")+File.separator+"db");
     		displayTreeView(fileLocation);
