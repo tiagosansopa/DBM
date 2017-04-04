@@ -238,47 +238,139 @@ public class DBmanagerDML {
 		 * Reviso que FOREING KEY exista  (ya sea la referencia o el registro)
 		 * 
 		 */
-		/*
 		
-		int cont=0;
-		for(ArrayList<String> fkActual:FKs)
+		System.out.println(FKs);
+		
+		for(ArrayList<String> key : FKs)
 		{
-			for(int i=2;i<fkActual.size();i++)
+			ArrayList<String> fklocalColumnNames = new ArrayList<String>();
+			ArrayList<String> fkrefColumnNames = new ArrayList<String>();
+			ArrayList<Integer> fklocalColumnNumber = new ArrayList<Integer>();
+			ArrayList<Integer> fkrefColumnNumber = new ArrayList<Integer>();
+			ArrayList<String> fklocalColumnValue = new ArrayList<String>();
+			
+			int indexkey = 0;
+			String tablerefname = "";
+			
+			//Obtengo las columnas del constraint escrito en el archivo
+			for(int i=2;i<key.size();i++)
 			{
-				while(!fkActual.get(i).equals("}"))
+				if(!key.get(i).equals("}"))
 				{
-					for(int j=0; i<columnsAndTypes.length;i++)
-					{
-						String[] typeAndName = columnsAndTypes[i].split(":");
-						if(!typeAndName[0].equals(fkActual.get(i)))
-						{
-							
-						}
+					fklocalColumnNames.add(key.get(i));
+				}
+				else if(key.get(i).equals("}"))
+				{
+					indexkey=i;
+					break;
+				}
+			}
+			tablerefname=key.get(indexkey+1);
+			for(int i=(indexkey+2);i<key.size();i++)
+			{
+				if(!key.get(i).equals("}"))
+				{
+					if(!key.get(i).equals("{"))
+					{	
+						fkrefColumnNames.add(key.get(i));
 					}
-					
 				}
-			}
-		}
-		
-		ArrayList<String> colLocales = new ArrayList<String>();
-		ArrayList<String> colExternas = new ArrayList<String>();
-		
-		for(int i=0; i<columnsAndTypes.length;i++)
-		{
-			String[] nameAndType = columnsAndTypes[i].split(":");
-			for(int s=1;s<FK.size();s++)
-			{
-				if(nameAndType[0].equals(PK.get(s)))
+				else if(key.get(i).equals("}"))
 				{
-					String[] newRegSplit = newRegistry.split(",");
-					pkValues.add(newRegSplit[i]);
-					pkColumns.add(i);
+					break;
 				}
 			}
-		}
+			
+			//buscar los indices a los que corresponden
+			
+			BufferedReader tablaLocal = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+"Metadata.txt"), Charset.forName("UTF-8")));
+			BufferedReader tablaRef = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tablerefname+"Metadata.txt"), Charset.forName("UTF-8")));
+			
+			String[] nombreytipo1= tablaLocal.readLine().split(",");
+			String[] nombreytipo2= tablaRef.readLine().split(",");
+			
+			for(int i=0; i<nombreytipo1.length;i++)
+			{
+				String[] nameAndType = nombreytipo1[i].split(":");
+				for(int s=0;s<fklocalColumnNames.size();s++)
+				{
+					System.out.println("nombre locales "+nameAndType[0]+" nombre almacenado "+fklocalColumnNames.get(s)+nameAndType[0].equals(fklocalColumnNames.get(s))+i); 
+					if(nameAndType[0].equals(fklocalColumnNames.get(s)))
+					{
+						fklocalColumnNumber.add(i);
+					}
+				}
+			}
+			
+			for(int i=0; i<nombreytipo2.length;i++)
+			{
+				String[] nameAndType = nombreytipo2[i].split(":");
+				for(int s=0;s<fkrefColumnNames.size();s++)
+				{
+					if(nameAndType[0].equals(fkrefColumnNames.get(s)))
+					{
+						fkrefColumnNumber.add(i);
+					}
+				}
+			}
+			
+			String[] newRegSplit = newRegistry.split(",");
+			
+			for(Integer n :fklocalColumnNumber)
+			{
+				fklocalColumnValue.add(newRegSplit[n]);
+			}
+			
+			System.out.println("Columnas locales "+fklocalColumnNames+ " en columnas "+fklocalColumnNumber+ " con valores "+fklocalColumnValue+ " referencian "+ fkrefColumnNames + " en columnas" + fkrefColumnNumber+ " en tabla "+ tablerefname);
+			
+			
+			
+			//Cargo la tabla completa a revisar
+			
+			ArrayList<ArrayList<String>> refArrayTable = new ArrayList<ArrayList<String>>();
+			ArrayList<String> refRegistry = new ArrayList<String>();
+			
+			BufferedReader refTable = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tablerefname+".txt")));
+
+			while ((line = refTable.readLine()) != null) 
+			{
+				System.out.println(line);
+				line = line.substring(0, line.length()-1);
+				System.out.println(line);
+				String[] columns = line.split(",");
+				
+				for(int i=0; i<columns.length;i++)
+				{
+					refRegistry.add(columns[i]);
+				}
+				refArrayTable.add(refRegistry);
+				refRegistry = new ArrayList<String>();
+			}	
 		
-		System.out.println("FK "+pkValues+" EN COLUMNA " + pkColumns );
-		*/
+			//Ahora por cada registro reviso si se repite. Si se repite me salgo y digo donde se repitio. Si no continuo
+			boolean siexiste = false;
+			int numFK = 0;
+			for(ArrayList<String> registro:refArrayTable)
+			{
+				for(Integer n:fkrefColumnNumber)
+				{
+					System.out.println("REGISTRO REF "+  registro.get(n)+ " REGISTRO LOCAL " + fklocalColumnValue.get(numFK));
+					if(registro.get(n).equals(fklocalColumnValue.get(numFK)))
+					{
+						System.out.println("FK local con valor "+fklocalColumnValue.get(numFK)+ " existe = " +registro.get(n));
+						siexiste=true;
+					}
+					numFK+=1;
+				}
+				numFK=0;
+			}
+			
+			if(siexiste==false)
+			{
+				return "FK "+ key + " no existe referencia en tabla contenedora";
+			}
+			
+		}
 		
 		
 		/*
