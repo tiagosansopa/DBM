@@ -34,10 +34,12 @@ public class DBmanagerDML {
 		if (toBeUsed.exists())
 		{
 			actualDatabase = toBeUsed.getName();
+			dbMetadata(databaseName);
 			return "";
 		}
 		else
 		{
+			dbMetadata(databaseName);
 			return "DATABASE " + toBeUsed.getName() + " DOES NOT EXISTS";
 		}
 	} 
@@ -443,7 +445,7 @@ public class DBmanagerDML {
 		}
 		file2.close();
 		output.close();
-
+		dbMetadata(actualDatabase);
 		return "";
 		
 	}
@@ -832,7 +834,7 @@ public class DBmanagerDML {
 		}
 		file2.close();
 		output.close();
-
+		dbMetadata(actualDatabase);
 		return "";
 		
 	
@@ -939,6 +941,7 @@ public class DBmanagerDML {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		dbMetadata(actualDatabase);
 	}
 
 	/**
@@ -1003,6 +1006,7 @@ public class DBmanagerDML {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		dbMetadata(actualDatabase);
 	}
 
 	public void setActualDatabase(String actualDatabase) {
@@ -1149,6 +1153,45 @@ public class DBmanagerDML {
 		}	
 		reader.close();
 		return table;
+	}
+	
+	public String dbMetadata(String nameDatabase)
+	{
+		try 
+		{
+		ArrayList<String> rows = new ArrayList<String>();
+		
+		File directory = new File(System.getProperty("user.dir")+File.separator+"db"+nameDatabase);
+		File[] files = directory.listFiles();
+		
+		BufferedWriter  writer = new BufferedWriter(new FileWriter(directory));
+		int regCount=0;
+        
+		if(null!=files)
+        {
+            for(int i=0; i<files.length; i++)
+            {
+                if(files[i].isFile()) 
+                {
+                	BufferedReader file = new BufferedReader(new FileReader(files[i]));
+                	String newRegistry = "";
+                	while ((newRegistry = file.readLine())!=null) 
+            		{
+            			regCount+=1;
+            		}
+                	writer.write("Table "+files[i].getName()+ " has "+regCount);
+                	writer.newLine();
+                	regCount=0;
+                }
+            }
+        }
+		writer.close();
+	
+		}catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
 	}
 	
 	

@@ -39,6 +39,7 @@ public class DBmanagerDDL {
 			if(theDirMeta.exists()){
 				theDirMeta.delete();
 			}
+			dbMetadata(actualDatabase);
 			return "";
 		} else {
 			return "Table " + nameTable + " DOESNT EXIST";
@@ -63,12 +64,53 @@ public class DBmanagerDDL {
 			{
 			}        
 			actualDatabase = theDir.getName();
+			dbMetadata(actualDatabase);
 			return "";
 		}
 		else{
 			return "DATABASE " + theDir.getName() + " ALREADY EXISTS";
 		}
 	}
+	
+	public String dbMetadata(String nameDatabase)
+	{
+		try 
+		{
+		ArrayList<String> rows = new ArrayList<String>();
+		
+		File directory = new File(System.getProperty("user.dir")+File.separator+"db"+nameDatabase);
+		File[] files = directory.listFiles();
+		
+		BufferedWriter  writer = new BufferedWriter(new FileWriter(directory));
+		int regCount=0;
+        
+		if(null!=files)
+        {
+            for(int i=0; i<files.length; i++)
+            {
+                if(files[i].isFile()) 
+                {
+                	BufferedReader file = new BufferedReader(new FileReader(files[i]));
+                	String newRegistry = "";
+                	while ((newRegistry = file.readLine())!=null) 
+            		{
+            			regCount+=1;
+            		}
+                	writer.write("Table "+files[i].getName()+ " has "+regCount);
+                	writer.newLine();
+                	regCount=0;
+                }
+            }
+        }
+		writer.close();
+	
+		}catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 	
 	/**
 	 * Rename given database
@@ -377,6 +419,7 @@ public class DBmanagerDDL {
 			}
 			
 			actualDatabase = changed.getName();
+			dbMetadata(actualDatabase);
 			return "";
 		} else {
 			return "Table " + toBeChanged.getName() + " does not exists";
@@ -587,7 +630,7 @@ public class DBmanagerDDL {
 			}
 			file2.close();
 			
-			
+			dbMetadata(actualDatabase);
 			return "";
 		}
 		
@@ -616,6 +659,8 @@ public class DBmanagerDDL {
 				}
 			}
 			
+			System.out.println("COLUMNA A BORRAR "+ columnToDrop + " = "+indiceDeColumna);
+			
 			ArrayList<String> rows = new ArrayList<String>();
 			
 			BufferedReader file = new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+File.separator+"db"+File.separator+actualDatabase+File.separator+tableName+".txt")));
@@ -641,7 +686,7 @@ public class DBmanagerDDL {
 				file2.newLine();
 			}
 			file2.close();
-		
+			dbMetadata(actualDatabase);
 			return "";
 		}
 	
@@ -669,7 +714,7 @@ public class DBmanagerDDL {
 			}
 			file2.close();
 		
-		
+		dbMetadata(actualDatabase);
 		return "";
 	}
 	
@@ -743,6 +788,7 @@ public class DBmanagerDDL {
 		}
 		else
 		{
+			dbMetadata(actualDatabase);
 			return "";
 			
 		}
