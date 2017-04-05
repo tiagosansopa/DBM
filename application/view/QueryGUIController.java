@@ -203,7 +203,7 @@ public class QueryGUIController {
     		displayTreeView(fileLocation);
     		currentDatabase.setText(ddl.getActualDatabase());
     		System.out.println(table);
-    		if(table != null && table.size() > 2){
+    		if(qVisitor.showX){
     			displayTable(table);
     		}else{
     			displayTable(new ArrayList<ArrayList<String>>());

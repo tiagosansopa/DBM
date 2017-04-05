@@ -1,5 +1,0 @@
-id:int,direccion:char(40),abierta_en:dat,nombre:char(10);
-PK
-pk_sucursal,id
-FK
-CHECK

@@ -1,6 +1,0 @@
-id:int,nombre:char(20),comision:float
-R:1
-PK
-FK
-CHECK
-comision<=10.0

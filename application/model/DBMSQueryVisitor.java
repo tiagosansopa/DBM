@@ -19,32 +19,36 @@ import application.model.DBMSParser.ExpContext;
 public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public StringBuffer errors = new StringBuffer("\n Execution \n");
 	public StringBuffer tables = new StringBuffer(" \n TABLES\n ");
-	//public StringBuffer outputText = new StringBuffer("");
 	public Integer n = 0;
 	public String table_action;
+	QueryGUIController control = null;
+	
 	public DBmanagerDDL ddl;
 	public DBmanagerDML dml;
+	
 	public Integer notExpression;
 	public boolean notCompareExpr;
-	QueryGUIController control = null;
+	
+	
 	public ArrayList<String> tables_list;
 	public ArrayList<String> columns_list;
+	public ArrayList<Integer> columns_list_index;
 	public ExpContext expX;
 	public ArrayList<String> rowX;
 	public ArrayList<String> columnX;
 	public ArrayList<String> typeX;
 	public ArrayList<ArrayList<String>> resultX;
 	public ArrayList<ArrayList<ArrayList<String>>> tableX;
+	public boolean showX;
 	
 	public DBMSQueryVisitor (DBmanagerDDL ddl, DBmanagerDML dml){
 		System.out.println("DBMSVisitor");
 		this.ddl = ddl;
-		//ddl.dML = dml;
 		this.dml = dml;
-		//Hello Santiago Koch
 		notExpression = 0;
 		notCompareExpr = false;
 		table_action = "";
+		showX = false;
 	}
 	
 	@Override 
@@ -57,9 +61,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public ArrayList<String> visitSql_executable(DBMSParser.Sql_executableContext ctx){
 		System.out.println("visitSql_Executable");
 		if(ctx.sql_dml() != null){
-			System.out.println("sql_dml"); // <- noten como la gramatica nos permite saber que onda
+			System.out.println("sql_dml");
 		} else {
-			System.out.println("sql_ddl"); //Yep, cool. Esto no lo tenía la de Hsin
+			System.out.println("sql_ddl");
 		}
 		return visitChildren(ctx);
 	}
@@ -86,7 +90,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		//create database ID END_SQL
 		System.out.println("visitCreate_database");
 		String id = ctx.getChild(2).getText();
-		System.out.println(id); //Santiago function
+		System.out.println(id);
 		String create = ddl.createDatabase(id);
 		if(!create.equals("")){
 			handleSemanticError(create);
@@ -111,7 +115,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		}
 		handleSemanticError("Succesfully altered database with new name: "
 							+id_number_2);
-		return null; //Errors :)
+		return null; 
 	}
 	
 	//DROP DATABASE
@@ -121,7 +125,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		System.out.println("visitDrop_database");
 		String id = ctx.getChild(2).getText();
 		int registers = 0;
-		System.out.println(id);//FUNCTION SANTIAGO
+		System.out.println(id);
 		control.setDetails("Database: "+id+" with "+registers+" registers");
 		boolean shouldWeDelete = control.handleDelete();
 		String drop = "";
@@ -151,7 +155,6 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		//show databases END_SQL
 		System.out.println("visitShow_database");
 		handleSemanticError(ddl.showDatabases());
-		
 		return null;
 	}
 	
@@ -163,13 +166,12 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		String id = ctx.getChild(2).getText();
 		System.out.println(id);
 		String using = ddl.useDatabase(id);
+		dml.useDatabase(id);
 		if(!using.equals("")){
 			handleSemanticError(ddl.useDatabase(id));
 			return null;
 		}
 		handleSemanticError("Using database: "+id);
-		dml.useDatabase(id);
-		//handleSemanticError(dml.useDatabase(id));
 		return null;
 	}
 	
@@ -285,15 +287,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	public ArrayList<String> visitAlter_table(DBMSParser.Alter_tableContext ctx){
 		//alter table ID rename to ID END_SQL
 	    //|   alter table ID action comma_action_k END_SQL
-		
-		/*
-		 * rename te mando: idViejo y idNuevo
-		 * addColumn: id string, un ArrayList de PKC 
-		 * ADD Constraint: ArrayList de PKC
-		 * Drop column: nombre de la columna. String
-		 * Drop de la constraint: nombre de la constraint. String
-		 * 
-		 */
+	
 		System.out.println("visitAlter_table");
 		if(ctx.getChildCount()==7){
 			String id_number_1 = ctx.getChild(2).getText();
@@ -722,10 +716,11 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		//select select_k_id from ID comma_id_k where_exp order_by END_SQL
 		System.out.println("visitSelect_value");
 		
+		showX = true;
 		columns_list = new ArrayList<String>();
+		columns_list_index = new ArrayList<Integer>();
 		tables_list = new ArrayList<String>();
 		
-		columnX = new ArrayList<String>();
 		typeX = new ArrayList<String>();
 		resultX = new ArrayList<ArrayList<String>>();
 		resultX.add(new ArrayList<String>());
@@ -737,10 +732,7 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		ArrayList<Integer> order_by_ad_list = new ArrayList<Integer>();
 		// * OR multiple columns
 		boolean orderBy = false;
-		if(ctx.select_k_id().KL() != null){
-			columns_list.add("*");
-			System.out.println("*");
-		} else {
+		if(ctx.select_k_id().KL() == null){
 			//ID comma_id_k
 			columns_list.add(ctx.select_k_id().getChild(0).getText());
 			System.out.println(columns_list.get(0));
@@ -776,8 +768,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		for(String table_name : tables_list){
 			try {
 				ArrayList<ArrayList<String>> info = dml.tableTypesAndNames(table_name);
-				resultX.get(0).addAll(info.get(0)); //REMOVE INDEX
-				resultX.get(1).addAll(info.get(1)); //REMOVE INDEX
+				resultX.get(0).addAll(info.get(0)); 
+				resultX.get(1).addAll(info.get(1));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -789,99 +781,121 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 			expX = ctx.where_exp().exp();
 		}
 		
-		//PRODUCTO CRUZ y el resultado se almacena en resultX
 		makeX(null, 0);
-
-		if(ctx.order_by().getChildCount() > 0){
-			//(order by ID (asc | desc) comma_id_ad_k)?
-			System.out.println("ORDER BY");
-			orderBy = true;
-			order_by_id_list.add(ctx.order_by().ID().getText());
-			if(ctx.order_by().asc() != null){
-				order_by_ad_list.add(1);
-			} else {
-				order_by_ad_list.add(0);
-			}
-			System.out.println(order_by_id_list.get(0));
-			System.out.println(order_by_ad_list.get(0));
-			Integer total_number_order_by = ctx.order_by().comma_id_ad_k().getChildCount()/3; 
-			if(total_number_order_by > 0){
-				//( COMMA ID ( asc | desc ) )*
-				for(Integer i = 0; i < total_number_order_by; i++){
-					order_by_id_list.add(ctx.order_by().comma_id_ad_k().ID(i).getText());
-					String current_order_by = ctx.order_by().comma_id_ad_k().getChild((i*3)+2).getText();
-					if(current_order_by.equals("ASC") || current_order_by.equals("Asc") || current_order_by.equals("asc")){
-						order_by_ad_list.add(1);
-					} else {
-						order_by_ad_list.add(0);
+		
+		
+		if(!resultX.isEmpty()){
+			
+			if(!columns_list.isEmpty()){
+				for(String column : columns_list){
+					if(resultX.get(0).contains(column)){
+						columns_list_index.add(resultX.get(0).indexOf(column));
 					}
-					System.out.println(order_by_id_list.get(i+1));
-					System.out.println(order_by_ad_list.get(i+1));
 				}
 			}
 			
-			executeOrderBy(order_by_id_list,order_by_ad_list);
-			System.out.println(order_by_id_list);
-			System.out.println(order_by_ad_list);
-		}
-		ArrayList<ArrayList<String>> temp =  new ArrayList<ArrayList<String>>();;
-		System.out.println(resultX.toString());
-		if (orderBy==true){
-			temp.addAll(resultX);
-			for (int i = 0; i<order_by_id_list.size();i++){
-				List<List<String>> list = new ArrayList<List<String>>();
-				int indexToOrderBy = resultX.get(0).indexOf(order_by_id_list.get(i));
-				int ascOrDesc = order_by_ad_list.get(i);
-				String type = resultX.get(1).get(indexToOrderBy);
-				if (type.equals("int")|| type.equals("float")){
-					System.out.println(indexToOrderBy);
-					temp.remove(0);
-					temp.remove(0);
-					list.addAll(temp);
-					System.out.println(list.toString());
-					Collections.sort(list, new Comparator<List<String>> () {
-					    @Override
-					    public int compare(List<String> a, List<String> b) {
-					        return a.get(indexToOrderBy ).compareTo(b.get(indexToOrderBy ));
-					    }
-					});
-					if(ascOrDesc==0){
-						Collections.reverse(list);
+			if(!columns_list_index.isEmpty()){
+				ArrayList<ArrayList<String>> temp_resultX = new ArrayList<ArrayList<String>>();
+				temp_resultX.addAll(resultX);
+				resultX.clear();
+				for(Integer i = 0; i<temp_resultX.size(); i++){
+					ArrayList<String> temp_row = new ArrayList<String>();
+					for(Integer index : columns_list_index){
+						temp_row.add(temp_resultX.get(i).get(index));
 					}
-					temp.removeAll(temp);
-					temp.addAll((Collection<? extends ArrayList<String>>) list);
-					System.out.println(temp.toString());
-					temp.add(0, resultX.get(1));
-					temp.add(0,resultX.get(0));
-					System.out.println(temp.toString());
-				}
-				if (type.contains("char")){
-					System.out.println(indexToOrderBy);
-					temp.remove(0);
-					temp.remove(0);
-					list.addAll(temp);
-					System.out.println(list.toString());
-					Collections.sort(list, new Comparator<List<String>> () {
-					    @Override
-					    public int compare(List<String> a, List<String> b) {
-					        return a.get(indexToOrderBy ).compareTo(b.get(indexToOrderBy ));
-					    }
-					});
-					if(ascOrDesc==0){
-						Collections.reverse(list);
-					}
-					temp.removeAll(temp);
-					temp.addAll((Collection<? extends ArrayList<String>>) list);
-					System.out.println(temp.toString());
-					temp.add(0, resultX.get(1));
-					temp.add(0,resultX.get(0));
-					System.out.println(temp.toString());
+					resultX.add(temp_row);
 				}
 			}
-			resultX.clear();
-			resultX.addAll(temp);
+			
+			if(ctx.order_by().getChildCount() > 0){
+				//(order by ID (asc | desc) comma_id_ad_k)?
+				System.out.println("ORDER BY");
+				orderBy = true;
+				order_by_id_list.add(ctx.order_by().ID().getText());
+				if(ctx.order_by().asc() != null){
+					order_by_ad_list.add(1);
+				} else {
+					order_by_ad_list.add(0);
+				}
+				System.out.println(order_by_id_list.get(0));
+				System.out.println(order_by_ad_list.get(0));
+				Integer total_number_order_by = ctx.order_by().comma_id_ad_k().getChildCount()/3; 
+				if(total_number_order_by > 0){
+					//( COMMA ID ( asc | desc ) )*
+					for(Integer i = 0; i < total_number_order_by; i++){
+						order_by_id_list.add(ctx.order_by().comma_id_ad_k().ID(i).getText());
+						String current_order_by = ctx.order_by().comma_id_ad_k().getChild((i*3)+2).getText();
+						if(current_order_by.equals("ASC") || current_order_by.equals("Asc") || current_order_by.equals("asc")){
+							order_by_ad_list.add(1);
+						} else {
+							order_by_ad_list.add(0);
+						}
+						System.out.println(order_by_id_list.get(i+1));
+						System.out.println(order_by_ad_list.get(i+1));
+					}
+				}
+				System.out.println(order_by_id_list);
+				System.out.println(order_by_ad_list);
+			}
+			
+			ArrayList<ArrayList<String>> temp =  new ArrayList<ArrayList<String>>();
+			
+			if (orderBy){
+				temp.addAll(resultX);
+				for (int i = 0; i<order_by_id_list.size();i++){
+					List<List<String>> list = new ArrayList<List<String>>();
+					int indexToOrderBy = resultX.get(0).indexOf(order_by_id_list.get(i));
+					int ascOrDesc = order_by_ad_list.get(i);
+					String type = resultX.get(1).get(indexToOrderBy);
+					if (type.equals("int")|| type.equals("float")){
+						System.out.println(indexToOrderBy);
+						temp.remove(0);
+						temp.remove(0);
+						list.addAll(temp);
+						System.out.println(list.toString());
+						Collections.sort(list, new Comparator<List<String>> () {
+						    @Override
+						    public int compare(List<String> a, List<String> b) {
+						        return a.get(indexToOrderBy ).compareTo(b.get(indexToOrderBy ));
+						    }
+						});
+						if(ascOrDesc==0){
+							Collections.reverse(list);
+						}
+						temp.removeAll(temp);
+						temp.addAll((Collection<? extends ArrayList<String>>) list);
+						System.out.println(temp.toString());
+						temp.add(0, resultX.get(1));
+						temp.add(0,resultX.get(0));
+						System.out.println(temp.toString());
+					}
+					if (type.contains("char")){
+						System.out.println(indexToOrderBy);
+						temp.remove(0);
+						temp.remove(0);
+						list.addAll(temp);
+						System.out.println(list.toString());
+						Collections.sort(list, new Comparator<List<String>> () {
+						    @Override
+						    public int compare(List<String> a, List<String> b) {
+						        return a.get(indexToOrderBy ).compareTo(b.get(indexToOrderBy ));
+						    }
+						});
+						if(ascOrDesc==0){
+							Collections.reverse(list);
+						}
+						temp.removeAll(temp);
+						temp.addAll((Collection<? extends ArrayList<String>>) list);
+						System.out.println(temp.toString());
+						temp.add(0, resultX.get(1));
+						temp.add(0,resultX.get(0));
+						System.out.println(temp.toString());
+					}
+				}
+				resultX.clear();
+				resultX.addAll(temp);
+			}
 		}
-		//ORDENAR resultX
 		return null;
 	}
 	
@@ -895,7 +909,9 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 	}
 	
 	public void makeX(ArrayList<String> current_row, Integer current_table_index){
+		
 		ArrayList<ArrayList<String>> current_tableX = new ArrayList<ArrayList<String>>();
+		
 		if(current_table_index < tableX.size()){
 			current_tableX.addAll(tableX.get(current_table_index));
 			for (ArrayList<String> row : current_tableX){
@@ -906,7 +922,6 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				current_rowX.addAll(row);
 				makeX(current_rowX, current_table_index+1);
 			}
-
 		} else {
 			if(expX != null){
 				if(isExp(current_row)){
@@ -926,11 +941,6 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		}
 		return false;
 	}
-	
-	private void executeOrderBy(ArrayList<String> order_by_id_list, ArrayList<Integer> order_by_ad_list) {
-		
-	}
-
 	
 	public ArrayList<String> makeOr(ArrayList<String> row1, ArrayList<String> row2){
 		if(row1 == null && row2 == null){
@@ -1076,7 +1086,8 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 		
 		if(term1_type.equals("") && term2_type.equals("")){
 			//PRODUCTO CRUZ
-			
+			System.out.println("NULL " + term1);
+			System.out.println("NULL "+ term2);
 			if(resultX.get(0).contains(term1) && resultX.get(0).contains(term2)){
 				Integer index_current_column1 = resultX.get(0).indexOf(term1);
 				String current_column_type1 = resultX.get(1).get(index_current_column1);
@@ -1088,6 +1099,26 @@ public class DBMSQueryVisitor extends DBMSBaseVisitor <ArrayList<String>>{
 				
 				
 				if(relation(rel_op, current_column_value1, current_column_value2, current_column_type1, current_column_type2)){
+					return rowX;
+				}
+				
+			} else if (resultX.get(0).contains(term1) && term2.equals("NULL")){
+				Integer index_current_column1 = resultX.get(0).indexOf(term1);
+				String current_column_value1 = rowX.get(index_current_column1);
+				
+				if(current_column_value1.equals("NULL") && rel_op.equals("=")){
+					return rowX;
+				} else if(!current_column_value1.equals("NULL") && rel_op.equals("<>")){
+					return rowX;
+				}
+				
+			} else if (resultX.get(0).contains(term2) && term1.equals("NULL")){
+				Integer index_current_column2 = resultX.get(0).indexOf(term2);
+				String current_column_value2 = rowX.get(index_current_column2);
+				
+				if(current_column_value2.equals("NULL") && rel_op.equals("=")){
+					return rowX;
+				} else if(!current_column_value2.equals("NULL") && rel_op.equals("<>")){
 					return rowX;
 				}
 			}

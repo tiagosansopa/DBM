@@ -1,4 +1,0 @@
-1,90.0,Hola,,NULL;
-2,9.0,Hola,,NULL;
-3,190.0,Hola,,NULL;
-4,290.0,Hola,,NULL;

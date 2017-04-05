@@ -1,6 +1,0 @@
-id_prueba3:int,float3:float,string3:char(50)
-R:4
-PK
-pk_id_prueba3,id_prueba3
-FK
-CHECK
